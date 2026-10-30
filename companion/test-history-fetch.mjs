@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,readFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {historyFetchTool,historyArchiveTool} from './qq-history-fetch.mjs';
+const dir=mkdtempSync(join(tmpdir(),'whale-history-test-'));let calls=0,wrong=false;
+const world={getWatched:()=>({groups:[100]}),driver:{callApi:async(a,p)=>{calls++;if(a==='get_login_info')return {user_id:wrong?999:200};assert.equal(a,'get_group_msg_history');assert.equal(p.group_id,100);return {messages:[{group_id:100,user_id:300,message_id:8,time:2,message:[{type:'text',data:{text:'synthetic'}}]},{group_id:100,user_id:300,message_id:7,time:1,message:[]}]};}}};
+const tool=historyFetchTool(world,{dataDir:dir,botId:'200'});
+assert.equal(await tool.handler({group_id:'999'}),'Group is not enabled.');assert.equal(calls,0);
+let result=JSON.parse(await tool.handler({group_id:'100'}));assert.equal(result.next_before_id,7);assert.equal(result.count,2);
+assert.ok(readFileSync(join(dir,'qq-history-pages/100.jsonl'),'utf8').includes('synthetic'));
+result=JSON.parse(await tool.handler({group_id:'100',before_id:7}));assert.equal(result.next_before_id,null);
+wrong=true;assert.match(await tool.handler({group_id:'100'}),/identity mismatch/);
+const archive=historyArchiveTool(world,{dataDir:dir});
+const saved=JSON.parse(await archive.handler({group_id:'100',keyword:'synthetic'}));assert.equal(saved.archived_total,2);assert.equal(saved.matched_total,1);
+assert.equal(await archive.handler({group_id:'999'}),'Group is not enabled.');
+console.log('PASS scope, identity, bounded history page, local archive, no send API');

@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';import {mkdtempSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {ConversationService} from './conversation-service.mjs';import {conversationIntent} from './conversation-intent.mjs';
+const reply=text=>({response:{status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text}]}]}}),call=(name,args,id)=>({response:{status:'completed',output:[{type:'function_call',name,arguments:JSON.stringify(args),call_id:id}]}});
+const text=t=>({type:'text',data:{text:t}}),at=id=>({type:'at',data:{qq:String(id)}});
+const msg=(id,segments,{kind='group',user=900000001}={})=>({post_type:'message',message_type:kind,group_id:900000002,user_id:user,message_id:id,time:Date.now()/1000,message:segments});
+const base={root:mkdtempSync(join(tmpdir(),'whale-coherence-')),botId:'900000004',guardianIds:['900000001','900000003'],publicProfile:'Synthetic',isAllowed:()=>true,wait:async()=>{}};
+const png=Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),Buffer.alloc(16)]),sent=[],requests=[];
+let service=new ConversationService({...base,send:async x=>sent.push(x),imageAnalyzer:{analyze:async()=>({status:'vision-ok',description:'Synthetic orange pelican on a blue card'})},client:{respond:async r=>{requests.push(r);return reply('记住了');}}});
+await service.receiveAdmitted(msg(1,[text('看这张合成图'),{type:'image',data:{}}]),[png]);
+await service.receiveAdmitted(msg(2,[text('刚才群里的图是什么？')],{kind:'private'}));
+assert.match(requests.at(-1).instructions,/Synthetic orange pelican/);assert.match(requests.at(-1).instructions,/group:900000002/);assert.equal(sent.at(-1).target.kind,'private');assert.equal(sent.at(-1).imageBytes,undefined);
+const remembered=service.cognition.store.search({query:'pelican'});assert.ok(remembered.attachments.length);await service.close();
+
+let release,entered;const waiting=new Promise(r=>entered=r),gate=new Promise(r=>release=r);let rounds=0;
+service=new ConversationService({...base,root:mkdtempSync(join(tmpdir(),'whale-coherence-task-')),extraTools:()=>[{name:'workroom_create',description:'synthetic',parameters:{type:'object',properties:{}},handler:()=>JSON.stringify({ok:true,result:{project_id:'synthetic-project',version:2}})}],send:async x=>sent.push(x),client:{respond:async()=>{if(++rounds===1)return call('workroom_create',{},'create');entered();await gate;return reply('作品好了');}}});
+const job=service.receiveAdmitted(msg(10,[at(900000004),text('做个作品')]));await waiting;
+assert.equal(service.engine.activeTask('group:900000002').checkpoint.project_id,'synthetic-project');
+service.noteArrival(msg(11,[at(99999999),text('你下午去哪？')],{user:900000006}));
+assert.equal((await service.receiveAdmitted(msg(11,[at(99999999),text('你下午去哪？')],{user:900000006}))).status,'quiet');
+release();assert.equal((await job).status,'sent');await service.close();
+assert.equal(conversationIntent(msg(12,[text('汐，停止')],{user:900000003}),{scope:{kind:'group'},botId:'900000004',guardian:true}).task_control,'cancel');
+assert.equal(conversationIntent(msg(13,[text('暂停')]),{scope:{kind:'group'},botId:'900000004',activeTask:{sender:'900000001'}}).task_control,'pause');
+assert.equal(conversationIntent(msg(14,[text('汐，停止')],{user:900000006}),{scope:{kind:'group'},botId:'900000004'}).task_control,null);
+console.log('PASS group image→private coherent context, retained source/no implicit image forwarding, workroom wrapper checkpoint, ordinary other-directed chat preserves work, verified guardian/owner control');

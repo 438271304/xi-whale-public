@@ -1,0 +1,204 @@
+import {randomUUID, createHash} from 'node:crypto';
+
+const digest = text => createHash('sha256').update(text.replace(/\s+/g, '')).digest('hex');
+const active = row => row.value?.active !== false;
+const bounded = (value, max) => {
+  if (typeof value !== 'string' || !value.trim() || value.length > max) throw Error('A bounded nonempty value is required');
+  return value.trim();
+};
+const audienceFields=['recipient','target_kind','target_id','recipient_reason'];
+const targetKinds={family:'group',father:'private',mother:'private'};
+const legacyAudience=()=>({recipient:'family',target_kind:null,target_id:null,recipient_reason:null});
+function audience(value,{prior=null,allowUnbound=false}={}){
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!audienceFields.includes(key)))throw Error('Invalid sharing audience');
+  const merged={...(prior??legacyAudience()),...value};
+  if(!Object.hasOwn(targetKinds,merged.recipient))throw Error('Choose family, father or mother');
+  if(prior&&merged.recipient!==prior.recipient&&(!Object.hasOwn(value,'target_kind')||!Object.hasOwn(value,'target_id')))throw Error('A changed recipient needs an explicit target');
+  if(!(allowUnbound&&merged.recipient==='family'&&merged.target_kind===null&&merged.target_id===null)){
+    if(merged.target_kind!==targetKinds[merged.recipient]||typeof merged.target_id!=='string'||!/^\d+$/.test(merged.target_id))throw Error('Recipient and target kind/ID must agree');
+  }
+  if(Object.hasOwn(value,'recipient_reason'))merged.recipient_reason=bounded(value.recipient_reason,400);
+  return merged;
+}
+
+// A durable continuation of the existing life opportunity, not a new scheduler.
+export class LifeContinuity {
+  constructor(db, {clock = () => Date.now()} = {}) {
+    this.db = db;
+    this.clock = clock;
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS life_intentions(
+        activity TEXT PRIMARY KEY, basis TEXT NOT NULL, reason TEXT NOT NULL, at INTEGER NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS life_reading_evidence(
+        discovery TEXT PRIMARY KEY, activity TEXT NOT NULL, tool TEXT NOT NULL,
+        level TEXT NOT NULL, details TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS life_share_intents(
+        id TEXT PRIMARY KEY, activity TEXT UNIQUE NOT NULL, evidence TEXT NOT NULL,
+        text TEXT NOT NULL, digest TEXT NOT NULL, state TEXT NOT NULL, reason TEXT NOT NULL,
+        created INTEGER NOT NULL, updated INTEGER NOT NULL, next_review INTEGER NOT NULL,
+        attempt TEXT, receipt TEXT,
+        recipient TEXT NOT NULL DEFAULT 'family', target_kind TEXT, target_id TEXT, recipient_reason TEXT
+      );
+    `);
+    // In-place migration keeps every old intent/attempt/receipt. Unresolved old
+    // family targets are bound by the caller at delivery, never guessed here.
+    db.exec('BEGIN IMMEDIATE');
+    try{
+      const columns=new Set(db.prepare('PRAGMA table_info(life_share_intents)').all().map(column=>column.name));
+      for(const [name,type] of [['recipient',"TEXT NOT NULL DEFAULT 'family'"],['target_kind','TEXT'],['target_id','TEXT'],['recipient_reason','TEXT']]){
+        if(!columns.has(name))db.exec('ALTER TABLE life_share_intents ADD COLUMN '+name+' '+type);
+      }
+      db.exec("UPDATE life_share_intents SET state='uncertain', reason='restart-during-delivery-no-automatic-retry' WHERE state='sending'; COMMIT");
+    }catch(error){db.exec('ROLLBACK');throw error;}
+  }
+
+  candidates(states) {
+    return states.filter(row => ['interest', 'unfinished', 'idea'].includes(row.kind) && active(row))
+      .map(({kind, key, revision, value, evidence, at}) => ({kind, key, revision, value, evidence, at}));
+  }
+
+  choose(activity, {why, sourceState, candidates = [], followup = null}) {
+    const basis = {type: 'new-curiosity', source_state: null, followup_id: followup?.id ?? null};
+    if (sourceState !== undefined) {
+      const row = candidates.find(r => r.kind === sourceState?.kind && r.key === sourceState?.key && r.revision === sourceState?.revision);
+      if (!row) throw Error('Choose a currently offered active state and its exact revision');
+      basis.type = 'continuing-own-interest';
+      basis.source_state = row;
+    } else if (followup) basis.type = 'public-followup';
+    this.db.prepare('INSERT INTO life_intentions VALUES(?,?,?,?)').run(activity, JSON.stringify(basis), bounded(why, 400), this.clock());
+    return basis;
+  }
+
+  intention(activity) {
+    const row = this.db.prepare('SELECT * FROM life_intentions WHERE activity=?').get(activity);
+    return row ? {...row, basis: JSON.parse(row.basis)} : null;
+  }
+
+  recordReading(discovery, activity, tool, result) {
+    let level = 'unknown';
+    if (tool.endsWith('_search') || result.evidence_level === 'search-lead') level = 'search-lead';
+    else if (tool === 'public_fetch') level = 'page-text';
+    else if (['bilibili_read','bilibili_listen'].includes(tool)) level = result.content?.subtitle_read ? 'subtitles' :
+      result.content?.speech_transcript?.segments?.some(segment => segment.state === 'transcribed' && segment.text?.trim()) ? 'speech-transcript' :
+      result.content?.sampled_frames?.some(frame => frame.status === 'vision-ok') ? 'sampled-frames' : 'metadata-only';
+    else if (result.evidence_level === 'thread-posts') level = 'thread-posts';
+    // Persist the observed scope, never a model's claim that it watched/heard more.
+    const c = result.content;
+    const details = {retrieved_at: result.retrieved_at ?? null, content: c ? {
+      metadata_read: c.metadata_read === true, subtitle_read: c.subtitle_read === true,
+      subtitle_truncated: c.subtitle_truncated ?? null,
+      sampled_frames: (c.sampled_frames ?? []).map(({time, status, sha256}) => ({time, status, sha256})),
+      speech_transcript: c.speech_transcript ? {
+        kind: c.speech_transcript.kind,
+        model_id: c.speech_transcript.evidence?.model_id,
+        media_sha256: c.speech_transcript.media_sha256,
+        model_sha256: c.speech_transcript.evidence?.model_sha256,
+        coverage: c.speech_transcript.evidence?.coverage,
+        unprocessed_ranges: c.speech_transcript.evidence?.unprocessed_ranges,
+        alignment: c.speech_transcript.alignment,
+        non_speech_understood: false
+      } : null,
+      audio_understood: false, whole_video_watched: false
+    } : null,
+      next_offset: result.next_offset ?? null, limitations: result.limitations ?? [], whole_video_watched: false,
+      thread_id: result.thread_id ?? null, parent_post_id: result.parent_post_id ?? null,
+      read_scope: result.read_scope ?? null, gaps: result.gaps ?? []};
+    this.db.prepare('INSERT INTO life_reading_evidence VALUES(?,?,?,?,?)')
+      .run(discovery, activity, tool, level, JSON.stringify(details));
+    return level;
+  }
+
+  sources(activity) {
+    return this.db.prepare(`SELECT d.url,d.title,d.excerpt,r.tool,r.level,r.details
+      FROM discoveries d JOIN life_reading_evidence r ON r.discovery=d.id WHERE d.activity=?`).all(activity)
+      .map(row => ({...row, details: JSON.parse(row.details)}));
+  }
+
+  queue(activity, evidence, text, recipient) {
+    text = bounded(text, 500);
+    if (typeof evidence !== 'string' || !evidence) throw Error('A saved discovery evidence ID is required');
+    const prior = this.db.prepare('SELECT * FROM life_share_intents WHERE activity=?').get(activity);
+    if (prior) return prior; // One intent per discovery; uncertain/sent never re-queued.
+    const target=recipient===undefined?legacyAudience():audience(recipient);
+    const id = randomUUID(), now = this.clock();
+    this.db.prepare("INSERT INTO life_share_intents (id,activity,evidence,text,digest,state,reason,created,updated,next_review,attempt,receipt,recipient,target_kind,target_id,recipient_reason) VALUES(?,?,?,?,?,'queued','wanted-to-share',?,?,?,NULL,NULL,?,?,?,?)")
+      .run(id, activity, evidence, text, digest(text), now, now, now,target.recipient,target.target_kind,target.target_id,target.recipient_reason);
+    return this.get(id);
+  }
+
+  get(id) { return this.db.prepare('SELECT * FROM life_share_intents WHERE id=?').get(id) ?? null; }
+
+  pending({rotate = false} = {}) {
+    if (typeof rotate !== 'boolean') throw Error('Invalid pending sharing rotation');
+    const now = this.clock();
+    if (!Number.isSafeInteger(now) || now < 0 || !Number.isSafeInteger(now + 1800000)) throw Error('Invalid sharing opportunity time');
+    const offer = () => {
+      const rows = this.db.prepare(`SELECT s.*,a.topic,a.summary FROM life_share_intents s JOIN activities a ON a.id=s.activity
+        WHERE s.state='queued' AND s.next_review<=? ORDER BY s.next_review,s.updated,s.created,s.id LIMIT 5`).all(now);
+      // Materialize the complete offered set first: a failed source read must not
+      // advance a candidate which could not actually be provided to this turn.
+      const offered = rows.map(row => ({id: row.id, activity: row.activity, evidence_id: row.evidence, topic: row.topic,
+        summary: row.summary, draft: row.text, age_minutes: Math.max(0, Math.floor((now - row.created) / 60000)),
+        reason: row.reason,recipient:row.recipient,target_kind:row.target_kind,target_id:row.target_id,recipient_reason:row.recipient_reason,
+        sources: this.sources(row.activity).map(({url, title, level}) => ({url, title, level}))}));
+      if (rotate) {
+        // Same standard opportunity interval as reconsider/defer. This is only
+        // an offer lease; no state, target, draft or updated time is changed.
+        const update = this.db.prepare("UPDATE life_share_intents SET next_review=? WHERE id=? AND state='queued' AND next_review=?");
+        for (const row of rows) if (update.run(now + 1800000, row.id, row.next_review).changes !== 1) throw Error('Sharing candidates changed before rotation');
+      }
+      return offered;
+    };
+    if (!rotate) return offer();
+    // Atomic selection + all leases, including when called inside a larger
+    // existing transaction. Nothing can be half-rotated on a failed update.
+    this.db.exec('SAVEPOINT life_share_rotation');
+    try {const offered = offer(); this.db.exec('RELEASE life_share_rotation'); return offered;}
+    catch (error) {this.db.exec('ROLLBACK TO life_share_rotation; RELEASE life_share_rotation'); throw error;}
+  }
+
+  reconsider(id, args, offered) {
+    const current=this.get(id);
+    if (!offered.some(row => row.id === id) || current?.state !== 'queued') throw Error('Choose a currently pending discovery');
+    let {decision,reason,text}=args;
+    if (!['share', 'later', 'discard'].includes(decision)) throw Error('Invalid sharing decision');
+    reason = bounded(reason, 400);
+    const patch=Object.fromEntries(audienceFields.filter(field=>Object.hasOwn(args,field)).map(field=>[field,args[field]]));
+    const target=audience(patch,{prior:Object.fromEntries(audienceFields.map(field=>[field,current[field]])),
+      allowUnbound:current.recipient==='family'&&current.target_kind===null&&current.target_id===null});
+    text=text===undefined?current.text:bounded(text,500);
+    const changed=this.db.prepare("UPDATE life_share_intents SET text=?,digest=?,state=?,reason=?,updated=?,next_review=?,recipient=?,target_kind=?,target_id=?,recipient_reason=? WHERE id=? AND state='queued' AND recipient=? AND target_kind IS ? AND target_id IS ?")
+      .run(text,digest(text),decision === 'discard' ? 'discarded' : 'queued', reason, this.clock(), this.clock() + 1800000,
+        target.recipient,target.target_kind,target.target_id,target.recipient_reason,id,current.recipient,current.target_kind,current.target_id);
+    if(!changed.changes)throw Error('Sharing intention changed; reconsider the current record');
+    return this.get(id);
+  }
+
+  bindTarget(id,{target_kind,target_id}){
+    const current=this.get(id);
+    if(current?.state!=='queued'||current.target_kind!==null||current.target_id!==null)throw Error('Only an unresolved queued target can be bound');
+    const target=audience({target_kind,target_id},{prior:Object.fromEntries(audienceFields.map(field=>[field,current[field]]))});
+    const changed=this.db.prepare("UPDATE life_share_intents SET target_kind=?,target_id=?,updated=? WHERE id=? AND state='queued' AND target_kind IS NULL AND target_id IS NULL AND recipient=?")
+      .run(target.target_kind,target.target_id,this.clock(),id,current.recipient);
+    if(!changed.changes)throw Error('Sharing target changed; no redirect performed');
+    return this.get(id);
+  }
+
+  defer(id, reason) {
+    this.db.prepare("UPDATE life_share_intents SET state='queued',reason=?,updated=?,next_review=? WHERE id=? AND state IN ('queued','sending')")
+      .run(reason, this.clock(), this.clock() + 1800000, id);
+  }
+
+  begin(id, attempt) {
+    if (!this.db.prepare("UPDATE life_share_intents SET state='sending',attempt=?,updated=? WHERE id=? AND state='queued'")
+      .run(attempt, this.clock(), id).changes) throw Error('Share is no longer pending');
+  }
+
+  settle(id, state, receipt = null) {
+    if (!['sent', 'uncertain'].includes(state)) throw Error('Invalid delivery settlement');
+    this.db.prepare("UPDATE life_share_intents SET state=?,receipt=?,updated=? WHERE id=? AND state='sending'")
+      .run(state, receipt ? JSON.stringify(receipt) : null, this.clock(), id);
+  }
+}

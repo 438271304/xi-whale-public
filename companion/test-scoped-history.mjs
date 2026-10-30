@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {ScopedHistory} from './scoped-history.mjs';
+const db=new ScopedHistory(':memory:');
+const a={kind:'private',id:'12345'},b={kind:'private',id:'23456'},g={kind:'group',id:'12345'};
+const fixture=(conv,text,id=1)=>({type:'qq.message',source:'qq',origin:'external',meta:{conv,message_id:id},text,ts:'2026-10-25T00:00:00Z'});
+assert.equal(db.importEvent(fixture(a,'A_ONLY'),'fixture'),'imported');
+assert.equal(db.importEvent(fixture(b,'B_ONLY'),'fixture'),'imported');
+assert.equal(db.importEvent(fixture(g,'GROUP_ONLY'),'fixture'),'imported');
+assert.equal(db.importEvent(fixture(a,'A_ONLY'),'fixture'),'duplicate');
+assert.equal(db.importEvent({...fixture(a,'UNSCOPED_SECRET'),meta:{},source:'persona'},'fixture'),'unscoped-or-nonmessage');
+assert.equal(db.search(a).total,1);assert.equal(db.search(a,'B_ONLY').total,0);assert.equal(db.search(g).records[0].text,'GROUP_ONLY');
+assert.throws(()=>db.search(a,'',-1));
+assert.equal(db.importEvent(fixture(a,'conflicting copy'),'fixture'),'conflict-withheld');
+assert.equal(db.search(a).total,0);assert.equal(db.search(b).total,1);
+db.close();console.log('PASS attributed history isolation, no unscoped imports, peer/group separation, deduplication and ambiguous records withheld; no transport');

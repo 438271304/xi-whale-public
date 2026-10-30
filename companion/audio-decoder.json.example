@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "model_id": "sensevoice-small-int8-2024-07-17",
+  "language": "auto",
+  "model": {
+    "path": "C:\\Users\\USER\\PersonalAgentRuntime\\whale-v1\\tools\\speech-recognizer\\model.int8.onnx",
+    "sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51"
+  },
+  "tokens": {
+    "path": "C:\\Users\\USER\\PersonalAgentRuntime\\whale-v1\\tools\\speech-recognizer\\tokens.txt",
+    "sha256": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc"
+  },
+  "native_files": [
+    {
+      "name": "sherpa-onnx.node",
+      "path": "C:\\Users\\USER\\PersonalAgentBackups\\companion-runtime\\clean-lab-0.2.8\\resources\\app\\node_modules\\sherpa-onnx-win-x64\\sherpa-onnx.node",
+      "sha256": "f5fd562bdc4bea167eee8ac981c6acd88c05cc8d2792b67d8951566818e293ca"
+    },
+    {
+      "name": "onnxruntime.dll",
+      "path": "C:\\Users\\USER\\PersonalAgentBackups\\companion-runtime\\clean-lab-0.2.8\\resources\\app\\node_modules\\sherpa-onnx-win-x64\\onnxruntime.dll",
+      "sha256": "7f66f939a881baf4f46a2216496798edf4a1429878b646d12674aa62f27d8a25"
+    },
+    {
+      "name": "onnxruntime_providers_shared.dll",
+      "path": "C:\\Users\\USER\\PersonalAgentBackups\\companion-runtime\\clean-lab-0.2.8\\resources\\app\\node_modules\\sherpa-onnx-win-x64\\onnxruntime_providers_shared.dll",
+      "sha256": "551d0e1fe4c227d8542314ba718d52f4379e0c7bfe729a37c59833a884e27b4d"
+    },
+    {
+      "name": "sherpa-onnx-c-api.dll",
+      "path": "C:\\Users\\USER\\PersonalAgentBackups\\companion-runtime\\clean-lab-0.2.8\\resources\\app\\node_modules\\sherpa-onnx-win-x64\\sherpa-onnx-c-api.dll",
+      "sha256": "b0801cd8eeead83213c60b92cc004de6f3ac4cd4a9ac7c388c16b97c590f1e99"
+    },
+    {
+      "name": "sherpa-onnx-cxx-api.dll",
+      "path": "C:\\Users\\USER\\PersonalAgentBackups\\companion-runtime\\clean-lab-0.2.8\\resources\\app\\node_modules\\sherpa-onnx-win-x64\\sherpa-onnx-cxx-api.dll",
+      "sha256": "e709c46a63e4b84f3862aa0c843a804040b42ea054a398b420142f6c8e58ec77"
+    }
+  ],
+  "source": "Pinned FunASR/SenseVoice export manifest in installed cortico-world-desktop-pet/src/runtime/store.ts; ModelScope download; no new cloud service"
+}

@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';import {runScopedTurn} from './scoped-tools.mjs';import {conversationFailure} from './conversation-errors.mjs';import {transportMessage} from './group-message.mjs';import {conversationScope} from './conversation-scope.mjs';
+const message=text=>({response:{status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text}]}]}});
+let calls=0,writes=0;const details=[];
+const result=await runScopedTurn({profile:'synthetic',input:[{role:'user',content:'PRIVATE_CANARY'}],tools:[{name:'write_note',description:'synthetic',parameters:{type:'object',properties:{}},handler:()=>++writes}],onStep:d=>details.push(d),client:{respond:async(req,opt)=>{
+ if(++calls===1)return {response:{status:'incomplete',incomplete_details:{reason:'max_output_tokens'},output:[{type:'function_call',call_id:'partial',name:'write_note',arguments:'{',status:'incomplete'}]},attempts:[{status:200,meters:{output:4096}}]};
+ assert.equal(req.max_output_tokens,8192);assert.equal(req.reasoning.effort,'low');assert.ok(!JSON.stringify(opt.context).includes('partial'));
+ if(calls===2)return {response:{status:'completed',output:[{type:'function_call',call_id:'complete',name:'write_note',arguments:'{}',status:'completed'}]}};
+ return message('Done');
+}}});assert.equal(result,'Done');assert.equal(writes,1);assert.equal(calls,3);assert.ok(!JSON.stringify(details).includes('PRIVATE_CANARY'));assert.equal(details[0].incomplete_reason,'max_output_tokens');assert.equal(details[1].recovery,true);
+calls=0;await assert.rejects(()=>runScopedTurn({profile:'synthetic',input:[],tools:[],client:{respond:async()=>{calls++;return {response:{status:'incomplete',incomplete_details:{reason:'max_output_tokens'},output:[]},attempts:[{status:200,meters:{output:8192}}]};}}}),error=>{assert.equal(error.code,'SCOPED_OUTPUT_LIMIT');assert.equal(conversationFailure(error,'generation').category,'generation-output-limit');return true;});assert.equal(calls,2);
+calls=0;await assert.rejects(()=>runScopedTurn({profile:'synthetic',input:[],tools:[],client:{respond:async()=>{calls++;throw Object.assign(Error('synthetic HTTP400'),{status:400});}}}));assert.equal(calls,1);
+calls=0;await assert.rejects(()=>runScopedTurn({profile:'synthetic',input:[],tools:[],client:{respond:async()=>{calls++;return {response:{status:'incomplete',incomplete_details:{reason:'content_filter'},output:[]},attempts:[{status:200,meters:{output:4096}}]};}}}));assert.equal(calls,1);
+const t=transportMessage({user_id:45678,message_id:1,time:0,message:[{type:'at',data:{qq:'34567'}}]},{scope:conversationScope('group','12345'),botId:'34567'});assert.equal(t.transport.address_only,true);
+console.log('PASS one bounded uncommitted-step recovery, no partial/duplicate writes, persistent low effort after recovery, no HTTP retry, metadata-only diagnostics, address-only intent');

@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import {guardQQWorld} from './qq-event-policy.mjs';
+let watched={groups:[100,101],privates:[]}, received=0,sent=0;
+const world={getWatched:()=>watched,setWatched:(groups,privates)=>watched={groups,privates},handleEvent:async()=>received++,sendToTarget:async()=>sent++};
+guardQQWorld(world,{group_id:'100',bot_id:'200',father_id:'300',follow_configured_groups:true,new_groups_guardian_mention_only:true},()=>new Date('2026-10-25T01:00:00+08:00'));
+const msg={post_type:'message',message_type:'group',group_id:101,user_id:300,message:[{type:'at',data:{qq:200}}]};
+await world.handleEvent(msg);assert.equal(received,1);
+await world.sendToTarget({kind:'group',id:101});assert.equal(sent,1);
+await assert.rejects(world.sendToTarget({kind:'group',id:100}),/resting/);
+await world.handleEvent({...msg,user_id:400});assert.equal(received,1);
+watched.groups=[100];await assert.rejects(world.sendToTarget({kind:'group',id:101}),/outside/);
+watched.groups=[100,102];await world.handleEvent({...msg,group_id:102});assert.equal(received,2);
+console.log('PASS configured group hot-change, per-group night lease, guardian-only new-group trigger, removal blocks send');
+let peerReceived=0;
+const other={getWatched:()=>({groups:[100,101]}),setWatched:()=>{},handleEvent:async()=>peerReceived++,sendToTarget:async()=>{}};
+guardQQWorld(other,{group_id:'100',bot_id:'200',follow_configured_groups:true,peer_bot_ids:['400']},()=>new Date('2026-10-25T09:00:00+08:00'));
+await other.handleEvent({...msg,user_id:400});assert.equal(peerReceived,0);
+await other.handleEvent(msg);
+for(let i=0;i<10;i++)await other.handleEvent({...msg,user_id:400});
+assert.equal(peerReceived,7); // one human + six peer-bot turns
+await other.handleEvent({...msg,group_id:100,user_id:400});assert.equal(peerReceived,7);
+let nightCount=0;
+const nightWorld={getWatched:()=>({groups:[100,101]}),setWatched:()=>{},handleEvent:async()=>nightCount++,sendToTarget:async()=>{}};
+guardQQWorld(nightWorld,{group_id:'100',bot_id:'200',father_id:'300',follow_configured_groups:true,peer_bot_ids:['400']},()=>new Date('2026-10-25T02:00:00+08:00'));
+await nightWorld.handleEvent({...msg,user_id:555});assert.equal(nightCount,1);
+await nightWorld.sendToTarget({kind:'group',id:101});
+await nightWorld.handleEvent({...msg,user_id:555,message:[]});assert.equal(nightCount,1);
+console.log('PASS known peer bot: six triggers, no cross-group renewal; ordinary member real mention wakes at night');

@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {mkdtempSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {isolatedQQRoute} from './isolated-qq-route.mjs';
+import {EventLedger} from './event-ledger.mjs';
+const [app,plugin]=process.argv.slice(2);
+await import(pathToFileURL(join(app,'build/cortico/src/extensions/runtime.ts')).href);
+const {QQWorld}=await import(pathToFileURL(join(plugin,'src/world.ts')).href);
+const world=new QQWorld({wsUrl:'ws://127.0.0.1:1',groups:[12345],privates:[],token:''});
+let shared=0,sent=0,requests=[],friends=[23456];
+const now=new Date('2026-10-25T08:00:00+08:00');
+world.start=async function(host){this.host=host;this.driver={setGroups:()=>{},identity:{selfId:34567,groups:new Map()},callApi:async(action)=>{
+ if(action==='get_friend_list')return friends.map(user_id=>({user_id}));
+ assert.ok(['send_private_msg','send_group_msg'].includes(action));return {message_id:++sent+100};
+}};};world.stop=async()=>{};
+const ledger=new EventLedger(':memory:');
+const route=isolatedQQRoute(world,{root:mkdtempSync(join(tmpdir(),'whale-qq-route-')),publicProfile:'public',client:{respond:async r=>{requests.push(r);return {response:{output:[{type:'message',role:'assistant',content:[{type:'output_text',text:'reply'}]}]}};}},policy:{group_id:'12345',bot_id:'34567',friend_private_enabled:true},ledger,clock:()=>now});
+await world.start({pushEvent:async()=>shared++});
+const message=(kind,id,event,text)=>({post_type:'message',message_type:kind,sub_type:'friend',user_id:id,group_id:12345,message_id:event,time:now.getTime()/1000,message:[{type:'text',data:{text}}]});
+await world.handleEvent(message('private',23456,1,'PRIVATE_CANARY'));
+assert.equal(sent,1);assert.equal(shared,0);assert.equal(route.service.history.search({kind:'private',id:'23456'}).total,2);
+await world.handleEvent(message('group',45678,2,'GROUP_ONLY'));assert.equal(sent,2);assert.equal(shared,0);
+// Unified remembered experiences may span chats by the owner's later request;
+// the current conversation transcript and transport destination remain scoped.
+assert.ok(!JSON.stringify(requests.at(-1).input).includes('PRIVATE_CANARY'));
+assert.deepEqual(world.tools(),[]);
+await world.handleEvent(message('private',23456,1,'PRIVATE_CANARY'));assert.equal(sent,2);
+friends=[];await world.handleEvent(message('private',23456,3,'removed'));assert.equal(sent,2);
+await route.pause();await world.handleEvent(message('group',45678,4,'paused'));assert.equal(sent,2);route.resume();
+await world.stop();ledger.close();console.log('PASS pinned QQWorld integration: guard admission, private/group model separation, outgoing self-history kept scoped, no shared host writes, duplicate/friend removal/pause; fake socket and model');

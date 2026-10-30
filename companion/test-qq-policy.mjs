@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {classifyQQ,inboundAdapter} from './qq-event-policy.mjs';
+const p={group_id:'100',bot_id:'200'};
+const night=new Date('2026-10-23T01:00:00+08:00');
+const base={post_type:'message',message_type:'group',group_id:100,user_id:300,message:[{type:'text',data:{text:'@200 wake up'}}]};
+assert.equal(classifyQQ(base,p,night).wake,false);
+const mention={...base,message:[{type:'at',data:{qq:'200'}}]};
+assert.equal(classifyQQ(mention,p,night).wake,true);
+assert.equal(classifyQQ({...mention,group_id:999},p,night).accept,false);
+assert.equal(classifyQQ({...mention,user_id:200},p,night).accept,false);
+assert.equal(classifyQQ({...mention,message:[{type:'at',data:{qq:'all'}}]},p,night).wake,false);
+let calls=0;
+const wrapped=inboundAdapter(async()=>{calls++;return 'delivered'},p,()=>night);
+await wrapped(base); assert.equal(calls,0);
+assert.equal(await wrapped(mention),'delivered'); assert.equal(calls,1);
+assert.equal(classifyQQ(base,p,new Date('2026-10-23T07:00:00+08:00')).wake,true);
+console.log(JSON.stringify({passed:true,assertions:9,networkCalls:0,scope:'Protocol classifier and adapter; live QQWorld not yet wrapped'}));

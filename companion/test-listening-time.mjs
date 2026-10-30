@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {ConversationListening,listeningIntent} from './conversation-listening.mjs';
+const scope={kind:'group',id:'100001'},self='100002',dad='100003',other='100004';
+let now=Date.parse('2026-10-29T18:12:04+08:00'),event=1;
+const message=(text,target=self)=>({transport:{conversation:'group:100001',sender_id:dad,message_id:String(event++),time:now/1000},segments:[{type:'at',target},{type:'text',text}]});
+const listening=new ConversationListening({botId:self,guardianIds:[dad],clock:()=>now});
+const original=message('但你今天不准在这个群说话了');
+assert.equal(listening.apply(scope,original).action,'listening-request');
+assert.equal(listening.status(scope).expires_at,Date.parse('2026-10-30T00:00:00+08:00'));
+now=Date.parse('2026-10-29T23:59:59+08:00');assert.equal(listening.status(scope).active,true);
+now+=1000;assert.equal(listening.status(scope).active,false);
+assert.equal(listening.apply(scope,message('汐，先别说话')).status.active,true);
+assert.equal(listening.status(scope).expires_by_timer,false);
+assert.equal(listening.apply(scope,message('你可以说话了')).action,'resume');
+for(const [text,target] of [['他说“今天不准在这个群说话”',self],['但你今天不准在这个群说话了',other],['你今天不准在那个群说话了',self],['你今天怎么不说话了',self]])assert.equal(listeningIntent({scope,botId:self,current:message(text,target)}).kind,null);
+assert.equal(listening.apply(scope,message('你今天先别在这个群回复了')).status.active,true);
+listening.close();console.log('PASS actual dated silence wording, exact Beijing day expiry, undated continuation, natural resume, quote/other-target and non-command exclusions');

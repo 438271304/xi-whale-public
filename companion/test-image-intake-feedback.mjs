@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {ConversationService} from './conversation-service.mjs';
+import {qqScopedAttachments} from './qq-scoped-attachments.mjs';
+let seen,calls=0;
+const png=Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),Buffer.alloc(16)]);
+const load=qqScopedAttachments({fetcher:async()=>{calls++;return new Response(png,{headers:{'content-type':'image/png'}});}});
+const service=new ConversationService({root:mkdtempSync(join(tmpdir(),'whale-intake-feedback-')),publicProfile:'synthetic',isAllowed:()=>true,client:{respond:async request=>{seen=JSON.parse(request.input.at(-1).content);return {response:{output:[{type:'message',role:'assistant',content:[{type:'output_text',text:'fixture'}]}]}};}},send:async()=>{}});
+const message=(id,url)=>({message_type:'group',group_id:12345,user_id:45678,message_id:id,time:1792890000,message:[{type:'text',data:{text:'synthetic caption'}},{type:'image',data:{url}}]});
+let m=message(1,'http://127.0.0.1/private-key');let images=await load(m);
+assert.equal((await service.receiveAdmitted(m,images,{intake:images.intake})).status,'sent');
+assert.equal(calls,0);assert.equal(seen.image_intake[0].reason,'untrusted-transport-url');assert.ok(seen.body.includes('synthetic caption'));assert.ok(!JSON.stringify(seen).includes('private-key'));
+m=message(2,'https://gchat.qpic.cn/synthetic');images=await load(m);
+assert.equal((await service.receiveAdmitted(m,images,{intake:images.intake})).status,'sent');
+assert.equal(seen.image_intake[0].state,'received');assert.equal(seen.image_intake[0].analysis,'analysis-unavailable');assert.equal(seen.received_images.visually_interpreted,false);assert.equal(seen.received_images.ids.length,1);
+await service.close();console.log('PASS image intake reaches chat context, failure differs from received/unanalysed, captions preserved, unsafe URL not fetched or exposed; fake model/network');

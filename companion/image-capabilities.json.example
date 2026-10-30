@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "vision_enabled": true,
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "endpoint_origin": "https://api.deepseek.com",
+  "official_docs": "https://api-docs.deepseek.com/guides/vision/",
+  "synthetic_verified_at": "2026-10-25T12:57:25.799Z",
+  "local_ocr": true,
+  "private_image_egress_authorization": "Example only: the operator must authorize the chosen provider and intended image scope before enabling uploads."
+}

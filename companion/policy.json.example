@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "deployment": "family-text-v1-live",
+  "timezone": "Asia/Shanghai",
+  "quiet_hours": {
+    "start": "00:00",
+    "end": "07:00",
+    "direct_wake_allowed": true
+  },
+  "budget_cny": {
+    "soft": null,
+    "alert": null,
+    "hard": null,
+    "status": "Whale instance accounting only; owner explicitly removed local spending limit; provider account balance applies"
+  },
+  "channels": {
+    "initial": "family-group",
+    "group_id": "900000002",
+    "other_groups_enabled": true,
+    "bot_id": "900000004",
+    "father_id": "900000001",
+    "mother_id": "900000003",
+    "wake_rule": "real-mention-per-group; known-peer-bot-never-renews-lease",
+    "friend_private_enabled": true,
+    "private_rule": "verified-current-friends; incoming-message-wakes-correspondent-for-5min",
+    "follow_configured_groups": true,
+    "peer_bot_ids": [
+      "900000005"
+    ],
+    "new_groups_guardian_mention_only": false,
+    "peer_bot_max_turns": 6,
+    "peer_bot_window_minutes": 10
+  },
+  "identity": {
+    "name": "self-chosen-whale-related",
+    "user_address": "老爹",
+    "hub_address": "姐姐大人",
+    "mother_address": "妈妈"
+  },
+  "updates": {
+    "policy": "validated-versions-only",
+    "installed_auto_update_disabled": false
+  },
+  "permissions": {
+    "public_posting": false,
+    "stranger_dm": false,
+    "payments": false,
+    "independent_workspace": true,
+    "test_messages_to_family_or_father": true,
+    "friend_requests_auto_accept": false,
+    "add_friend_requires_guardian_approval": true
+  },
+  "notes": [
+    "Family identity confirmed; real first send receipt saved",
+    "Only independent pinned runtime is guarded; do not re-enable original QQ concurrently"
+  ]
+}

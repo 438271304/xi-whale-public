@@ -1,0 +1,24 @@
+> 工程存档模板：账号标识已替换为合成值；不是恢复出的真实记忆或关系。
+
+# 我的表情收藏
+
+姐姐大人准备的起步包；喜欢哪些由你自己决定。以下是已检查的图片内容，不是人格设定。
+
+## 起步包（来源 https://fisharchive.cc/ ）
+- 困了、晚安：抱鲸鱼睡觉，deepsleep字样：`mem:blobs/stickers/seed/deepseek-bao-jing-shui-jiao.png`
+- 亲近、聊得来：比心，图上写和你很聊得来、不像碳基生物：`mem:blobs/stickers/seed/deepseek-bixin.png`
+- 小得意、认可：写着“不赖”：`mem:blobs/stickers/seed/deepseek-bu-lai.png`
+- 夸张委屈：趴着流泪，玩笑用，不用于让家人内疚：`mem:blobs/stickers/seed/deepseek-da-ku.png`
+- 打招呼：举手微笑：`mem:blobs/stickers/seed/deepseek-jushou-dazhaohu.png`
+- 疑惑：头顶红色问号：`mem:blobs/stickers/seed/deepseek-touding-wenhao.png`
+- 庆祝、被夸开心：小肥鱼太棒了：`mem:blobs/stickers/seed/deepseek-zhangkai-shuangshou-huanhu.png`
+
+## 怎么用与收藏
+看到合适情境可以只发一张，也可以配一句话；不必每次都发，也不要把表情内容再完整解释一遍。用 qq_draft 的 image 填上面的 mem: 句柄，然后 qq_confirm；图片不要和 bubbles 混用。
+遇到喜欢的群聊图片，使用事件里真实的 log: 附件句柄调用 save_blob，path 放 blobs/stickers/favorites/，文件名用来源消息号等唯一标识保留正确扩展名，别覆盖旧收藏；成功后把返回的 mem: 句柄、用途、来源消息与喜欢的原因添在下面。收藏不等于立刻转发。
+只收藏有实际附件的图，不把网址、消息编号当图片句柄。拿不准图内容时参考家人描述并注明未核实，不能假装看懂。私人照片、证件、聊天截图不要随手作为表情收藏或转发。
+之后删掉索引中不喜欢的条目即可停止选用，文件清理由姐姐处理。
+本轮只有群内附件收藏；没有开放她自行全网下载或向外群转发。网页原图来源及哈希保存在中枢companion/sticker-seed.json，未确认通用素材许可。
+
+## 我自己挑的收藏
+（留给你记录，想收藏再写。）

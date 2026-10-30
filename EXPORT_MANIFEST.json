@@ -1,0 +1,2818 @@
+{
+  "schema_version": 1,
+  "purpose": "Sanitized engineering archive; not a runnable full backup",
+  "export_policy_sha256": "f6f10e4837402dd0e65cb2ecd6d2ccf28648157195151b5d4f7be1f26f0c0298",
+  "source_files": 243,
+  "identifier_value_count": 9,
+  "identifier_mapping_exported": false,
+  "credential_scan": {
+    "status": "passed",
+    "rules": [
+      "provider-api-key",
+      "github-token",
+      "private-key-block",
+      "literal-bearer-token",
+      "literal-credential-assignment"
+    ],
+    "not_a_comprehensive_secret_audit": true
+  },
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 19,
+      "target_sha256": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c",
+      "kind": "generated-document"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 729,
+      "target_sha256": "8f7c374431cf9d88a3515592961d01b2cec09cee315b1b92a9e71f4ad5bc12b6",
+      "kind": "generated-document"
+    },
+    {
+      "path": "EXPORT_POLICY.json",
+      "bytes": 91445,
+      "target_sha256": "f6f10e4837402dd0e65cb2ecd6d2ccf28648157195151b5d4f7be1f26f0c0298",
+      "kind": "generated-document"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2887,
+      "target_sha256": "1003bf2eee838aba951f0e4b4f3c39d473af22b5ddab9a583705bb48dcbebd04",
+      "kind": "generated-document"
+    },
+    {
+      "path": "RESTORE_BOUNDARIES.md",
+      "bytes": 1190,
+      "target_sha256": "3ec3065f50133f82a0241bf5f56f362b85fa3b810ef64f4a8ad112f1b6a67ac4",
+      "kind": "generated-document"
+    },
+    {
+      "path": "THIRD_PARTY.md",
+      "bytes": 1928,
+      "target_sha256": "b395cac3d20bf5d75cc2161c46e398ffa6e0afcaf79bbac365e0052f20c2d21d",
+      "kind": "generated-document"
+    },
+    {
+      "source_root": "project",
+      "source": "companion/archive.py",
+      "path": "companion/archive.py",
+      "target_sha256": "fea0327008067821e1e4906153b62759aa953ecc8f247625e6227a8fb3ff96c5",
+      "bytes": 4645,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/audio-decoder.json",
+      "path": "companion/audio-decoder.json.example",
+      "target_sha256": "fb3713a33722f81d171a645917d136ea07ff75969f65ac4812d5c6ae01e29adf",
+      "bytes": 2184,
+      "kind": "configuration-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 7,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/audio-worker.cjs",
+      "path": "companion/audio-worker.cjs",
+      "target_sha256": "cc99044ad4e288635297979720faeeec6bfe45b8a99ae0a5ea43e47de5b2c612",
+      "bytes": 7393,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/avatar-fingerprint.py",
+      "path": "companion/avatar-fingerprint.py",
+      "target_sha256": "9431ac4cf0d7c1c1cb4112e3fff1876be1b6378dd9c0fbb0a55436e74fb6b372",
+      "bytes": 1306,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/bilibili-links.mjs",
+      "path": "companion/bilibili-links.mjs",
+      "target_sha256": "4235daf1d9589ca04d5d26c43eeae76d44956489a54879c81d4d961bd6c213f1",
+      "bytes": 4235,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/bilibili-public.mjs",
+      "path": "companion/bilibili-public.mjs",
+      "target_sha256": "acd56cbf493190cf25df502d3312812512d224763571043427c131259981131c",
+      "bytes": 10869,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/bilibili-speech.mjs",
+      "path": "companion/bilibili-speech.mjs",
+      "target_sha256": "4b5d111c736d863901a9052f273a9fb29b8ef4b3a005cd6ea0ce688cae862071",
+      "bytes": 6555,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/budget.py",
+      "path": "companion/budget.py",
+      "target_sha256": "5af0f652adf21748d593f79f33ab0693604cb4a1974dc1d61f3c9b1fdcd8f427",
+      "bytes": 2616,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/cognition-tools.mjs",
+      "path": "companion/cognition-tools.mjs",
+      "target_sha256": "16201bd540911806461b196639ec252c871f73b611c03b47f18ac6dd030c52b1",
+      "bytes": 12272,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-capabilities.mjs",
+      "path": "companion/conversation-capabilities.mjs",
+      "target_sha256": "b97730e4ce74aaedc6b989b2a49e911de077ad7c7dfc0f13aed7a471f24c4baa",
+      "bytes": 3235,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-errors.mjs",
+      "path": "companion/conversation-errors.mjs",
+      "target_sha256": "3f16631c7f560020a285146bd452bd4861d610895c313063cd0a94cb321c814e",
+      "bytes": 1552,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-extras.mjs",
+      "path": "companion/conversation-extras.mjs",
+      "target_sha256": "122939e2febc4f5560f7263e276ee848daeff506452421b5c66404ef7761b366",
+      "bytes": 7034,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-floor.mjs",
+      "path": "companion/conversation-floor.mjs",
+      "target_sha256": "a8f5cecb5939bd8c1d5378e572c5deb43556e105e5deb8485b83353c8c87edb1",
+      "bytes": 7010,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-focus.mjs",
+      "path": "companion/conversation-focus.mjs",
+      "target_sha256": "ceee0e82231e11029317b50e07e84f47a7e3b27ba865ae2b1fe836df85b75762",
+      "bytes": 9659,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-intent.mjs",
+      "path": "companion/conversation-intent.mjs",
+      "target_sha256": "1852e505d24420de36c28b1051f62721ced956c1dc55f0ee42e3fc02472785af",
+      "bytes": 1958,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-listening.mjs",
+      "path": "companion/conversation-listening.mjs",
+      "target_sha256": "e6de0645939c48b908aa0abc02889ead2253bcbaca325bb1c6777745c49e715c",
+      "bytes": 12350,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-presentation.mjs",
+      "path": "companion/conversation-presentation.mjs",
+      "target_sha256": "13a7b7839af2d2d380c38b61ce871bb8977bac2b63603b8dbed0ac0db0533451",
+      "bytes": 1718,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-scope.mjs",
+      "path": "companion/conversation-scope.mjs",
+      "target_sha256": "f73d7bc3fdd33fb3b78c652c464c2c30d318a91c84a3fab8f9039bc4c4f8835a",
+      "bytes": 3039,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-service.mjs",
+      "path": "companion/conversation-service.mjs",
+      "target_sha256": "5dba8618e7932e4178357f6a9340bc7103d22dca91545c8a92329b637544d3ea",
+      "bytes": 30804,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/conversation-time.mjs",
+      "path": "companion/conversation-time.mjs",
+      "target_sha256": "9171df1279d9bebb9f59919a74286db7e5f292b73ec1fe7af610dd5312480a00",
+      "bytes": 12229,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/core-output-recovery.ts",
+      "path": "companion/core-output-recovery.ts",
+      "target_sha256": "5f12f0454a6a8b2299267324967447569808a463ff4cf6f70aa10e041e55a578",
+      "bytes": 39505,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/curiosity-life.mjs",
+      "path": "companion/curiosity-life.mjs",
+      "target_sha256": "3368d6b790c35a4e397594060ebb73ff6c7ea0df2143a1df840c4dd93de57860",
+      "bytes": 26565,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/deepseek-public-search.mjs",
+      "path": "companion/deepseek-public-search.mjs",
+      "target_sha256": "72fa8313cf32d481f7c7973a0c30175f0bb3c5e5e7969654f52f480c6d142a55",
+      "bytes": 1866,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/dsh-context.mjs",
+      "path": "companion/dsh-context.mjs",
+      "target_sha256": "ec70d0e1839f4b6e85ab248aeb2fcb886a077a6da8778c4c10ac54329c83ab61",
+      "bytes": 4518,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/dsh/AppContainerRunner.cs",
+      "path": "companion/dsh/AppContainerRunner.cs",
+      "target_sha256": "367d504779f9c89dbc12d69101e3de9d17ce1c7fc59330ca2c293d2ea780c938",
+      "bytes": 12787,
+      "kind": "dsh-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/dsh/Open-DSH.ps1",
+      "path": "companion/dsh/Open-DSH.ps1",
+      "target_sha256": "a505911cfee0abc0dd1aef735e660931dd1ef2b90f2b57de7db056fd381f86a8",
+      "bytes": 670,
+      "kind": "dsh-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/dsh/Start-DSH.ps1",
+      "path": "companion/dsh/Start-DSH.ps1",
+      "target_sha256": "37269f01f3f0d9a59784f02367cbeabafcb022a26e86285ff3c08e52a3b6febc",
+      "bytes": 2853,
+      "kind": "dsh-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/dsh/Stop-DSH.ps1",
+      "path": "companion/dsh/Stop-DSH.ps1",
+      "target_sha256": "6a1a029c906955a42b9ccef3f9598c4f73348933f8fd90fe2843146232644c1c",
+      "bytes": 695,
+      "kind": "dsh-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/dsh/budget-proxy.mjs",
+      "path": "companion/dsh/budget-proxy.mjs",
+      "target_sha256": "c636c82970eef3c4d70e94e3c1160de2d3a146ac58b38b21c5f29d4168c843bc",
+      "bytes": 4906,
+      "kind": "dsh-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "dsh",
+      "source": "provider-diagnostics.mjs",
+      "path": "companion/dsh/provider-diagnostics.mjs",
+      "target_sha256": "7682cd57ca05824594a6b088ab408422f1b3bd2f265ba5d49187a4d2bfcd48db",
+      "bytes": 2410,
+      "kind": "external-integration-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "dsh",
+      "source": "spending-book.mjs",
+      "path": "companion/dsh/spending-book.mjs",
+      "target_sha256": "addc6695b82494f45e7efd131baa3972c1c1e186b08b0535abcaadaed5f71ece",
+      "bytes": 6591,
+      "kind": "external-integration-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/ensure-dsh-gateway.ps1",
+      "path": "companion/ensure-dsh-gateway.ps1",
+      "target_sha256": "0986ab324759958be4a9235d639ae7962473cfafc72695799ff8e3402cd504e0",
+      "bytes": 1012,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/event-ledger.mjs",
+      "path": "companion/event-ledger.mjs",
+      "target_sha256": "90e9b52b449e04a435e8687e2ed4c8e44638b219112b3510dc8edc8a0d0a1568",
+      "bytes": 803,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/experience-attribution.mjs",
+      "path": "companion/experience-attribution.mjs",
+      "target_sha256": "b3b5c505cc0ff8b1dc90be557fcf96446d3086acf07c06aa5d5b2f93354661e3",
+      "bytes": 6596,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/experience-memory.mjs",
+      "path": "companion/experience-memory.mjs",
+      "target_sha256": "2b232c4befc7e8d73b75975a04b62786583cce88c7466d8d37ea396d1675bbe5",
+      "bytes": 42065,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/experience-reflection.mjs",
+      "path": "companion/experience-reflection.mjs",
+      "target_sha256": "c5c3db4d9c11c567e025b27cf868da5c9bc7d25813e1b95c4a7500b67640f9eb",
+      "bytes": 5497,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/exploration-followups.mjs",
+      "path": "companion/exploration-followups.mjs",
+      "target_sha256": "3b23bf695a3f0e628a95df9eadc485f17d812f187798200b1ec0d0f754db3d80",
+      "bytes": 6007,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/fisharchive-stickers.mjs",
+      "path": "companion/fisharchive-stickers.mjs",
+      "target_sha256": "64742880a4264a3af9bc196f4e0481325acc5782fd26444e7099acb2fa29e55d",
+      "bytes": 14009,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/forward-intake.mjs",
+      "path": "companion/forward-intake.mjs",
+      "target_sha256": "6392746077750fae31303abf410374d91d1364e21a8a117fa84fb906780602a4",
+      "bytes": 10696,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/generation-options.mjs",
+      "path": "companion/generation-options.mjs",
+      "target_sha256": "50af4a6c5813b4367355d2c6072ce88ec9e909db6355792367d455232a5e5ade",
+      "bytes": 593,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/group-batch.mjs",
+      "path": "companion/group-batch.mjs",
+      "target_sha256": "03afd95d4d7157429aee5ab39385a6f00a0037898085cf46e63ab1e5754b4522",
+      "bytes": 1777,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/group-message.mjs",
+      "path": "companion/group-message.mjs",
+      "target_sha256": "8c758aa3e049eeb21c0054835c04f22714c64b832cb2d5d8d21be35569169d17",
+      "bytes": 2684,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/guard.py",
+      "path": "companion/guard.py",
+      "target_sha256": "529fa5fd5db4e958e131a87c9d18aaf31d8c812fc8dc496a56a11ce1233946b5",
+      "bytes": 1217,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/guarded-client.mjs",
+      "path": "companion/guarded-client.mjs",
+      "target_sha256": "fd74006432829b249ea1e4c1dc969e6374a981a436429b7f0dacc75b71a9932d",
+      "bytes": 7928,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/guardian-persona.mjs",
+      "path": "companion/guardian-persona.mjs",
+      "target_sha256": "9cfbc2745b67ed331667131c22b3ff94aa06099e685e5ad7a2dda8ecc8940f95",
+      "bytes": 1644,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/history-coverage.mjs",
+      "path": "companion/history-coverage.mjs",
+      "target_sha256": "7c21f14d47a68bfe68695e680fe3870e9a62ccda7d6364adcad20e54f586a1bf",
+      "bytes": 1218,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home-tools.mjs",
+      "path": "companion/home-tools.mjs",
+      "target_sha256": "2f039de877bd4eee0b34c89f0042118ae4c8909fa03147e335344d0a137ebeb6",
+      "bytes": 2820,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/app.js",
+      "path": "companion/home/app.js",
+      "target_sha256": "3142667f4ede28e749f45a4b553d17460a015742a91b5018252bd9889c294967",
+      "bytes": 15092,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/bundle_workroom.cjs",
+      "path": "companion/home/bundle_workroom.cjs",
+      "target_sha256": "6b297b42625c6ac9e1bb4f9c4d95638c9e61a93b9002d3632927b9906be14ef4",
+      "bytes": 5452,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/conversation_status.py",
+      "path": "companion/home/conversation_status.py",
+      "target_sha256": "0bed82d1db234ae10feff63cc1aa343aea58d3b8a028f7c6e6d2ba3860b39990",
+      "bytes": 9294,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/index.html",
+      "path": "companion/home/index.html",
+      "target_sha256": "c5d30c7d1f9b2462c256aadc7b36732e6906697c39289ddb96be90ab1371886d",
+      "bytes": 7619,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/inner_life_view.py",
+      "path": "companion/home/inner_life_view.py",
+      "target_sha256": "7af1574447baedc29b590a8734dc3e7fea8ba037dfd7eae744d5bfeb9ba06e0d",
+      "bytes": 8895,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/interactive_workroom.py",
+      "path": "companion/home/interactive_workroom.py",
+      "target_sha256": "3f879d684b634d53b47f03bf77e0edefaadaf088b6f757107c8449269659f6c9",
+      "bytes": 15389,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/life_view.py",
+      "path": "companion/home/life_view.py",
+      "target_sha256": "3e833ae1bbf5267b6a02596e393c341957a92133bdb0b8348ba951ab9846e926",
+      "bytes": 3068,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/qq_health.py",
+      "path": "companion/home/qq_health.py",
+      "target_sha256": "04254c42381341635e4fa574aad7a0876140dc031c05d4a926faf20c47bd7656",
+      "bytes": 515,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/server.py",
+      "path": "companion/home/server.py",
+      "target_sha256": "2dd54300fa81c1018d10d1162f6940558e666a1c95544ab695ec576103b4a880",
+      "bytes": 9556,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/start.ps1",
+      "path": "companion/home/start.ps1",
+      "target_sha256": "9af982fdca4ba6e7e802785fafefc00da8e89f5154035b3eedb0c5f55327ea2b",
+      "bytes": 596,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/style.css",
+      "path": "companion/home/style.css",
+      "target_sha256": "9d366b12293f217f362d8c97ad2327c98c2d11d8e001ef916eb37643b0078d71",
+      "bytes": 5256,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/test_interactive_workroom.py",
+      "path": "companion/home/test_interactive_workroom.py",
+      "target_sha256": "cd00c227bb9c1e66b328848eb1c76dd565830e559e7b09fa370caef9e0893285",
+      "bytes": 14433,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/workroom_view.py",
+      "path": "companion/home/workroom_view.py",
+      "target_sha256": "a327db9451d4db7fc33cefeeefb2f3537985014d09e9dd57a68deb902f75f73a",
+      "bytes": 12135,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/CONSTITUTION.md",
+      "path": "companion/identity/CONSTITUTION.md.example",
+      "target_sha256": "a83fedc5bb4e476f01907f4df699374ca2ce7cf7b2b66ddf88c3c2375936529a",
+      "bytes": 6764,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/EXPRESSION.md",
+      "path": "companion/identity/EXPRESSION.md.example",
+      "target_sha256": "4fff6d518475e51b900b7cf0e2a34fb628761e0e139375618416dbaa5bad61c8",
+      "bytes": 2165,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/SCOPED_OPERATIONS.md",
+      "path": "companion/identity/SCOPED_OPERATIONS.md.example",
+      "target_sha256": "b9f3410ee805f87e11ab752706944fcc90197aff352d6b890a6feed93e46e1bf",
+      "bytes": 14371,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/SCOPED_PROFILE.md",
+      "path": "companion/identity/SCOPED_PROFILE.md.example",
+      "target_sha256": "8bdecd70c8e2ec3ff6862474fefe5f0bf18d8a4242541517db6e1f5da0607918",
+      "bytes": 8651,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/SELF_CORE.md",
+      "path": "companion/identity/SELF_CORE.md.example",
+      "target_sha256": "6e87e482cd510bc6b4f8df9f0fb31a3cbe3ddd514ae18b78fa4af5ee69b1a46c",
+      "bytes": 1398,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/STICKERS.md",
+      "path": "companion/identity/STICKERS.md.example",
+      "target_sha256": "c54eb566aa664ebcf0aa97d819f9da8cc032b4f95bf59c41365100e892b72363",
+      "bytes": 2214,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/identity/TOOL_CONTRACT.md",
+      "path": "companion/identity/TOOL_CONTRACT.md.example",
+      "target_sha256": "50c101d27095b8b83687d9b95e6ae18711ddb2dab44a5d5beea67a6c7c72c8c1",
+      "bytes": 4487,
+      "kind": "identity-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/image-analysis.mjs",
+      "path": "companion/image-analysis.mjs",
+      "target_sha256": "960c181fee03de0e860590c796b896215cf8541fdcf2560d99f719ce3fd3adad",
+      "bytes": 4839,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/image-capabilities.json",
+      "path": "companion/image-capabilities.json.example",
+      "target_sha256": "665f9e7fa8868ce9e00cc2125f41b8c37102cca77b6230ca00bf32efe98317fb",
+      "bytes": 454,
+      "kind": "configuration-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/install-video-decoder.mjs",
+      "path": "companion/install-video-decoder.mjs",
+      "target_sha256": "3a1982ce5355370a257e1800d0bab283fc83049d74e9f81e8aef6a688756b6a9",
+      "bytes": 990,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/isolated-qq-route.mjs",
+      "path": "companion/isolated-qq-route.mjs",
+      "target_sha256": "1bb5e79775b9c7b49a6ba7176cf1543cefc59346985e8b17c6bd51aa6d105197",
+      "bytes": 10458,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/journal-context.mjs",
+      "path": "companion/journal-context.mjs",
+      "target_sha256": "9823b913d2d500f128cd676f6d50b87815156b9bd3e4a8b1de3bfcc27d0062ba",
+      "bytes": 6678,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-contact.mjs",
+      "path": "companion/life-contact.mjs",
+      "target_sha256": "fa855b85df58e708d4def62a5dc833cc222d166bd63bda19fdd07b0fe789b9d9",
+      "bytes": 3779,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-continuity.mjs",
+      "path": "companion/life-continuity.mjs",
+      "target_sha256": "6dfa26a9763e17aa02124280da764fe9d80e60388de7577626d19610eb2c3f6c",
+      "bytes": 13259,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-heartbeat.mjs",
+      "path": "companion/life-heartbeat.mjs",
+      "target_sha256": "d27c990eb72dd4c3cd901095445e49dc42033337dcec69e88355693cf9a4021c",
+      "bytes": 21746,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-journal.mjs",
+      "path": "companion/life-journal.mjs",
+      "target_sha256": "a4b2ffcd0f195c7b5083008ad8ebee593df5684d0eeaee91ee769b452e7324f0",
+      "bytes": 14583,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-recollection.mjs",
+      "path": "companion/life-recollection.mjs",
+      "target_sha256": "4bd58f31443364b566f4dc3e08aa89505a564be794540b5b337f016884e7b6e6",
+      "bytes": 7833,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-self-reflection.mjs",
+      "path": "companion/life-self-reflection.mjs",
+      "target_sha256": "1243e965f77f91962bec82999b6e865633ab9a54af22f52e2359b27817af538d",
+      "bytes": 12487,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-workshop.mjs",
+      "path": "companion/life-workshop.mjs",
+      "target_sha256": "261fd3bdc6bb09cba9aa9ce9b401a966e18d6923872ee7a093a45a8d3c3e5897",
+      "bytes": 7906,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/local-image-ocr.ps1",
+      "path": "companion/local-image-ocr.ps1",
+      "target_sha256": "e9f83e8b00f70578883e4ce1eb2cb4915ef14741a57a62a9eb12c24fb9540607",
+      "bytes": 2983,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/migrate-scoped-history.mjs",
+      "path": "companion/migrate-scoped-history.mjs",
+      "target_sha256": "f6137369e3f803e33a34329a34e01bb1d45a2e3cd3123c6cdc5f35180aaff504",
+      "bytes": 2193,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/policy.json",
+      "path": "companion/policy.json.example",
+      "target_sha256": "eebd7a82fb95e27c86f90e62bd4816d565377aeb9d8580f4871d57bd52cd5889",
+      "bytes": 1718,
+      "kind": "configuration-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/portable-snapshot.py",
+      "path": "companion/portable-snapshot.py",
+      "target_sha256": "3ab713c83181d41bc66d889aae3b02c7aff142c40d04ea808e3080548203383b",
+      "bytes": 7054,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/private-conversation.mjs",
+      "path": "companion/private-conversation.mjs",
+      "target_sha256": "fc481c5143162942218806cca2390766b1551637b0ed36326f6108a00e570d76",
+      "bytes": 21843,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/proactive-availability.mjs",
+      "path": "companion/proactive-availability.mjs",
+      "target_sha256": "a9a75c7feaa0ae5fee50a31b79e6101fca9c975260ea9a6fedb4bdab497ffed9",
+      "bytes": 8459,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/provider-diagnostics.mjs",
+      "path": "companion/provider-diagnostics.mjs",
+      "target_sha256": "7682cd57ca05824594a6b088ab408422f1b3bd2f265ba5d49187a4d2bfcd48db",
+      "bytes": 2410,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/public-exploration.mjs",
+      "path": "companion/public-exploration.mjs",
+      "target_sha256": "367e382070cb8db1b22c89c685aeac098f6a60fa98710bde41513a83b87d906d",
+      "bytes": 12760,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/public-reading.mjs",
+      "path": "companion/public-reading.mjs",
+      "target_sha256": "c2dae43afa5b16f2b442ac987fe986c4f0d633796fccef31a9130f3dc05f5b15",
+      "bytes": 2654,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-bubbles.mjs",
+      "path": "companion/qq-bubbles.mjs",
+      "target_sha256": "ab1db9a617d5e0b0498b4f2bfd804943778ccccc4b6aee0e44308ee9fc443ccf",
+      "bytes": 4447,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-connection-health.ps1",
+      "path": "companion/qq-connection-health.ps1",
+      "target_sha256": "36031adfc42d78beb61617bca497ca602294cb567fc8d589c4cc565c26cc87ba",
+      "bytes": 378,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-context.mjs",
+      "path": "companion/qq-context.mjs",
+      "target_sha256": "e44e783191b25009c4e4b7ebfa3e9318f7dd49824568f91ed65c5c09785ecb97",
+      "bytes": 5168,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-event-policy.mjs",
+      "path": "companion/qq-event-policy.mjs",
+      "target_sha256": "cf48b7a53fed7dc08966af6c525595e72419db119e14b786830abafb1ab98919",
+      "bytes": 9171,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-face-map.json",
+      "path": "companion/qq-face-map.json",
+      "target_sha256": "1409df5be11b478f298e5d8597adf8a39de39073270b52aa4c10e460a17d088b",
+      "bytes": 10033,
+      "kind": "public-reference",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-face-output.mjs",
+      "path": "companion/qq-face-output.mjs",
+      "target_sha256": "68b53348782ddeffceed221bcd44510d2ac9ad4611977e9fcc840cc3413770cd",
+      "bytes": 4000,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-face-sources.md",
+      "path": "companion/qq-face-sources.md",
+      "target_sha256": "13cdc3432752d2a76855709cdce925856afa59e161b104cf4d0d6b487b2f003b",
+      "bytes": 2115,
+      "kind": "public-reference",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-forward.mjs",
+      "path": "companion/qq-forward.mjs",
+      "target_sha256": "737997404bb20407d2709b021ff1e3a8c3229cf4f3a8a32fc16f688d9e5ff771",
+      "bytes": 14957,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-history-fetch.mjs",
+      "path": "companion/qq-history-fetch.mjs",
+      "target_sha256": "b30c284a447b0052e9f0a68b1f4d25ecf0a375383127e0964455c050b09e0606",
+      "bytes": 4664,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-image-download.mjs",
+      "path": "companion/qq-image-download.mjs",
+      "target_sha256": "f6d441b978b5823c16dcc0a9fe3000e5bb8647b50eefa7e745f935d800cee1d1",
+      "bytes": 3396,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-readonly-client.mjs",
+      "path": "companion/qq-readonly-client.mjs",
+      "target_sha256": "a0fedb716a7d70a5df85bc23f7dc264cc5cfa38f30159fff1a2cc2c9b4e27ce1",
+      "bytes": 3948,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-recall.mjs",
+      "path": "companion/qq-recall.mjs",
+      "target_sha256": "67b23f4883ec49e4e9f0a906280b17018e540900adb95d03e81df5554f7cefa4",
+      "bytes": 3424,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-scoped-attachments.mjs",
+      "path": "companion/qq-scoped-attachments.mjs",
+      "target_sha256": "14547a3170b46d2f86521470dff74835ac641e9631ddacb6cbfca1b664d12bb6",
+      "bytes": 3164,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-segment-details.mjs",
+      "path": "companion/qq-segment-details.mjs",
+      "target_sha256": "646ec443bcd2fabc899d4b4caafdc3ed57e2140a6ee4946ad96549e8f2a850a3",
+      "bytes": 16901,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-self-avatar.mjs",
+      "path": "companion/qq-self-avatar.mjs",
+      "target_sha256": "b79875d2ef3b4713d21fc0b4a9bf82ef0b57df7c3a318919e9d3d461f120d1fd",
+      "bytes": 3491,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-self-profile.mjs",
+      "path": "companion/qq-self-profile.mjs",
+      "target_sha256": "c728ce32d9ea7976ce1b539f2ce55ccfe966b2c6fbecb8bf9addf1451908119b",
+      "bytes": 17554,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-self-qzone.mjs",
+      "path": "companion/qq-self-qzone.mjs",
+      "target_sha256": "dc5ecfbd3e58636f07e8770ed82222f8db3f3be06a9596a044799faa308a786d",
+      "bytes": 26340,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qzone-experiences.mjs",
+      "path": "companion/qzone-experiences.mjs",
+      "target_sha256": "48036f8b1e75bd0d29d2792317e1a49522ae8d8be103b0e87d59c661a0316ba0",
+      "bytes": 2236,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qzone-readback.mjs",
+      "path": "companion/qzone-readback.mjs",
+      "target_sha256": "9084dab8e9f6a6ba3555a0bcbccbd9b3b61052f61faf7ca8676777e5f2a29844",
+      "bytes": 3976,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/route-lifecycle.mjs",
+      "path": "companion/route-lifecycle.mjs",
+      "target_sha256": "27a1ab03e0735bc1db8ae4aeb5afdad573c8b12ed9468c0367927610053dd487",
+      "bytes": 848,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/run-whale.mjs",
+      "path": "companion/run-whale.mjs",
+      "target_sha256": "596476580b2152c380c78702b1a68d3415b4cc68e90364bd01b5d0d0ef6ba7b1",
+      "bytes": 2726,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/scoped-assembly.mjs",
+      "path": "companion/scoped-assembly.mjs",
+      "target_sha256": "b1e04597659a45aee67dc50c6c541df872910bdf086a88a86f7e6884c1460079",
+      "bytes": 2336,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/scoped-history.mjs",
+      "path": "companion/scoped-history.mjs",
+      "target_sha256": "4664e22cca4388e23b3490bc3a57f2a83e290d1215e792beeac2afe283bc81ca",
+      "bytes": 2982,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/scoped-media.mjs",
+      "path": "companion/scoped-media.mjs",
+      "target_sha256": "1430806e274658b1bd039d467393d77ba15fb6410fca35aabb653b2c52aae9be",
+      "bytes": 4926,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/scoped-route-manager.mjs",
+      "path": "companion/scoped-route-manager.mjs",
+      "target_sha256": "d4317c7c06c5072bffeef620d31694283f27a3d5b85ef034d11d9be5bddc6fe4",
+      "bytes": 1559,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/scoped-send.mjs",
+      "path": "companion/scoped-send.mjs",
+      "target_sha256": "aad35fc7bac714122251506fa81be5d4cb4f13ecc0fe5a966cf7af2909b51e04",
+      "bytes": 1712,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/scoped-tools.mjs",
+      "path": "companion/scoped-tools.mjs",
+      "target_sha256": "2ab39857c7e97809d81975dca154326c423a04145147944d755e7196b4bc0229",
+      "bytes": 9356,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/social-config.json",
+      "path": "companion/social-config.json.example",
+      "target_sha256": "7fda190d585fdf916271757021629e1a13aca460fd3040e86a40e518f73f721e",
+      "bytes": 138,
+      "kind": "configuration-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/social-rhythm.mjs",
+      "path": "companion/social-rhythm.mjs",
+      "target_sha256": "a44713cd4e33a94ba6097bb9329051db05163cdf7cba304a6350b24b574196f4",
+      "bytes": 7749,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/start-independent.ps1",
+      "path": "companion/start-independent.ps1",
+      "target_sha256": "9362c2ee1353c7f827048856f64fdb6dd7ad210391005fb2fb64947a06761bf8",
+      "bytes": 3181,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/start-whale.ps1",
+      "path": "companion/start-whale.ps1",
+      "target_sha256": "90bdb47f52db8f5c3a7b0387244050fc6395573d2f08b90fc5d032643e2a7a07",
+      "bytes": 1613,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/stop-whale.ps1",
+      "path": "companion/stop-whale.ps1",
+      "target_sha256": "aaf22929279a5a69dcb6eebdd587f3f15697ee18040ab740b5be1d22e1d0750c",
+      "bytes": 881,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-bilibili-links.mjs",
+      "path": "companion/test-bilibili-links.mjs",
+      "target_sha256": "b98f157e3e5cf278f2decdec658d3a60ad83adff5207b8997fff1ce0e421f6f0",
+      "bytes": 13081,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-bilibili-public.mjs",
+      "path": "companion/test-bilibili-public.mjs",
+      "target_sha256": "38c24d553002c91f675ecbdae4f8f755707108638cd6ae26aabf0566015b5d12",
+      "bytes": 2202,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-bilibili-speech.mjs",
+      "path": "companion/test-bilibili-speech.mjs",
+      "target_sha256": "6b9d66562edbc54edd256e6d85fac7653e9212b54c360c872f50637deadef932",
+      "bytes": 5325,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-cognition-home.py",
+      "path": "companion/test-cognition-home.py",
+      "target_sha256": "69439b6cad862f4c55e0a0af7c8b4e76d359edb14a06ab455740d5fc11c56d7f",
+      "bytes": 1684,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-coherence-service.mjs",
+      "path": "companion/test-coherence-service.mjs",
+      "target_sha256": "f3c589f31da6027e42ba40699349a9ef335d8fbf149eeb208c9c193e532e23ec",
+      "bytes": 3625,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 16
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-context-self-state-budget.mjs",
+      "path": "companion/test-context-self-state-budget.mjs",
+      "target_sha256": "1ae4002d400279bc8befa8b848f61da5643469c3870be164d0dae6b4c2e6ed2d",
+      "bytes": 9381,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-continuity-attribution.mjs",
+      "path": "companion/test-continuity-attribution.mjs",
+      "target_sha256": "fcdc2dd043c6c58fa8e5aa06a707bb32368df34036d63bacc1472e2cd1afc5e0",
+      "bytes": 4736,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-features.mjs",
+      "path": "companion/test-conversation-features.mjs",
+      "target_sha256": "88b0c3404e149b5b827b1ee0ee87b9b8c976faaecf67cf63f67a22699b5b4c4c",
+      "bytes": 2849,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-floor.mjs",
+      "path": "companion/test-conversation-floor.mjs",
+      "target_sha256": "51c665a38f5ef10928fc8bf770c63ddd45c5e20be9a7d6517400b7993f07071d",
+      "bytes": 6369,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 6
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-focus.mjs",
+      "path": "companion/test-conversation-focus.mjs",
+      "target_sha256": "223f052231c4ed45d7f9916e6d664e77a0d2a30b3e331c405a24922bc0efa53f",
+      "bytes": 12419,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-listening.mjs",
+      "path": "companion/test-conversation-listening.mjs",
+      "target_sha256": "97ae214f419c8b5030f309599d8b829d54b426c61a3203e615ce7a6b42621448",
+      "bytes": 7365,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-scope.mjs",
+      "path": "companion/test-conversation-scope.mjs",
+      "target_sha256": "4cd39bc514ea041a3636eb1bec99637c67b84a53ab259152247ae685a2a445cd",
+      "bytes": 2029,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-service.mjs",
+      "path": "companion/test-conversation-service.mjs",
+      "target_sha256": "591f05d82e622f673a9c7d78a56b61438dd3b1d251f2fd207de3b8b3323e4cad",
+      "bytes": 4361,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-time.mjs",
+      "path": "companion/test-conversation-time.mjs",
+      "target_sha256": "32d201febac17ae8b909700377425c0464913412252bb97bcaf1d8e4b83a4988",
+      "bytes": 10600,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-core-generation-binding.mjs",
+      "path": "companion/test-core-generation-binding.mjs",
+      "target_sha256": "59a577ea186bfa44a84c7dcfba397cf9e2a05b85040aec62959e74c80882a185",
+      "bytes": 5477,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-core-syntax.mjs",
+      "path": "companion/test-core-syntax.mjs",
+      "target_sha256": "bff10f50382b7ee55303c61c97432e196fecacd0eab4f4b3e74125baaa0799db",
+      "bytes": 679,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-creative-output-budget.mjs",
+      "path": "companion/test-creative-output-budget.mjs",
+      "target_sha256": "1577a5c9e08256fc282b1f7f6c7ba91280c3da2c735a97aa673020bf8523da19",
+      "bytes": 6686,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-curiosity-life.mjs",
+      "path": "companion/test-curiosity-life.mjs",
+      "target_sha256": "f4e9678aafa9168c36236163944aede15f83ed780bb0860ad436cfe225023d3e",
+      "bytes": 3679,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-current-message.mjs",
+      "path": "companion/test-current-message.mjs",
+      "target_sha256": "ff03ba9bdd0ff9ef2f440de71ec32ca8b54eaf257d45d19a097cf5e0f053314c",
+      "bytes": 1483,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-dsh-context.mjs",
+      "path": "companion/test-dsh-context.mjs",
+      "target_sha256": "525004f61b08e0dbe8179e88d9d67f95c5601736616b6ef673e6e42cb1de81d0",
+      "bytes": 2164,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-dsh-tool-cancellation.mjs",
+      "path": "companion/test-dsh-tool-cancellation.mjs",
+      "target_sha256": "7741e0c48b0cc5783981426667c4735b4dccd12ec1c9a03dd18f64ee980b8abf",
+      "bytes": 2094,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-event-ledger.mjs",
+      "path": "companion/test-event-ledger.mjs",
+      "target_sha256": "637428699d5fe27ec77b81846eaf927a4d5f8b95e70edb32e8aa5fe9f60f0eea",
+      "bytes": 887,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-expanded-freedom.mjs",
+      "path": "companion/test-expanded-freedom.mjs",
+      "target_sha256": "31fcabe8aa0dd9f99afc78da5316dda5c948d7a11518841fdae71dcc5562f8d3",
+      "bytes": 1385,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-experience-attribution.mjs",
+      "path": "companion/test-experience-attribution.mjs",
+      "target_sha256": "966605994dc64502aea4de24b030a78b469bf1ed315de61971c96df8ac01e107",
+      "bytes": 6564,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-experience-foundation.mjs",
+      "path": "companion/test-experience-foundation.mjs",
+      "target_sha256": "a5f5685728d48570354939709686ca7e0789c782a07a4b3cb875d05afc5b9bca",
+      "bytes": 6765,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-experience-memory.mjs",
+      "path": "companion/test-experience-memory.mjs",
+      "target_sha256": "1e4e73b8392d0f894c4521ff28a37ddc7ca5b231d448c8dfd1e457b804b5370e",
+      "bytes": 7101,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 8
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-experience-reflection.mjs",
+      "path": "companion/test-experience-reflection.mjs",
+      "target_sha256": "b94f10a04df1d01cc1a09e91800522043a35eca97f5367d3b4688733abd20fa0",
+      "bytes": 4582,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-exploration-followups.mjs",
+      "path": "companion/test-exploration-followups.mjs",
+      "target_sha256": "718e2b2fa78aa9cd0e4880a92367fa5238997e36113e1ba3561cc8c5ddacfa4f",
+      "bytes": 7292,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 6
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-fisharchive-stickers.mjs",
+      "path": "companion/test-fisharchive-stickers.mjs",
+      "target_sha256": "f5a28a04e846d907de018fbecebd52adc6730675a5c60abd30e45fa22e560ea4",
+      "bytes": 16801,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-forward-intake.mjs",
+      "path": "companion/test-forward-intake.mjs",
+      "target_sha256": "5f724753bd8ab03f6a357ecaea6fd3b005be77531bffa24ccf63086a2ffddbef",
+      "bytes": 2846,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 9
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-foundation-service.mjs",
+      "path": "companion/test-foundation-service.mjs",
+      "target_sha256": "40b07ba0c4cf438b5c63665c1d0c250660d6ccde6b8bc0d441ce43f12bd03998",
+      "bytes": 5050,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-friend-private.mjs",
+      "path": "companion/test-friend-private.mjs",
+      "target_sha256": "fe229d93fb73bebf764f2d2ec207c02f64ea356e1b652600e246ecab2203dc64",
+      "bytes": 2411,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-generation-time.mjs",
+      "path": "companion/test-generation-time.mjs",
+      "target_sha256": "d0f1209db894b166b0093098c7f1889fb63887e530183a515c549b38ca585178",
+      "bytes": 2231,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-group-batch.mjs",
+      "path": "companion/test-group-batch.mjs",
+      "target_sha256": "918799dc03910a6a9a62a83c71bd03ef509e42559811c0288c190568ceb7984a",
+      "bytes": 729,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-guarded-client.mjs",
+      "path": "companion/test-guarded-client.mjs",
+      "target_sha256": "9e364f6446bc43f306912fa0093f2b962c55fa1dc23a4bd5d6e372edeed65a05",
+      "bytes": 2066,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-history-fetch.mjs",
+      "path": "companion/test-history-fetch.mjs",
+      "target_sha256": "0f948b8ab9cf5d76a170f3c583311b7b91e70d6c6bfc14008104d459f9687ebb",
+      "bytes": 1654,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-home-tools.mjs",
+      "path": "companion/test-home-tools.mjs",
+      "target_sha256": "69e0fed65d5acabe32e579328fcd53cfbefe2549b3b2de1ffb31333c117b9146",
+      "bytes": 1318,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-identity-layers.mjs",
+      "path": "companion/test-identity-layers.mjs",
+      "target_sha256": "7ac2cc8992b5d5b6dbff633d751c1d9ac9ebd63c7342044c069d56f1a99ada76",
+      "bytes": 2855,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-image-intake-feedback.mjs",
+      "path": "companion/test-image-intake-feedback.mjs",
+      "target_sha256": "c084bed58fdcc5dcd4eb426b132ed57bcf2a61a6f198cf667a9505d3dc788d58",
+      "bytes": 1998,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-image-lifecycle.mjs",
+      "path": "companion/test-image-lifecycle.mjs",
+      "target_sha256": "2e628d3ef86c4720ff4e03d5169de52ae2dc0a3c73180d672d2f6606d9e1dcd6",
+      "bytes": 3340,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-image-pipeline.mjs",
+      "path": "companion/test-image-pipeline.mjs",
+      "target_sha256": "af52f41ef8261fffe5cb29cce3bb7e347e3cb522540e345cb5335fed8977c967",
+      "bytes": 7044,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-image-qq-assembly.mjs",
+      "path": "companion/test-image-qq-assembly.mjs",
+      "target_sha256": "96fe5eba88b221d642d21dd815e065068ddfe484ce8f5c65400da50adda9ef21",
+      "bytes": 3377,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-image-status.mjs",
+      "path": "companion/test-image-status.mjs",
+      "target_sha256": "ec6327aa1dfa75e7d5ca48c7570cd2ee3bc25ba4e4270c0b3018014e0f18f1b1",
+      "bytes": 2412,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-isolated-qq-route.mjs",
+      "path": "companion/test-isolated-qq-route.mjs",
+      "target_sha256": "11a1c3e4e188be7dbe828739a9fe75334a6b18bfd6be5462ab260c493a518f9e",
+      "bytes": 2796,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-journal-context.mjs",
+      "path": "companion/test-journal-context.mjs",
+      "target_sha256": "60aa97968926a8e56b6a563ec4031a32f4c203dc0ae683ee62b72fb94f798fd6",
+      "bytes": 7135,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-contact.mjs",
+      "path": "companion/test-life-contact.mjs",
+      "target_sha256": "86abd10be42abee71ed74f8b329f977286556ba516a866e824a4f884ce1f5b01",
+      "bytes": 11285,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-continuity.mjs",
+      "path": "companion/test-life-continuity.mjs",
+      "target_sha256": "6fd1bca0c6daa44bd169ec3412fc68e45c2b391ae68b1965dff81c61cacd3654",
+      "bytes": 19621,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-family-delivery.mjs",
+      "path": "companion/test-life-family-delivery.mjs",
+      "target_sha256": "3eb04e8073efeb501cb602fbfc52369628208a57248deecdf2bb00bfdca6900c",
+      "bytes": 13596,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-heartbeat.mjs",
+      "path": "companion/test-life-heartbeat.mjs",
+      "target_sha256": "ec194638d9a94432e87c1e96b43ae51cfa871ae0857786835b9ce72cf060b520",
+      "bytes": 28860,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-home.py",
+      "path": "companion/test-life-home.py",
+      "target_sha256": "a96e1c3bf5cb6e4766493b32909f008b8265e593a9c4e54f8b1bb6029b0c9349",
+      "bytes": 6197,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-journal.mjs",
+      "path": "companion/test-life-journal.mjs",
+      "target_sha256": "57e4a6dee232d1eff86981312f2157dc1314ed16c7b8cbe18d0fac78ca8a94d1",
+      "bytes": 11253,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4,
+        "synthetic-test-credential": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-recollection.mjs",
+      "path": "companion/test-life-recollection.mjs",
+      "target_sha256": "35d95311f9391ad5a9696b4ecf27073de82f1ae440866762374c5900fbe0ddd2",
+      "bytes": 10107,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-self-reflection.mjs",
+      "path": "companion/test-life-self-reflection.mjs",
+      "target_sha256": "d4156f4c81559e5618f35cdf23e33273f79bc957917bcaf80ed4e6cc1bea205a",
+      "bytes": 13157,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-share-audience.mjs",
+      "path": "companion/test-life-share-audience.mjs",
+      "target_sha256": "ff9497ac6af60a4924822b7bfd2cb7ae7d0bfadca9281eeb7612b40edfa64f8d",
+      "bytes": 9233,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-workshop-opportunity.mjs",
+      "path": "companion/test-life-workshop-opportunity.mjs",
+      "target_sha256": "d126605af96e891ff8a1ce184423c17f51375a1eafd5df18a5f669761ce17613",
+      "bytes": 8165,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-workshop.mjs",
+      "path": "companion/test-life-workshop.mjs",
+      "target_sha256": "906a92899a263b0c5c0f57a90f42046574c750a4d05a18522dc3b0d736ffa05a",
+      "bytes": 10468,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-listening-time.mjs",
+      "path": "companion/test-listening-time.mjs",
+      "target_sha256": "25c4a761078c09776094647803dc7604a2a8cb41cb376e8d1a204b4877755ed4",
+      "bytes": 1745,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-multiple-groups.mjs",
+      "path": "companion/test-multiple-groups.mjs",
+      "target_sha256": "09504432f3daff2af58eef24ecff424a37f3a3dcf0f8f05db3fcf7023a36b9ef",
+      "bytes": 2474,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-natural-expression.mjs",
+      "path": "companion/test-natural-expression.mjs",
+      "target_sha256": "330df45e3cf3caab396a37e518ce85935f0c8eddcc207694d642abcafe9540df",
+      "bytes": 6343,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 6
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-natural-group.mjs",
+      "path": "companion/test-natural-group.mjs",
+      "target_sha256": "244748732fce10b3c4a64af7e063b9b907880d11dd47a736c45dcb07483708b5",
+      "bytes": 6369,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-output-recovery.mjs",
+      "path": "companion/test-output-recovery.mjs",
+      "target_sha256": "03a4bdff086d060a4f4fd7c32323bc4029a3b36652a3f5a412f9fc22aabbec94",
+      "bytes": 2876,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-parallel-response-context.mjs",
+      "path": "companion/test-parallel-response-context.mjs",
+      "target_sha256": "9edc5c8214cceb77a1964c15a41ec67c1671c9b37359ac392305bcfd075bdb80",
+      "bytes": 2156,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-private-conversation.mjs",
+      "path": "companion/test-private-conversation.mjs",
+      "target_sha256": "c360357f1f1bd027c1a9269e3d58533d1ce52be47c44665323e4f46d1bb92ecc",
+      "bytes": 7203,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-private-failure.mjs",
+      "path": "companion/test-private-failure.mjs",
+      "target_sha256": "bab23347e2e5be97a63baca2b8ca05a6e8d95068c5e7d0dd315773587dc76c38",
+      "bytes": 4662,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-private-lifecycle.mjs",
+      "path": "companion/test-private-lifecycle.mjs",
+      "target_sha256": "dc2230e8a9eb3f776d226077818748d6499257f118a67c109f6080b9c19d8677",
+      "bytes": 2480,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-proactive-availability.mjs",
+      "path": "companion/test-proactive-availability.mjs",
+      "target_sha256": "67e27d01d9b19ad019fe3c6b4dcc18101455066d54a99df027cb86555e097501",
+      "bytes": 10581,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-provider-diagnostics.mjs",
+      "path": "companion/test-provider-diagnostics.mjs",
+      "target_sha256": "939f88a752c62027d43dbaa3b10b8c37f8cade21fba78fee423869fa228e3c18",
+      "bytes": 963,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-public-exploration.mjs",
+      "path": "companion/test-public-exploration.mjs",
+      "target_sha256": "56e85855e04f1b1c16a6c660b30a29e512c82810a22d6d83682a9c51f2be14f1",
+      "bytes": 6875,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-credential": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-public-reading.mjs",
+      "path": "companion/test-public-reading.mjs",
+      "target_sha256": "d27768a3c75e14b0d657cdddaf843fa606b71cb54c9f842fc80930e4e5b60c39",
+      "bytes": 1237,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-public-search-boundary.mjs",
+      "path": "companion/test-public-search-boundary.mjs",
+      "target_sha256": "2e6ca1d59d05d15a0b70bfaf523ccb93a5e4050fbbd9f423fbaa9361843f2bb9",
+      "bytes": 1573,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-public-sticker-integration.mjs",
+      "path": "companion/test-public-sticker-integration.mjs",
+      "target_sha256": "1dc0328ce6bf1f48ff2fefccd15da6530127a1e63ba85c81b2132fa7be61f6f2",
+      "bytes": 3464,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-bubbles.mjs",
+      "path": "companion/test-qq-bubbles.mjs",
+      "target_sha256": "d45708955a35930d5d16742ffa694ed574a45d078e5b313e074365a087f398a4",
+      "bytes": 4250,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-connection-health.ps1",
+      "path": "companion/test-qq-connection-health.ps1",
+      "target_sha256": "3b6615b5397a417a00b78b335897c3ce5c508c6ffe9d83f06b9e4ab259930194",
+      "bytes": 742,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-connection-health.py",
+      "path": "companion/test-qq-connection-health.py",
+      "target_sha256": "fe9d1ca7fd9c326733c14bada338a1bb2702ccbcb3380cb8f80ccca3474b051e",
+      "bytes": 651,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-context.mjs",
+      "path": "companion/test-qq-context.mjs",
+      "target_sha256": "01ff4c08512570799c7d1fb46c04ebe9e2c1d1292f82de4716d4ae577c1a6fac",
+      "bytes": 4621,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-face-output.mjs",
+      "path": "companion/test-qq-face-output.mjs",
+      "target_sha256": "d95307ad13db14740ce5d17ce7ad0a92487ffcc20cd592aa166bae7ce493572c",
+      "bytes": 4102,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-forward.mjs",
+      "path": "companion/test-qq-forward.mjs",
+      "target_sha256": "2f9a25e54beba3c89ac0664cffc2fb12525141a7e05c8ffd4f6e18bdd51388ad",
+      "bytes": 7937,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-life-delivery.mjs",
+      "path": "companion/test-qq-life-delivery.mjs",
+      "target_sha256": "9d3b6fd0932bbdd930824a0ccf0b468ba3c197d4d8c78de470c901eb19aa1ae7",
+      "bytes": 8652,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-outbound.mjs",
+      "path": "companion/test-qq-outbound.mjs",
+      "target_sha256": "8d04d4ae68d6465095280329199474a2a9b85a24853c93378be92b143480c67a",
+      "bytes": 1390,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-policy.mjs",
+      "path": "companion/test-qq-policy.mjs",
+      "target_sha256": "756a5570cd3769c018cc023a3f8766fb95dceef3c0af3342363b9975c145d850",
+      "bytes": 1173,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-recall.mjs",
+      "path": "companion/test-qq-recall.mjs",
+      "target_sha256": "b1a6bac91e027d560f08c5b0ba1abca9a03077d348b50672c806f040c8ec48ee",
+      "bytes": 2950,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 11
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-scoped-attachments.mjs",
+      "path": "companion/test-qq-scoped-attachments.mjs",
+      "target_sha256": "8310472b3aa0d7a8ddbadd941ba3c5cf8cfffe8800a0891022203d6c9480c6df",
+      "bytes": 1434,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-segment-details.mjs",
+      "path": "companion/test-qq-segment-details.mjs",
+      "target_sha256": "d6dd3db6fc633ac337ab9984862c105612c7a32ab65cd7314c879ed2cc600e08",
+      "bytes": 11972,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-self-avatar.mjs",
+      "path": "companion/test-qq-self-avatar.mjs",
+      "target_sha256": "1e54b5717e735355e37b61d0398f4eea10b196e525ca99910c95fac6f3f97e8f",
+      "bytes": 3037,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-self-profile.mjs",
+      "path": "companion/test-qq-self-profile.mjs",
+      "target_sha256": "a2a0fdef206f243ff0a231574426e876702d8dbc1b53e43be1f602a7e47e7f30",
+      "bytes": 8329,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-self-qzone.mjs",
+      "path": "companion/test-qq-self-qzone.mjs",
+      "target_sha256": "fd501d2fdba6b951c794bcd3482c4d216fe5c58b3bea97c7cdaa1e5885aea582",
+      "bytes": 13310,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qzone-integration.mjs",
+      "path": "companion/test-qzone-integration.mjs",
+      "target_sha256": "b6f68ecd567d3b7caaf0e45528bee4d0e8459ee350f18dc53a3d402902581cd9",
+      "bytes": 5322,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qzone-readback.mjs",
+      "path": "companion/test-qzone-readback.mjs",
+      "target_sha256": "b67fad582e34bcb66fbb5cd171030ac84f6047ed8cf1ecbd9a4f9c2e00f3d2e7",
+      "bytes": 6266,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qzone-reconcile.mjs",
+      "path": "companion/test-qzone-reconcile.mjs",
+      "target_sha256": "c1d60fd66b18b10638a04a6384fcd9865021d7d84ce657b29a37aeb33cbea062",
+      "bytes": 2511,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-route-lifecycle.mjs",
+      "path": "companion/test-route-lifecycle.mjs",
+      "target_sha256": "cb840ed5dc936824e5c8a62aae9bd89a396e2a6b2f22240abe992b07e5afb029",
+      "bytes": 953,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-scoped-assembly.mjs",
+      "path": "companion/test-scoped-assembly.mjs",
+      "target_sha256": "8de4959271a2e692ecdb22bcb3d5c2547c85f973e59732594664c0dcb9214f4c",
+      "bytes": 2745,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-scoped-history.mjs",
+      "path": "companion/test-scoped-history.mjs",
+      "target_sha256": "d352ff5e1316889445ef64aafe281847667bca4aaf6397c07af5bc684a989f14",
+      "bytes": 1290,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-scoped-media.mjs",
+      "path": "companion/test-scoped-media.mjs",
+      "target_sha256": "08cb08247dbf09d9b73bd5b54818daf5061518f8ee974df16782d1bc52e15e6a",
+      "bytes": 1892,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-scoped-provider.mjs",
+      "path": "companion/test-scoped-provider.mjs",
+      "target_sha256": "f5c827254658b04c4c55701bdf63791822d6113c0661117ab511123a09448533",
+      "bytes": 2230,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-scoped-reactivation.mjs",
+      "path": "companion/test-scoped-reactivation.mjs",
+      "target_sha256": "0507023114e23839d706bdd9ee9619f0a3c3b7ccb623fe6b0d0ffabfb6220796",
+      "bytes": 8010,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-scoped-tools.mjs",
+      "path": "companion/test-scoped-tools.mjs",
+      "target_sha256": "4772fc2cda59b66d6fa12dbd6cba6b04bc817bedf5c6a38d548123d819ff6273",
+      "bytes": 2022,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-social-core.mjs",
+      "path": "companion/test-social-core.mjs",
+      "target_sha256": "c044079fb238c8298718551b839bdf1e4833f1e22c9d307042a398dced9a1fd4",
+      "bytes": 1159,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-social-rhythm.mjs",
+      "path": "companion/test-social-rhythm.mjs",
+      "target_sha256": "635d44457ed5805722a7e206451632ea282a5a66af24a51aa1d7ed46e8c946e8",
+      "bytes": 5809,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-stickers.mjs",
+      "path": "companion/test-stickers.mjs",
+      "target_sha256": "dc6cae3e40f3b1563ef5fddb733f234feb3c21a64665e6baeebf94df6eca92a5",
+      "bytes": 2796,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-task-lifecycle.mjs",
+      "path": "companion/test-task-lifecycle.mjs",
+      "target_sha256": "1db8398b42445957620473e1953d7361a995c91833897fcd139a6fa3278147ba",
+      "bytes": 5109,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-tieba-claw.mjs",
+      "path": "companion/test-tieba-claw.mjs",
+      "target_sha256": "c07a3eba1156569b282e88a94e2bfcda383b9365a3ab90959296628e765bb534",
+      "bytes": 17823,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-tieba-integration.mjs",
+      "path": "companion/test-tieba-integration.mjs",
+      "target_sha256": "c35b2bf00e080f8e0ec600907fe2d0fcede3b96c1951b44370c7adae27b18006",
+      "bytes": 2011,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-video-audio.mjs",
+      "path": "companion/test-video-audio.mjs",
+      "target_sha256": "4dc0eee39380e0f8b71589acc4fee5b587afe8e3521837a50704337fbf6bce77",
+      "bytes": 12054,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-workroom-preview.py",
+      "path": "companion/test-workroom-preview.py",
+      "target_sha256": "d613ed4f3444b1998623140b1019a78e450673ac31ba9b7832ecb468ac7cf5e1",
+      "bytes": 7222,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-workroom.mjs",
+      "path": "companion/test-workroom.mjs",
+      "target_sha256": "c854de75fe35fdf57ef6285d0cee50896ecc3154805fd8686d0a3b37e5d6fc2d",
+      "bytes": 8499,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-workshop-dsh.mjs",
+      "path": "companion/test-workshop-dsh.mjs",
+      "target_sha256": "4a9f736efec387d4c59c96bae98232ee88c2f84e23f35d01717207e3d5b4e18c",
+      "bytes": 5576,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-workshop-native.mjs",
+      "path": "companion/test-workshop-native.mjs",
+      "target_sha256": "ced362d105e8fe2c848c4f8df480a762f6b8e4a7a8c08e34316f591637b5e1fc",
+      "bytes": 9024,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1,
+        "windows-user-directory": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-workshop.mjs",
+      "path": "companion/test-workshop.mjs",
+      "target_sha256": "559394174d24cfb042002afa9d2689b787b7ffdbc96ba0de1bbbc037a6b4b31e",
+      "bytes": 2600,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test_archive.py",
+      "path": "companion/test_archive.py",
+      "target_sha256": "251d6a3cfed0c6b2a79b6c87c534358ad4312cdc9dc9869be287bd3faf3ede97",
+      "bytes": 1519,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test_budget.py",
+      "path": "companion/test_budget.py",
+      "target_sha256": "67585a92f88510e113b31d9f1353e9e9ac2e1b98baa4e80ea8463a5c985b7555",
+      "bytes": 1196,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test_guard.py",
+      "path": "companion/test_guard.py",
+      "target_sha256": "012b0f3cb04943e3db271d98d2e11e4d0079e46a2646b863e9b93f5fa6ea78fc",
+      "bytes": 1492,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test_inner_life_view.py",
+      "path": "companion/test_inner_life_view.py",
+      "target_sha256": "6525f7e64542e6239dcba284a0581f6308bf26f8db1fe2632be3680ebc511837",
+      "bytes": 8705,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/tieba-claw.mjs",
+      "path": "companion/tieba-claw.mjs",
+      "target_sha256": "401b0ad5be068d0bfa818a0716c732f552b4bdd793fcda6d92d762db85e75550",
+      "bytes": 20884,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/video-audio.mjs",
+      "path": "companion/video-audio.mjs",
+      "target_sha256": "7cd7607b03337c282666764d4ea87d40b952837c978b50bd35d7ef46e1cdbb24",
+      "bytes": 13960,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/video-decoder.json",
+      "path": "companion/video-decoder.json.example",
+      "target_sha256": "07694e165d5de23b971c50d98071f6a8a592a2b5372f10e16822a14cd4e27cb0",
+      "bytes": 364,
+      "kind": "configuration-template",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1,
+        "template-label": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/video-frames.mjs",
+      "path": "companion/video-frames.mjs",
+      "target_sha256": "331f7e99e140f4b858936cfe46bb4a5c3b36f1a44c78db368677a8d7aa4f19f2",
+      "bytes": 3963,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/workroom-admin.mjs",
+      "path": "companion/workroom-admin.mjs",
+      "target_sha256": "4d22ef4bad9d8f65b132b82ee6e09aab48cb98b41c2e6704461b19104a617835",
+      "bytes": 4626,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/workroom.mjs",
+      "path": "companion/workroom.mjs",
+      "target_sha256": "52d9ac7d68d6bb4310db22f5da0312062a2c446861ac0fe881a92efc90f2ddc1",
+      "bytes": 21393,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/workshop-dsh.mjs",
+      "path": "companion/workshop-dsh.mjs",
+      "target_sha256": "9bcb4517836e94f5a640d8ca18d5cc966bffea32175f11ad10ae6c5e3ab57f39",
+      "bytes": 10009,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/workshop-native.mjs",
+      "path": "companion/workshop-native.mjs",
+      "target_sha256": "8725948c5a73e0d329e8e8ecdf5c8ea4fc649aed0fecdc63f566b8d94fe0e2aa",
+      "bytes": 7933,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/workshop.mjs",
+      "path": "companion/workshop.mjs",
+      "target_sha256": "319602fe8906c5688cb7f38c0d4dfb61314ef4a0c5a9aea703407cb5dbf68a25",
+      "bytes": 15205,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "path": "docs/FEEDBACK_REVIEW.md",
+      "kind": "anonymized-feedback-document",
+      "bytes": 15059,
+      "target_sha256": "d2c02fe85f2ccce2ca71c6c2482b14663ede16ef9ecea8bc48e63b509a02c3bf"
+    },
+    {
+      "source_root": "project",
+      "source": "scripts/export_whale_engineering.py",
+      "path": "scripts/export_whale_engineering.py",
+      "target_sha256": "27f727ffda7934756b1888d861fdba0b8eb5ba94209f8765f9ff293f2c82cdab",
+      "bytes": 26841,
+      "kind": "recovery-or-export-tool",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "scripts/portable_backup.py",
+      "path": "scripts/portable_backup.py",
+      "target_sha256": "584c98045f12f1ed65728a44952b10009ad4e4ff1786f8f1a4fa27cb08a029e6",
+      "bytes": 8686,
+      "kind": "recovery-or-export-tool",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    }
+  ],
+  "public_candidate": true,
+  "git_history_included": false
+}

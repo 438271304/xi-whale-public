@@ -1,0 +1,72 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,existsSync,symlinkSync,linkSync} from 'node:fs';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {Workroom,workroomTools,safeWorkroomPath} from './workroom.mjs';
+import {conversationScope} from './conversation-scope.mjs';
+import {ConversationService} from './conversation-service.mjs';
+import {conversationExtras} from './conversation-extras.mjs';
+const root=mkdtempSync(join(tmpdir(),'whale-workroom-')),path=join(root,'workroom.sqlite3'),A=conversationScope('group',12345),B=conversationScope('private',12345);
+let store=new Workroom(path);
+for(const file of ['../core.js','a/../x.js','C:/key.txt','a\\key.txt','a%2fkey.js','CON.txt','.hidden.js','x/COM1.html','a/../../runtime.json'])assert.throws(()=>safeWorkroomPath(file));
+const privateProject=store.create(B,{title:'PRIVATE_CANARY',files:{'index.html':'<h1>PRIVATE_FILE_CANARY</h1>'}});
+assert.throws(()=>store.read(A,privateProject.project_id));assert.equal(store.list(A).length,0);
+store.write(B,privateProject.project_id,1,[{path:'long.txt',text:'x'.repeat(18000)}]);
+assert.equal(store.read(B,privateProject.project_id,'long.txt').next_offset,8000);
+assert.equal(store.read(B,privateProject.project_id,'long.txt',undefined,{offset:16000}).text.length,2000);
+assert.throws(()=>store.read(B,privateProject.project_id,'long.txt',undefined,{limit:50000}));
+const task=store.dispatch(A,{title:'可信本地任务',brief:'合成：创建小卡并交回执'});
+let p=store.create(A,{title:'test',task_id:task.task_id,files:{'broken.js':'const x = ;'}});
+assert.equal(store.tasks(A)[0].state,'in_progress');
+let checked=store.check(A,p.project_id);assert.equal(checked.ok,false);assert.ok(checked.errors.some(e=>e.code==='entry_missing'));assert.ok(checked.errors.some(e=>e.code==='js_syntax'));
+assert.equal(store.submit(A,p.project_id,p.version,'半成品可展示，检查问题保留',task.task_id).submitted,true);
+assert.equal(store.check(A,p.project_id).ok,false);
+const sentinel=join(root,'MUST_NOT_EXIST.txt');
+p=store.write(A,p.project_id,p.version,[{path:'index.html',text:'<h1>safe</h1>'},{path:'broken.js',text:'import {writeFileSync} from "node:fs"; writeFileSync('+JSON.stringify(sentinel)+',"bad");'}]);
+assert.equal(store.check(A,p.project_id).ok,true);assert.equal(existsSync(sentinel),false);
+assert.throws(()=>store.write(A,p.project_id,1,[{path:'index.html',text:'stale'}]));
+assert.throws(()=>store.write(A,p.project_id,p.version,[{path:'runtime.json',text:'x'.repeat(32769)}]));
+const goodVersion=p.version,goodHash=store.read(A,p.project_id).digest;
+p=store.write(A,p.project_id,p.version,[{path:'index.html',remove:true}]);assert.equal(store.check(A,p.project_id).ok,false);
+p=store.restore(A,p.project_id,goodVersion,p.version);assert.equal(store.read(A,p.project_id).digest,goodHash);
+store.trash(A,p.project_id,p.version);assert.throws(()=>store.check(A,p.project_id));assert.ok(store.list(A,true).some(p=>p.deleted));
+p=store.restore(A,p.project_id,goodVersion,p.version);assert.equal(store.read(A,p.project_id).deleted,false);
+const submission=store.submit(A,p.project_id,p.version,'合成成果',task.task_id);assert.equal(submission.state,'recorded');assert.equal(submission.displayed,true);assert.equal(submission.review_required,false);assert.equal(submission.production_merged,false);
+assert.equal(store.tasks(A)[0].state,'completed');assert.equal(store.taskState(A,task.task_id,'completed').state,'completed');
+const policy={group_id:'12345',father_id:'45678'},msg=(sender,body)=>({user_id:sender,message:[{type:'text',data:{text:body}}]});
+const command='/workroom publish '+p.project_id+' '+p.version;
+const invoke=async(context,name,args)=>JSON.parse(await workroomTools(store,A,{message:context},policy).find(t=>t.name===name).handler(args));
+assert.equal((await invoke(msg(56789,command),'workroom_publish',{project_id:p.project_id,version:p.version})).ok,true);
+assert.equal((await invoke(msg(45678,'引用：'+command),'workroom_publish',{project_id:p.project_id,version:p.version})).ok,true);
+assert.equal((await invoke(msg(45678,command),'workroom_publish',{project_id:p.project_id,version:p.version})).ok,true);
+assert.equal(store.db.prepare('SELECT count(*) n FROM wr_releases').get().n,1);
+const frozen=p.version;p=store.write(A,p.project_id,p.version,[{path:'index.html',text:'<h1>PRIVATE_NEW_DRAFT</h1>'}]);
+assert.equal(store.db.prepare('SELECT version FROM wr_releases WHERE project=?').get(p.project_id).version,frozen);
+assert.throws(()=>store.review(A,task.task_id,false,'optional legacy review only'),/No submitted task/);store.taskState(A,task.task_id,'in_progress');
+store.submit(A,p.project_id,p.version,'修订保存',task.task_id);assert.equal(store.tasks(A)[0].state,'completed');assert.equal(store.receipts(A,p.project_id)[0].state,'recorded');
+assert.equal(store.unpublish(A,p.project_id).displayed,false);assert.equal(store.db.prepare('SELECT count(*) n FROM wr_hidden').get().n,1);store.publish(A,p.project_id,p.version,'self');assert.equal(store.db.prepare('SELECT count(*) n FROM wr_hidden').get().n,0);
+store.close();store=new Workroom(path);assert.equal(store.read(A,p.project_id,undefined,goodVersion).digest,goodHash);assert.equal(store.history(A,p.project_id).length,p.version);
+store.close();
+// Files are logical snapshots, never filesystem paths. Linked stores are refused.
+const junction=join(root,'junction');symlinkSync(root,junction,'junction');assert.throws(()=>new Workroom(join(junction,'other.sqlite3')),/links/);
+const hardlink=join(root,'hardlink.sqlite3');linkSync(path,hardlink);assert.throws(()=>new Workroom(hardlink),/links/);
+
+// Complete repair/submission through the real conversation service with a fake model.
+const flowRoot=join(root,'flow'),flowPath=join(flowRoot,'workroom.sqlite3');store=new Workroom(flowPath);
+const flowTask=store.dispatch(A,{title:'合成聊天闭环',brief:'创建、检查报错、修正并保存，可直接展示。'});store.close();
+let step=0,flowProject;const outputs=[],sent=[];
+const call=(name,args)=>({response:{output:[{type:'function_call',name,call_id:'wr-'+step,arguments:JSON.stringify(args)}]}});
+const extras=conversationExtras({workspace:join(flowRoot,'workspace'),notesRoot:join(flowRoot,'notes'),familyGroup:'12345',workroomPath:flowPath,policy});
+const service=new ConversationService({root:flowRoot,publicProfile:'Synthetic development test',isAllowed:()=>true,extraTools:extras,send:async v=>sent.push(v),client:{respond:async req=>{
+ step++;outputs.push(...req.input.filter(i=>i.type==='function_call_output').map(i=>i.output));
+ if(step===1)return call('discover_tools',{category:'workroom'});
+ if(step===2)return call('workroom_tasks',{});
+ if(step===3)return call('workroom_create',{title:'开发合成小卡',task_id:flowTask.task_id,files:[{path:'index.html',text:'<h1>test</h1>'},{path:'main.js',text:'const x = ;'}]});
+ if(step===4){const result=JSON.parse(req.input.at(-1).output).result;flowProject=result;assert.equal(result.checks.ok,false);return call('workroom_write',{project_id:result.project_id,expected_version:result.version,files:[{path:'main.js',text:'const x = 1;'}]});}
+ if(step===5){const result=JSON.parse(req.input.at(-1).output).result;assert.equal(result.checks.ok,true);return call('workroom_submit',{project_id:result.project_id,expected_version:result.version,summary:'合成验收，已修复语法错误',task_id:flowTask.task_id});}
+ assert.equal(JSON.parse(req.input.at(-1).output).result.state,'recorded');return {response:{output:[{type:'message',role:'assistant',content:[{type:'output_text',text:'合成作品已保存并可展示，静态检查通过。'}]}]}};
+}}});
+assert.equal((await service.receiveAdmitted({message_type:'group',group_id:12345,user_id:45678,message_id:101,time:1792890000,message:[{type:'text',data:{text:'合成工作间验收'}}]})).status,'sent');
+assert.equal(step,6);assert.equal(sent.length,1);assert.ok(outputs.some(s=>s.includes('js_syntax')));assert.ok(!JSON.stringify(outputs).includes('PRIVATE_CANARY'));
+await service.close();store=new Workroom(flowPath);assert.equal(store.tasks(A)[0].state,'completed');assert.equal(store.read(A,flowProject.project_id).version,2);store.close();
+console.log('PASS workroom: source isolation, path/links, fixed nonexecuting parser, error repair, CAS, durable restore/trash, genuine tasks/review receipts, approval-free display, optional hide, immutable snapshots and mounted chat tool loop; synthetic only');

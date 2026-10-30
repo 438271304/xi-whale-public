@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {guardQQWorld} from './qq-event-policy.mjs';
+import {EventLedger} from './event-ledger.mjs';
+const [app,plugin]=process.argv.slice(2);
+await import(pathToFileURL(join(app,'build/cortico/src/extensions/runtime.ts')).href);
+const {QQWorld}=await import(pathToFileURL(join(plugin,'src/world.ts')).href);
+let now=new Date('2026-10-24T02:00:00+08:00'),friends=[300],queued=0,sent=0;
+const world=new QQWorld({wsUrl:'ws://127.0.0.1:1',groups:[100],privates:[],token:''});
+const ledger=new EventLedger(':memory:');
+guardQQWorld(world,{group_id:'100',bot_id:'200',friend_private_enabled:true},()=>now,ledger);
+world.enqueueMessage=()=>queued++;
+world.host={pushEvent:async()=>({ts:now.toISOString()})};
+world.driver={setGroups:()=>{},identity:{selfId:200,groups:new Map()},callApi:async(a,p)=>{
+ if(a==='get_friend_list')return friends.map(user_id=>({user_id}));
+ assert.equal(a,'send_private_msg');assert.equal(p.user_id,300);sent++;return {message_id:99};
+}};
+const msg={post_type:'message',message_type:'private',sub_type:'friend',user_id:300,message_id:1,time:now.getTime()/1000,message:[]};
+await assert.rejects(world.sendToTarget({kind:'private',id:300},{text:'x'}),/fresh/);
+await world.handleEvent(msg);assert.equal(queued,1);
+await world.handleEvent(msg);assert.equal(queued,1);
+await world.sendToTarget({kind:'private',id:300},{text:'x'});assert.equal(sent,1);
+await assert.rejects(world.sendToTarget({kind:'group',id:100},{text:'x'}),/resting/);
+await assert.rejects(world.sendToTarget({kind:'private',id:400},{text:'x'}),/fresh/);
+await world.handleEvent({...msg,user_id:400,message_id:2});assert.equal(queued,1);
+await world.handleEvent({...msg,sub_type:'group',message_id:3});assert.equal(queued,1);
+friends=[];await assert.rejects(world.sendToTarget({kind:'private',id:300},{text:'x'}),/fresh/);
+friends=[300];now=new Date(now.getTime()+301000);await assert.rejects(world.sendToTarget({kind:'private',id:300},{text:'x'}),/fresh/);
+await world.handleEvent({...msg,message_id:4,time:now.getTime()/1000});assert.equal(queued,2);
+await world.sendToTarget({kind:'private',id:300},{text:'x'});assert.equal(sent,2);
+ledger.close();console.log('PASS: actual QQWorld friend private wake/reply, duplicate, stranger/temp chat, per-person lease, no group wake, removal, expiration; no network');
+

@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import {SpendingBook,guardedClient} from './guarded-client.mjs';
+const app='C:/Users/USER/PersonalAgentBackups/companion-runtime/clean-lab-0.2.8/resources/app';
+const {transformSync}=await import(pathToFileURL(app+'/node_modules/esbuild/lib/main.js').href);
+const core=readFileSync('companion/core-social-candidate.ts','utf8');
+transformSync(core,{loader:'ts',format:'esm',target:'node24'});
+assert.ok(core.includes('canInitiate:()=>scopedClient?.canInitiate?.()===true'));
+assert.ok(core.includes('onStart: () => {}, // No autonomous reads from legacy mixed private context.'));
+const book=new SpendingBook(':memory:');let provider=0;const client=guardedClient(()=>{provider++;throw Error('not needed');},book);
+assert.equal(client.canInitiate(),true);book.reserve(14950001);assert.equal(client.canInitiate(),false);assert.equal(client.bind===undefined,false);assert.equal(provider,0);book.close();
+console.log('PASS core TS transform, scoped budget capability, unchanged disabled legacy rhythm, budget gate without provider invocation');

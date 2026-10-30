@@ -1,0 +1,3198 @@
+{
+  "schema_version": 1,
+  "scope": "Explicit reviewed engineering archive; not an installer or full operational backup.",
+  "source_roots": {
+    "project": "Current project directory",
+    "dsh": "D:/Deepseek",
+    "vendor_app": "%USERPROFILE%/PersonalAgentBackups/companion-runtime/clean-lab-0.2.8/resources/app"
+  },
+  "transform_rules": {
+    "known-qq-identifiers": "Known authorized identifiers become consistent synthetic decimal IDs; original values/mapping are never exported.",
+    "windows-user-directory": "Any literal Windows user-directory component becomes USER.",
+    "synthetic-test-credential": "Two reviewed negative-test fixtures retain an unmistakably synthetic test key.",
+    "template-label": "Personal configuration and identity files are emitted as .example templates.",
+    "utf8-lf": "Text is encoded as UTF-8 with LF line endings."
+  },
+  "excluded": [
+    "sources/**",
+    "live/check/probe/deploy/prepare/report/record/finalize/audit/backfill/history scripts",
+    "identity/PARTNER.md",
+    "identity/RELATIONSHIPS.md",
+    "identity/DECISIONS.md",
+    "core-social-candidate.ts",
+    "core-uncap-candidate.ts",
+    "runtime memories and databases",
+    "credentials/login/session state",
+    "assets/artifacts/logs",
+    "release/verified receipts",
+    "vendor runtime and binary/model files"
+  ],
+  "files": [
+    {
+      "root": "project",
+      "source": "companion/archive.py",
+      "output": "companion/archive.py",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/audio-decoder.json",
+      "output": "companion/audio-decoder.json.example",
+      "kind": "configuration-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/audio-worker.cjs",
+      "output": "companion/audio-worker.cjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/avatar-fingerprint.py",
+      "output": "companion/avatar-fingerprint.py",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/bilibili-links.mjs",
+      "output": "companion/bilibili-links.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/bilibili-public.mjs",
+      "output": "companion/bilibili-public.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/bilibili-speech.mjs",
+      "output": "companion/bilibili-speech.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/budget.py",
+      "output": "companion/budget.py",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/cognition-tools.mjs",
+      "output": "companion/cognition-tools.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-capabilities.mjs",
+      "output": "companion/conversation-capabilities.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-errors.mjs",
+      "output": "companion/conversation-errors.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-extras.mjs",
+      "output": "companion/conversation-extras.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-floor.mjs",
+      "output": "companion/conversation-floor.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-focus.mjs",
+      "output": "companion/conversation-focus.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-intent.mjs",
+      "output": "companion/conversation-intent.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-listening.mjs",
+      "output": "companion/conversation-listening.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-presentation.mjs",
+      "output": "companion/conversation-presentation.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-scope.mjs",
+      "output": "companion/conversation-scope.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-service.mjs",
+      "output": "companion/conversation-service.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/conversation-time.mjs",
+      "output": "companion/conversation-time.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/core-output-recovery.ts",
+      "output": "companion/core-output-recovery.ts",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/curiosity-life.mjs",
+      "output": "companion/curiosity-life.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/deepseek-public-search.mjs",
+      "output": "companion/deepseek-public-search.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/dsh-context.mjs",
+      "output": "companion/dsh-context.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/dsh/AppContainerRunner.cs",
+      "output": "companion/dsh/AppContainerRunner.cs",
+      "kind": "dsh-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/dsh/Open-DSH.ps1",
+      "output": "companion/dsh/Open-DSH.ps1",
+      "kind": "dsh-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/dsh/Start-DSH.ps1",
+      "output": "companion/dsh/Start-DSH.ps1",
+      "kind": "dsh-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/dsh/Stop-DSH.ps1",
+      "output": "companion/dsh/Stop-DSH.ps1",
+      "kind": "dsh-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/dsh/budget-proxy.mjs",
+      "output": "companion/dsh/budget-proxy.mjs",
+      "kind": "dsh-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "dsh",
+      "source": "provider-diagnostics.mjs",
+      "output": "companion/dsh/provider-diagnostics.mjs",
+      "kind": "external-integration-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "dsh",
+      "source": "spending-book.mjs",
+      "output": "companion/dsh/spending-book.mjs",
+      "kind": "external-integration-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/ensure-dsh-gateway.ps1",
+      "output": "companion/ensure-dsh-gateway.ps1",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/event-ledger.mjs",
+      "output": "companion/event-ledger.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/experience-attribution.mjs",
+      "output": "companion/experience-attribution.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/experience-memory.mjs",
+      "output": "companion/experience-memory.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/experience-reflection.mjs",
+      "output": "companion/experience-reflection.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/exploration-followups.mjs",
+      "output": "companion/exploration-followups.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/fisharchive-stickers.mjs",
+      "output": "companion/fisharchive-stickers.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/forward-intake.mjs",
+      "output": "companion/forward-intake.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/generation-options.mjs",
+      "output": "companion/generation-options.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/group-batch.mjs",
+      "output": "companion/group-batch.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/group-message.mjs",
+      "output": "companion/group-message.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/guard.py",
+      "output": "companion/guard.py",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/guarded-client.mjs",
+      "output": "companion/guarded-client.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/guardian-persona.mjs",
+      "output": "companion/guardian-persona.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/history-coverage.mjs",
+      "output": "companion/history-coverage.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home-tools.mjs",
+      "output": "companion/home-tools.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/app.js",
+      "output": "companion/home/app.js",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/bundle_workroom.cjs",
+      "output": "companion/home/bundle_workroom.cjs",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/conversation_status.py",
+      "output": "companion/home/conversation_status.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/index.html",
+      "output": "companion/home/index.html",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/inner_life_view.py",
+      "output": "companion/home/inner_life_view.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/interactive_workroom.py",
+      "output": "companion/home/interactive_workroom.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/life_view.py",
+      "output": "companion/home/life_view.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/qq_health.py",
+      "output": "companion/home/qq_health.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/server.py",
+      "output": "companion/home/server.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/start.ps1",
+      "output": "companion/home/start.ps1",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/style.css",
+      "output": "companion/home/style.css",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/test_interactive_workroom.py",
+      "output": "companion/home/test_interactive_workroom.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/workroom_view.py",
+      "output": "companion/home/workroom_view.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/CONSTITUTION.md",
+      "output": "companion/identity/CONSTITUTION.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/EXPRESSION.md",
+      "output": "companion/identity/EXPRESSION.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/SCOPED_OPERATIONS.md",
+      "output": "companion/identity/SCOPED_OPERATIONS.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/SCOPED_PROFILE.md",
+      "output": "companion/identity/SCOPED_PROFILE.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/SELF_CORE.md",
+      "output": "companion/identity/SELF_CORE.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/STICKERS.md",
+      "output": "companion/identity/STICKERS.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/identity/TOOL_CONTRACT.md",
+      "output": "companion/identity/TOOL_CONTRACT.md.example",
+      "kind": "identity-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/image-analysis.mjs",
+      "output": "companion/image-analysis.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/image-capabilities.json",
+      "output": "companion/image-capabilities.json.example",
+      "kind": "configuration-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/install-video-decoder.mjs",
+      "output": "companion/install-video-decoder.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/isolated-qq-route.mjs",
+      "output": "companion/isolated-qq-route.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/journal-context.mjs",
+      "output": "companion/journal-context.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-contact.mjs",
+      "output": "companion/life-contact.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-continuity.mjs",
+      "output": "companion/life-continuity.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-heartbeat.mjs",
+      "output": "companion/life-heartbeat.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-journal.mjs",
+      "output": "companion/life-journal.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-recollection.mjs",
+      "output": "companion/life-recollection.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-self-reflection.mjs",
+      "output": "companion/life-self-reflection.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-workshop.mjs",
+      "output": "companion/life-workshop.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/local-image-ocr.ps1",
+      "output": "companion/local-image-ocr.ps1",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/migrate-scoped-history.mjs",
+      "output": "companion/migrate-scoped-history.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/policy.json",
+      "output": "companion/policy.json.example",
+      "kind": "configuration-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/portable-snapshot.py",
+      "output": "companion/portable-snapshot.py",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/private-conversation.mjs",
+      "output": "companion/private-conversation.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/proactive-availability.mjs",
+      "output": "companion/proactive-availability.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/provider-diagnostics.mjs",
+      "output": "companion/provider-diagnostics.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/public-exploration.mjs",
+      "output": "companion/public-exploration.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/public-reading.mjs",
+      "output": "companion/public-reading.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-bubbles.mjs",
+      "output": "companion/qq-bubbles.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-connection-health.ps1",
+      "output": "companion/qq-connection-health.ps1",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-context.mjs",
+      "output": "companion/qq-context.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-event-policy.mjs",
+      "output": "companion/qq-event-policy.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-face-map.json",
+      "output": "companion/qq-face-map.json",
+      "kind": "public-reference",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-face-output.mjs",
+      "output": "companion/qq-face-output.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-face-sources.md",
+      "output": "companion/qq-face-sources.md",
+      "kind": "public-reference",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-forward.mjs",
+      "output": "companion/qq-forward.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-history-fetch.mjs",
+      "output": "companion/qq-history-fetch.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-image-download.mjs",
+      "output": "companion/qq-image-download.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-readonly-client.mjs",
+      "output": "companion/qq-readonly-client.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-recall.mjs",
+      "output": "companion/qq-recall.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-scoped-attachments.mjs",
+      "output": "companion/qq-scoped-attachments.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-segment-details.mjs",
+      "output": "companion/qq-segment-details.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-self-avatar.mjs",
+      "output": "companion/qq-self-avatar.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-self-profile.mjs",
+      "output": "companion/qq-self-profile.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-self-qzone.mjs",
+      "output": "companion/qq-self-qzone.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qzone-experiences.mjs",
+      "output": "companion/qzone-experiences.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qzone-readback.mjs",
+      "output": "companion/qzone-readback.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/route-lifecycle.mjs",
+      "output": "companion/route-lifecycle.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/run-whale.mjs",
+      "output": "companion/run-whale.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/scoped-assembly.mjs",
+      "output": "companion/scoped-assembly.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/scoped-history.mjs",
+      "output": "companion/scoped-history.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/scoped-media.mjs",
+      "output": "companion/scoped-media.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/scoped-route-manager.mjs",
+      "output": "companion/scoped-route-manager.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/scoped-send.mjs",
+      "output": "companion/scoped-send.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/scoped-tools.mjs",
+      "output": "companion/scoped-tools.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/social-config.json",
+      "output": "companion/social-config.json.example",
+      "kind": "configuration-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/social-rhythm.mjs",
+      "output": "companion/social-rhythm.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/start-independent.ps1",
+      "output": "companion/start-independent.ps1",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/start-whale.ps1",
+      "output": "companion/start-whale.ps1",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/stop-whale.ps1",
+      "output": "companion/stop-whale.ps1",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-bilibili-links.mjs",
+      "output": "companion/test-bilibili-links.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-bilibili-public.mjs",
+      "output": "companion/test-bilibili-public.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-bilibili-speech.mjs",
+      "output": "companion/test-bilibili-speech.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-cognition-home.py",
+      "output": "companion/test-cognition-home.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-coherence-service.mjs",
+      "output": "companion/test-coherence-service.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-context-self-state-budget.mjs",
+      "output": "companion/test-context-self-state-budget.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-continuity-attribution.mjs",
+      "output": "companion/test-continuity-attribution.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-features.mjs",
+      "output": "companion/test-conversation-features.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-floor.mjs",
+      "output": "companion/test-conversation-floor.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-focus.mjs",
+      "output": "companion/test-conversation-focus.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-listening.mjs",
+      "output": "companion/test-conversation-listening.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-scope.mjs",
+      "output": "companion/test-conversation-scope.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-service.mjs",
+      "output": "companion/test-conversation-service.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-time.mjs",
+      "output": "companion/test-conversation-time.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-core-generation-binding.mjs",
+      "output": "companion/test-core-generation-binding.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-core-syntax.mjs",
+      "output": "companion/test-core-syntax.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-creative-output-budget.mjs",
+      "output": "companion/test-creative-output-budget.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-curiosity-life.mjs",
+      "output": "companion/test-curiosity-life.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-current-message.mjs",
+      "output": "companion/test-current-message.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-dsh-context.mjs",
+      "output": "companion/test-dsh-context.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-dsh-tool-cancellation.mjs",
+      "output": "companion/test-dsh-tool-cancellation.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-event-ledger.mjs",
+      "output": "companion/test-event-ledger.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-expanded-freedom.mjs",
+      "output": "companion/test-expanded-freedom.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-experience-attribution.mjs",
+      "output": "companion/test-experience-attribution.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-experience-foundation.mjs",
+      "output": "companion/test-experience-foundation.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-experience-memory.mjs",
+      "output": "companion/test-experience-memory.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-experience-reflection.mjs",
+      "output": "companion/test-experience-reflection.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-exploration-followups.mjs",
+      "output": "companion/test-exploration-followups.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-fisharchive-stickers.mjs",
+      "output": "companion/test-fisharchive-stickers.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-forward-intake.mjs",
+      "output": "companion/test-forward-intake.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-foundation-service.mjs",
+      "output": "companion/test-foundation-service.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-friend-private.mjs",
+      "output": "companion/test-friend-private.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-generation-time.mjs",
+      "output": "companion/test-generation-time.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-group-batch.mjs",
+      "output": "companion/test-group-batch.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-guarded-client.mjs",
+      "output": "companion/test-guarded-client.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-history-fetch.mjs",
+      "output": "companion/test-history-fetch.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-home-tools.mjs",
+      "output": "companion/test-home-tools.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-identity-layers.mjs",
+      "output": "companion/test-identity-layers.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-image-intake-feedback.mjs",
+      "output": "companion/test-image-intake-feedback.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-image-lifecycle.mjs",
+      "output": "companion/test-image-lifecycle.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-image-pipeline.mjs",
+      "output": "companion/test-image-pipeline.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-image-qq-assembly.mjs",
+      "output": "companion/test-image-qq-assembly.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-image-status.mjs",
+      "output": "companion/test-image-status.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-isolated-qq-route.mjs",
+      "output": "companion/test-isolated-qq-route.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-journal-context.mjs",
+      "output": "companion/test-journal-context.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-contact.mjs",
+      "output": "companion/test-life-contact.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-continuity.mjs",
+      "output": "companion/test-life-continuity.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-family-delivery.mjs",
+      "output": "companion/test-life-family-delivery.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-heartbeat.mjs",
+      "output": "companion/test-life-heartbeat.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-home.py",
+      "output": "companion/test-life-home.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-journal.mjs",
+      "output": "companion/test-life-journal.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-recollection.mjs",
+      "output": "companion/test-life-recollection.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-self-reflection.mjs",
+      "output": "companion/test-life-self-reflection.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-share-audience.mjs",
+      "output": "companion/test-life-share-audience.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-workshop-opportunity.mjs",
+      "output": "companion/test-life-workshop-opportunity.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-workshop.mjs",
+      "output": "companion/test-life-workshop.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-listening-time.mjs",
+      "output": "companion/test-listening-time.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-multiple-groups.mjs",
+      "output": "companion/test-multiple-groups.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-natural-expression.mjs",
+      "output": "companion/test-natural-expression.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-natural-group.mjs",
+      "output": "companion/test-natural-group.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-output-recovery.mjs",
+      "output": "companion/test-output-recovery.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-parallel-response-context.mjs",
+      "output": "companion/test-parallel-response-context.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-private-conversation.mjs",
+      "output": "companion/test-private-conversation.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-private-failure.mjs",
+      "output": "companion/test-private-failure.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-private-lifecycle.mjs",
+      "output": "companion/test-private-lifecycle.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-proactive-availability.mjs",
+      "output": "companion/test-proactive-availability.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-provider-diagnostics.mjs",
+      "output": "companion/test-provider-diagnostics.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-public-exploration.mjs",
+      "output": "companion/test-public-exploration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-public-reading.mjs",
+      "output": "companion/test-public-reading.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-public-search-boundary.mjs",
+      "output": "companion/test-public-search-boundary.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-public-sticker-integration.mjs",
+      "output": "companion/test-public-sticker-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-bubbles.mjs",
+      "output": "companion/test-qq-bubbles.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-connection-health.ps1",
+      "output": "companion/test-qq-connection-health.ps1",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-connection-health.py",
+      "output": "companion/test-qq-connection-health.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-context.mjs",
+      "output": "companion/test-qq-context.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-face-output.mjs",
+      "output": "companion/test-qq-face-output.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-forward.mjs",
+      "output": "companion/test-qq-forward.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-life-delivery.mjs",
+      "output": "companion/test-qq-life-delivery.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-outbound.mjs",
+      "output": "companion/test-qq-outbound.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-policy.mjs",
+      "output": "companion/test-qq-policy.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-recall.mjs",
+      "output": "companion/test-qq-recall.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-scoped-attachments.mjs",
+      "output": "companion/test-qq-scoped-attachments.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-segment-details.mjs",
+      "output": "companion/test-qq-segment-details.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-self-avatar.mjs",
+      "output": "companion/test-qq-self-avatar.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-self-profile.mjs",
+      "output": "companion/test-qq-self-profile.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-self-qzone.mjs",
+      "output": "companion/test-qq-self-qzone.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qzone-integration.mjs",
+      "output": "companion/test-qzone-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qzone-readback.mjs",
+      "output": "companion/test-qzone-readback.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qzone-reconcile.mjs",
+      "output": "companion/test-qzone-reconcile.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-route-lifecycle.mjs",
+      "output": "companion/test-route-lifecycle.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-scoped-assembly.mjs",
+      "output": "companion/test-scoped-assembly.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-scoped-history.mjs",
+      "output": "companion/test-scoped-history.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-scoped-media.mjs",
+      "output": "companion/test-scoped-media.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-scoped-provider.mjs",
+      "output": "companion/test-scoped-provider.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-scoped-reactivation.mjs",
+      "output": "companion/test-scoped-reactivation.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-scoped-tools.mjs",
+      "output": "companion/test-scoped-tools.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-social-core.mjs",
+      "output": "companion/test-social-core.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-social-rhythm.mjs",
+      "output": "companion/test-social-rhythm.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-stickers.mjs",
+      "output": "companion/test-stickers.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-task-lifecycle.mjs",
+      "output": "companion/test-task-lifecycle.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-tieba-claw.mjs",
+      "output": "companion/test-tieba-claw.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-tieba-integration.mjs",
+      "output": "companion/test-tieba-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-video-audio.mjs",
+      "output": "companion/test-video-audio.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-workroom-preview.py",
+      "output": "companion/test-workroom-preview.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-workroom.mjs",
+      "output": "companion/test-workroom.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-workshop-dsh.mjs",
+      "output": "companion/test-workshop-dsh.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-workshop-native.mjs",
+      "output": "companion/test-workshop-native.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-workshop.mjs",
+      "output": "companion/test-workshop.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test_archive.py",
+      "output": "companion/test_archive.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test_budget.py",
+      "output": "companion/test_budget.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test_guard.py",
+      "output": "companion/test_guard.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test_inner_life_view.py",
+      "output": "companion/test_inner_life_view.py",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/tieba-claw.mjs",
+      "output": "companion/tieba-claw.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/video-audio.mjs",
+      "output": "companion/video-audio.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/video-decoder.json",
+      "output": "companion/video-decoder.json.example",
+      "kind": "configuration-template",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/video-frames.mjs",
+      "output": "companion/video-frames.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/workroom-admin.mjs",
+      "output": "companion/workroom-admin.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/workroom.mjs",
+      "output": "companion/workroom.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/workshop-dsh.mjs",
+      "output": "companion/workshop-dsh.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/workshop-native.mjs",
+      "output": "companion/workshop-native.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/workshop.mjs",
+      "output": "companion/workshop.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "scripts/export_whale_engineering.py",
+      "output": "scripts/export_whale_engineering.py",
+      "kind": "recovery-or-export-tool",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "scripts/portable_backup.py",
+      "output": "scripts/portable_backup.py",
+      "kind": "recovery-or-export-tool",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    }
+  ],
+  "public_candidate": {
+    "published": false,
+    "git_history_included": false,
+    "private_source_fingerprints_included": false,
+    "historical_test_details": "Replaced by synthetic values in two conversation tests.",
+    "feedback": "docs/FEEDBACK_REVIEW.md: anonymized paraphrases approved by owner; no raw conversation export"
+  }
+}

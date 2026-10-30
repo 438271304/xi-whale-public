@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {EventLedger} from './event-ledger.mjs';
+const path=join(mkdtempSync(join(tmpdir(),'whale-events-')),'new-world-directory','events.sqlite');
+const now=Date.now(), event={group_id:100,user_id:300,message_id:1,time:Math.floor(now/1000)};
+let ledger=new EventLedger(path);
+assert.equal(ledger.claim(event,now),true);ledger.close();
+ledger=new EventLedger(path);
+assert.equal(ledger.claim(event,now),false);
+assert.equal(ledger.claim({...event,message_id:2,time:event.time-121},now),false);
+assert.equal(ledger.claim({...event,message_id:3,time:event.time+60},now),false);
+assert.equal(ledger.claim({...event,message_id:4},now),true);
+ledger.close();console.log('PASS: persisted deduplication, stale/future rejection, distinct fresh event');

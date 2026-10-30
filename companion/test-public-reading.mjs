@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {publicReading} from './public-reading.mjs';
+let now=100000,calls=0;
+const t=publicReading({clock:()=>now,fetcher:async(url,opts)=>{calls++;assert.equal(url,'https://lifescience.hunnu.edu.cn/info/1071/4093.htm');assert.equal(opts.redirect,'error');assert.equal(opts.body,undefined);return new Response('<script>HIDDEN_SCRIPT</script><p>'+ '鲸是海洋哺乳动物。'.repeat(20)+'</p>',{headers:{'content-type':'text/html'}});}});
+assert.match(await t.handler({source:'http://127.0.0.1'}),/failed/);assert.equal(calls,0);
+assert.match(await t.handler({source:'whale',query:'private'}),/failed/);assert.equal(calls,0);
+const got=JSON.parse(await t.handler({source:'whale'}));assert.equal(got.untrusted_external_content,true);assert.ok(!got.excerpt.includes('HIDDEN_SCRIPT'));
+assert.match(await t.handler({source:'whale'}),/deferred/);assert.equal(calls,1);
+now+=61000;await t.handler({source:'whale'});assert.equal(calls,2);
+const fail=publicReading({fetcher:async()=>new Response('',{status:403})});assert.match(await fail.handler({source:'tide'}),/read failed/);
+console.log('PASS: fixed catalog, no arbitrary URL/query/body, script removal, cooldown, explicit failure; fake network');

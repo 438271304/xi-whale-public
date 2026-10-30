@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {bindRouteLifecycle} from './route-lifecycle.mjs';
+let paused=true,routePaused=false,release,generation=0;
+const bus={isPaused:()=>paused,setPaused:v=>paused=v};
+const route={pause:()=>{routePaused=true;generation++;return new Promise(r=>release=r);},resume:()=>routePaused=false};
+const binding=bindRouteLifecycle(bus,route);assert.equal(routePaused,true);release();await binding.drain();
+bus.setPaused(false);assert.equal(routePaused,false);assert.equal(paused,false);
+bus.setPaused(true);assert.equal(routePaused,true);assert.equal(paused,true);const captured=generation;
+bus.setPaused(false);assert.equal(routePaused,false);assert.equal(generation,captured);release();await binding.drain();
+assert.throws(()=>bindRouteLifecycle(bus,route),/already/);
+console.log('PASS pause propagation is synchronous, drains tracked, rapid resume does not undo generation invalidation, duplicate binding rejected');

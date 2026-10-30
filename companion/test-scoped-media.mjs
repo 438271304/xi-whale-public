@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {ScopedMedia} from './scoped-media.mjs';
+const path=join(mkdtempSync(join(tmpdir(),'whale-media-')),'media.sqlite3');
+const a={kind:'private',id:'12345'},b={kind:'private',id:'23456'},g={kind:'group',id:'12345'};
+const msg=s=>({message_type:s.kind,user_id:Number(s.id),group_id:Number(s.id),message_id:'fixture'});
+// Fixture signature only: content decoding/QQ rendering remains integration work.
+const bytes=Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),Buffer.alloc(16)]);
+let db=new ScopedMedia(path);
+const own=db.importReceived(a,msg(a),bytes),pub=db.importApprovedSeed(bytes,'approved fixture');
+assert.throws(()=>db.importReceived(a,msg(b),bytes),/another/);
+assert.throws(()=>db.importReceived(a,msg(a),Buffer.from('<svg>not allowed</svg>')),/signature/);
+assert.throws(()=>db.importReceived(a,msg(a),Buffer.alloc(8*1024*1024+1)),/size/);
+assert.deepEqual(db.list(b).map(x=>x.id),[pub.id]);
+assert.throws(()=>db.prepareReply(b,msg(b),own.id),/unavailable/);
+assert.throws(()=>db.prepareReply(g,msg(g),own.id),/unavailable/);
+assert.throws(()=>db.prepareReply(a,msg(b),own.id),/another/);
+assert.throws(()=>db.prepareReply(a,msg(a),'../secret.png'),/ID/);
+assert.deepEqual(db.prepareReply(a,msg(a),own.id).bytes,bytes);
+db.close();db=new ScopedMedia(path);
+assert.deepEqual(db.prepareReply(a,msg(a),own.id).bytes,bytes);
+assert.deepEqual(db.prepareReply(b,msg(b),pub.id).target,{kind:'private',id:23456});
+db.db.prepare('UPDATE scoped_media SET bytes=? WHERE id=?').run(Buffer.alloc(24),own.id);
+assert.throws(()=>db.prepareReply(a,msg(a),own.id),/integrity/);
+db.close();console.log('PASS scoped attachment persistence, peer/group separation, approved seeds, wrong target/path/type/size and tamper rejection; offline only');

@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {qqScopedAttachments} from './qq-scoped-attachments.mjs';
+let calls=0;const png=Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),Buffer.alloc(16)]);
+const image=url=>({type:'image',data:{url}});
+const load=qqScopedAttachments({fetcher:async(url,opts)=>{calls++;assert.equal(opts.redirect,'error');return new Response(png,{headers:{'content-type':'image/png'}});}});
+const bytes=await load({message:[image('http://127.0.0.1/secret'),image('file:///C:/secret'),image('https://gchat.qpic.cn/a'),image('https://gchat.qpic.cn.evil.example/a')]});
+assert.equal(calls,1);assert.deepEqual(bytes,[png]);
+assert.equal(bytes.intake[0].reason,'untrusted-transport-url');assert.equal(bytes.intake[2].state,'received');
+const oversized=qqScopedAttachments({maxBytes:12,fetcher:async()=>new Response(png,{headers:{'content-type':'image/png'}})});
+assert.deepEqual(await oversized({message:[image('https://gchat.qpic.cn/a')]}),[]);
+const bad=qqScopedAttachments({fetcher:async()=>new Response('not image bytes',{headers:{'content-type':'image/png'}})});
+assert.deepEqual(await bad({message:[image('https://gchat.qpic.cn/a')]}),[]);
+const rejected=await bad({message:[image('https://gchat.qpic.cn/a')]});assert.equal(rejected.intake[0].reason,'invalid-image-signature');
+console.log('PASS scoped QQ image intake: supported host only, no redirects, size cap, invalid bytes skipped; mocked fetch');

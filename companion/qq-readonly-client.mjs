@@ -1,0 +1,19 @@
+// Diagnostic use of the existing local OneBot bridge. No QQ process is started.
+import {readFileSync} from 'node:fs';import {createRequire} from 'node:module';import {randomUUID,createHash} from 'node:crypto';
+const req=createRequire('C:/Users/USER/PersonalAgentBackups/companion-runtime/clean-lab-0.2.8/resources/app/package.json'),WebSocket=req('ws');
+const allowed=new Set(['get_login_info','get_stranger_info','get_forward_msg','get_group_msg_history','get_friend_msg_history','get_msg','get_qzone_msg_list','get_qzone_msg_detail']);
+async function openQQDriver({baselineAvatarSha=null}={}){
+ const cfg=JSON.parse(readFileSync('C:/Users/USER/PersonalAgentRuntime/whale-v1/home/companion/config.json','utf8')).worlds.qq,url=new URL(cfg.wsUrl);
+ const groups=cfg.groups.filter(x=>typeof x!=='object'||x.enabled===true).map(x=>String(typeof x==='object'?x.id:x)).filter(x=>/^\d{5,15}$/.test(x));
+ if(!['ws:','wss:'].includes(url.protocol)||!['127.0.0.1','localhost','[::1]'].includes(url.hostname))throw Error('Existing bridge is not loopback');
+ const socket=new WebSocket(url.href,{headers:cfg.token?{Authorization:'Bearer '+cfg.token}:undefined}),pending=new Map();
+ socket.on('message',bytes=>{let value;try{value=JSON.parse(bytes);}catch{return;}const job=pending.get(value.echo);if(!job)return;pending.delete(value.echo);clearTimeout(job.timer);value.status==='ok'||value.retcode===0?job.resolve(value.data):job.reject(Error('QQ read-only API rejected'));});
+ await new Promise((resolve,reject)=>{const timer=setTimeout(()=>{socket.terminate();reject(Error('Existing bridge connect timeout'));},8000);socket.once('open',()=>{clearTimeout(timer);resolve();});socket.once('error',()=>{clearTimeout(timer);reject(Error('Existing bridge unavailable'));});});
+ const callApi=(action,params={})=>{if(action==='set_qq_avatar'){if(!baselineAvatarSha||Object.keys(params).some(k=>k!=='file')||typeof params.file!=='string'||!params.file.startsWith('base64://')||createHash('sha256').update(Buffer.from(params.file.slice(9),'base64')).digest('hex')!==baselineAvatarSha)throw Error('Only exact saved current avatar bytes may be reapplied');}else if(!allowed.has(action))throw Error('Diagnostic API not read-only');if(action==='get_stranger_info'&&String(params.user_id)!=='900000004')throw Error('Only Xi profile may be inspected');if(action==='get_friend_msg_history'&&String(params.user_id)!=='900000001')throw Error('Only the requesting guardian history may be inspected');if(action==='get_group_msg_history'&&!groups.includes(String(params.group_id)))throw Error('Unwatched group');if(action.startsWith('get_qzone_')){if(String(params.target_uin)!=='900000004'||Object.keys(params).some(k=>!['target_uin','pos','num',...(action==='get_qzone_msg_detail'?['tid']:[])].includes(k))||params.pos!==undefined&&(!Number.isSafeInteger(params.pos)||params.pos<0)||params.num!==undefined&&(!Number.isSafeInteger(params.num)||params.num<1||params.num>100)||action==='get_qzone_msg_detail'&&(typeof params.tid!=='string'||!params.tid||params.tid.length>200))throw Error('Only bounded own QZone read diagnostics are allowed');}const echo=randomUUID();return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(echo);reject(Error('QQ read-only request timeout'));},10000);pending.set(echo,{resolve,reject,timer});socket.send(JSON.stringify({action,params,echo}));});};
+ const driver={callApi,close:()=>{for(const j of pending.values()){clearTimeout(j.timer);j.reject(Error('Diagnostic closed'));}pending.clear();socket.close();}};
+ const login=await callApi('get_login_info');if(String(login.user_id)!=='900000004'){driver.close();throw Error('Wrong QQ account; stopped');}
+ return {...driver,groups};
+}
+
+export const openQQReadonly=()=>openQQDriver();
+export const openQQBaselineRestore=sha=>{if(typeof sha!=='string'||!/^[a-f0-9]{64}$/.test(sha))throw Error('Saved baseline SHA required');return openQQDriver({baselineAvatarSha:sha});};

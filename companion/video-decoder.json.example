@@ -1,0 +1,7 @@
+{
+  "version": "imageio-ffmpeg 0.6.0",
+  "binary_sha256": "2ce797a0f88d7f067180338fb227f7b1928ea727bd9a4d7a1d022f7c52af71a3",
+  "wheel_sha256": "02fa47c83703c37df6bfe4896aab339013f62bf02c5ebf2dce6da56af04ffc0a",
+  "source": "https://pypi.org/project/imageio-ffmpeg/0.6.0/",
+  "binary": "C:/Users/USER/PersonalAgentRuntime/whale-v1/tools/video-decoder/ffmpeg.exe"
+}

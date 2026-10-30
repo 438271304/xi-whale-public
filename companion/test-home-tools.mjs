@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {homeTools} from './home-tools.mjs';
+let card={},writes=0,offline=false;
+const tools=homeTools([{name:'write_file',handler:async args=>{assert.equal(args.path,'projects/home/card.json');card=JSON.parse(args.content);writes++;return '[written] card';}}],{fetcher:async(url,opts)=>{assert.equal(url,'http://127.0.0.1:17790/api/home');assert.equal(opts.redirect,'error');if(offline)throw Error();return {ok:true,json:async()=>({at:'now',card,stickers:[],budget:{secret:'not exposed'},backups:['private']})};}});
+const call=(name,args={})=>tools.find(t=>t.name===name).handler(args,{});
+assert.equal(JSON.parse(await call('home_update',{today:'我的小窝',interests:['潮汐']})).page_readback_verified,true);
+assert.ok(!await call('home_read').then(x=>x.includes('not exposed')));
+assert.match(await call('home_update',{unexpected:'x'}),/failed/);assert.equal(writes,1);
+assert.match(await call('home_update',{today:'x'.repeat(401)}),/failed/);
+offline=true;assert.equal(JSON.parse(await call('home_update',{today:'保存但未读回'})).page_readback_verified,false);
+assert.equal(JSON.parse(await call('home_read')).status,'unavailable');
+console.log('PASS: fixed local URL, field limits, write and readback, private metadata omitted, offline distinction; fake HTTP');
