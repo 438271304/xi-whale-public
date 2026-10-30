@@ -6,6 +6,7 @@ import {runScopedTurn} from './scoped-tools.mjs';
 import {conversationFailure} from './conversation-errors.mjs';
 import {buildConversationTime} from './conversation-time.mjs';
 import {presentConversation} from './conversation-presentation.mjs';
+import {recentExchange} from './recent-exchange.mjs';
 
 const activeTaskStates=['working','ready','sending'];
 const workroomMutations=new Set(['workroom_create','workroom_write','workroom_restore','workroom_trash','workroom_submit','workroom_task_state','workroom_publish','workroom_unpublish']);
@@ -164,7 +165,7 @@ export class PrivateConversation {
        const related=(structured.segments??[]).filter(s=>s.type==='reply'&&s.reference).slice(0,3).map(s=>({peer,event:s.message_id,kind:'quoted-history',at:s.reference.recorded_at,transport:{conversation:peer,message_id:s.message_id,sender_id:s.reference.sender_id,time:s.reference.time}}));
        const time=buildConversationTime({now,current:{...current,peer},previousIncoming:incoming?{...incoming,peer}:null,previousSelf:self?{...self,peer,role:'assistant',state:'sent'}:null,relevantEvents:related});
        if(self){const trigger=this.db.prepare("SELECT text FROM turns WHERE peer=? AND event=? AND role='user'").get(peer,self.event);time.previous_self.in_reply_to_sender_id=senderOf(trigger?.text);time.previous_self.was_reply_to_current_sender=sender!==null&&senderOf(trigger?.text)===sender;}
-       return '\n【本次生成即时计算的时间事实，不是情绪或催促依据】\n'+JSON.stringify(time);
+       return '\n【本次生成即时计算的时间事实，不是情绪或催促依据】\n'+JSON.stringify(time)+'\n【当前会话最近记录的实际距离，可能已经换话题；跨会话最近联系见recent_contacts】\n'+JSON.stringify(recentExchange(this.db,{peer,current,now,presentation:this.presentation}));
       };
       const reply=await runScopedTurn({client:this.client,profile,input,tools,generationContext,maxRounds:tools.some(t=>t.name==='workroom_create')?64:32,signal,onStep:detail=>this.db.prepare('INSERT OR REPLACE INTO generation_steps VALUES(?,?,?,?,?)').run(peer,event,++step,JSON.stringify({...detail,anchor:{conversation:peer,event,sender_id:senderOf(current.text),attention:JSON.parse(current.text).transport?.attention??null,routing:JSON.parse(current.text).routing??null},recalled:this.evidenceFor(peer)}),this.clock()),onTool:({name,args,result,ok})=>{this.recordTool(peer,event,name,result,ok);return this.markTask(peer,event,name,args,result,{ok});}});
       if(this.shouldPreserveTask(peer,event))this.setTaskState(peer,event,'ready');

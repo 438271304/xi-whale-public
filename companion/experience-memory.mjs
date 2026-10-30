@@ -247,6 +247,29 @@ export class ExperienceMemory{
   const records=rows.map(r=>this.evidenceView(r));this.lastRetrievalEvidence={operation:'conversation-history',scope,selected:records.map(r=>({id:r.id,event:r.event,scope:r.scope,author_id:r.author.id,author_kind:r.author.kind})),excluded_current:excludeCurrent?{scope:scopeKey(excludeCurrent.scope),event:String(excludeCurrent.event)}:null};
   return {scope,order:'chronological within the selected latest page',total,offset,next_offset:offset+limit<total?offset+limit:null,records,coverage:'Locally retained source messages only; missing records do not prove an event happened or did not happen.',notice};
  }
+ recentContacts({senderIds=[],before=this.clock(),excludeCurrent=null}={}){
+  const ids=[...new Set(senderIds.filter(id=>/^\d{5,15}$/.test(String(id))).map(String))].slice(0,6),records=[];
+  for(const sender of ids){
+   if([this.identities.botId,...this.identities.peerBotIds].map(String).includes(sender))continue;
+   const args=[sender,before/1000,(before-7*86400000)/1000];let exclude='';
+   if(excludeCurrent?.event){exclude=' AND NOT (e.scope=? AND e.event=?)';args.push(scopeKey(excludeCurrent.scope),String(excludeCurrent.event));}
+   const rows=this.db.prepare(`WITH source AS (
+    SELECT e.*,CASE WHEN json_valid(v.text) THEN json_extract(v.text,'$.transport.time') END AS observed,
+     CASE WHEN json_valid(v.text) THEN json_extract(v.text,'$.transport.sender_id') END AS wire_sender,
+     CASE WHEN json_valid(v.text) THEN json_extract(v.text,'$.transport.conversation') END AS wire_scope,
+     CASE WHEN json_valid(v.text) THEN json_extract(v.text,'$.transport.message_id') END AS wire_event
+    FROM experiences e JOIN experience_versions v ON v.id=e.current_revision)
+    SELECT e.id,e.observed FROM source e
+    WHERE e.role='user' AND e.sender_id=? AND e.source_known=1 AND typeof(e.observed) IN ('integer','real') AND e.observed<=? AND e.observed>=? ${exclude}
+    AND e.wire_scope=e.scope AND CAST(e.wire_sender AS TEXT)=e.sender_id AND CAST(e.wire_event AS TEXT)=e.event
+    AND NOT EXISTS(SELECT 1 FROM experience_sources fs WHERE fs.experience_id=e.id AND fs.source='received-qq-forward-node')
+    ORDER BY e.observed DESC,e.id DESC LIMIT 8`).all(...args);
+   const record=rows.map(row=>({...this.get({id:row.id,maxChars:1000}),observed_at:row.observed*1000})).find(r=>r.found&&r.attribution.evidence_kind==='direct-human-statement'&&!r.attribution.identity_conflict&&!r.transport_status?.recalled);
+   if(record)records.push({id:record.id,scope:record.scope,event:record.event,author_id:record.author.id,at:new Date(record.observed_at).toISOString(),elapsed_seconds:Math.floor((before-record.observed_at)/1000),
+    meaning:'Latest indexed direct incoming message from this person within seven days, not present activity or online status. Body omitted; use read_experience only when relevant. Remembering does not authorize quoting private content to others.'});
+  }
+  return records;
+ }
  context({scope,current='',currentEvent=null,senderId=null,maxChars=6000,limit=6}={}){
   scope=scopeKey(scope);maxChars=boundedInteger(maxChars,6000,500,16000);limit=boundedInteger(limit,6,1,12);
   const raw=typeof current==='string'?current:JSON.stringify(current);senderId??=extractSender(raw);
@@ -273,6 +296,10 @@ export class ExperienceMemory{
   const addEvidence=(r,bodyLimit=900)=>{for(const size of [bodyLimit,160,32,0])if(add('related',this.evidenceView(r,{maxChars:size})))return true;return false;};
   for(const r of related.filter(r=>quoted.has(String(r.event))))addEvidence(r);
   const people=senderId===null?[]:this.people({id:senderId,limit:3});if(people[0])add('people',people[0]);
+  if(maxChars>=4000){
+   payload.recent_contacts=[];
+   for(const contact of this.recentContacts({senderIds:[senderId,...this.identities.guardianIds,...(currentData.segments??[]).filter(s=>s.type==='at').map(s=>s.target)],before:cutoff,excludeCurrent:excluded}).slice(0,3))add('recent_contacts',contact);
+  }
   for(const r of related.filter(r=>!quoted.has(String(r.event))))addEvidence(r);
   for(const a of attachments.slice(0,3)){
    if(add('attachments',a))continue;
@@ -281,7 +308,7 @@ export class ExperienceMemory{
   const selectedState=new Set(payload.state.map(s=>s.kind+'\0'+s.key));
   for(const s of states)if(!selectedState.has(s.kind+'\0'+s.key))add('state',stateContextView(s,120,2));
   for(const p of people.slice(1))add('people',p);
-  this.lastRetrievalEvidence={operation:'context',current_scope:scope,target_scope:selection.scope,selection_basis:selection.basis,needs_scope:selection.needs_scope,excluded_current:excluded,selected:payload.related.map(r=>({id:r.id,event:r.event,scope:r.scope,author_id:r.author.id,author_kind:r.author.kind}))};
+  this.lastRetrievalEvidence={operation:'context',current_scope:scope,target_scope:selection.scope,selection_basis:selection.basis,needs_scope:selection.needs_scope,excluded_current:excluded,contact_index:(payload.recent_contacts??[]).map(({id,scope,event,author_id})=>({id,scope,event,author_id})),selected:payload.related.map(r=>({id:r.id,event:r.event,scope:r.scope,author_id:r.author.id,author_kind:r.author.kind}))};
   return payload;
  }
  importSources({historyPath,turnsPath,mediaPath,contextPath}={}){

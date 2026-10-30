@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "purpose": "Sanitized engineering archive; not a runnable full backup",
-  "export_policy_sha256": "a3d9dd44b33f209a4e9f0a11e84742ba8f01dd3d957afe8ddfa73723ea61974c",
-  "source_files": 246,
+  "export_policy_sha256": "fce800179bc9aa95ac9f88f8eed8ac02b3c861a78cec89a359659d4cfbccc52c",
+  "source_files": 251,
   "identifier_value_count": 9,
   "identifier_mapping_exported": false,
   "credential_scan": {
@@ -31,14 +31,14 @@
     },
     {
       "path": "EXPORT_POLICY.json",
-      "bytes": 89348,
-      "target_sha256": "a3d9dd44b33f209a4e9f0a11e84742ba8f01dd3d957afe8ddfa73723ea61974c",
+      "bytes": 91184,
+      "target_sha256": "fce800179bc9aa95ac9f88f8eed8ac02b3c861a78cec89a359659d4cfbccc52c",
       "kind": "generated-document"
     },
     {
       "path": "README.md",
       "bytes": 2887,
-      "target_sha256": "d49d57a3f40ee0cfe086f552999519b52c34e55247cb12cdabdecda97c32d1fa",
+      "target_sha256": "c08c9a0ef7665cb91f7b44a995cab5838beb12123a6757630258f92fb369c13f",
       "kind": "generated-document"
     },
     {
@@ -147,8 +147,8 @@
       "source_root": "project",
       "source": "companion/cognition-tools.mjs",
       "path": "companion/cognition-tools.mjs",
-      "target_sha256": "16201bd540911806461b196639ec252c871f73b611c03b47f18ac6dd030c52b1",
-      "bytes": 12272,
+      "target_sha256": "638790517791c6b54a3b4853bf64e25c026125568c3626e87ade48286ef08b7c",
+      "bytes": 12682,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -290,8 +290,8 @@
       "source_root": "project",
       "source": "companion/curiosity-life.mjs",
       "path": "companion/curiosity-life.mjs",
-      "target_sha256": "4dcef7171650c629ff1e5d8fc52dc2d03b25d48467324b1c5dd9a9f1f9952a5f",
-      "bytes": 28092,
+      "target_sha256": "0e7f2fb3799911697b433e7e9addddfa78152a94c8c3127ba8bb0299f2842ed4",
+      "bytes": 28913,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -434,8 +434,8 @@
       "source_root": "project",
       "source": "companion/experience-memory.mjs",
       "path": "companion/experience-memory.mjs",
-      "target_sha256": "2b232c4befc7e8d73b75975a04b62786583cce88c7466d8d37ea396d1675bbe5",
-      "bytes": 42065,
+      "target_sha256": "cb25ce9e69a76b4dfd22bcd18863780af5990947d0e057842a261b925701e2c6",
+      "bytes": 44794,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -760,8 +760,8 @@
       "source_root": "project",
       "source": "companion/identity/SCOPED_PROFILE.md",
       "path": "companion/identity/SCOPED_PROFILE.md.example",
-      "target_sha256": "8bdecd70c8e2ec3ff6862474fefe5f0bf18d8a4242541517db6e1f5da0607918",
-      "bytes": 8651,
+      "target_sha256": "a49732d06380f3ad438c5252148f9f52c2275c62e5244930100315ccaaca124c",
+      "bytes": 10011,
       "kind": "identity-template",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -909,6 +909,17 @@
     },
     {
       "source_root": "project",
+      "source": "companion/life-progress.mjs",
+      "path": "companion/life-progress.mjs",
+      "target_sha256": "16452f6dc20ebb87517efbcf598520f29e05dabc1357157b1dcafd427b57aead",
+      "bytes": 15201,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/life-recollection.mjs",
       "path": "companion/life-recollection.mjs",
       "target_sha256": "4bd58f31443364b566f4dc3e08aa89505a564be794540b5b337f016884e7b6e6",
@@ -933,8 +944,8 @@
       "source_root": "project",
       "source": "companion/life-share-audience.mjs",
       "path": "companion/life-share-audience.mjs",
-      "target_sha256": "117373473061979f00085e22c9d06e5646b610a5d72f5918f3b822e385261436",
-      "bytes": 14417,
+      "target_sha256": "aa4f39149ceac189e38a81859f2f720d4c484ff206a30a1c2b55010a3feef4ac",
+      "bytes": 15394,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1013,8 +1024,8 @@
       "source_root": "project",
       "source": "companion/private-conversation.mjs",
       "path": "companion/private-conversation.mjs",
-      "target_sha256": "fc481c5143162942218806cca2390766b1551637b0ed36326f6108a00e570d76",
-      "bytes": 21843,
+      "target_sha256": "1648dd38332e03ebe70bf04d50fabd73569d5f4f88d228d59cefef7d53ecdfc3",
+      "bytes": 22105,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1279,6 +1290,17 @@
       "applied_transformations": {
         "utf8-lf": 1,
         "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/recent-exchange.mjs",
+      "path": "companion/recent-exchange.mjs",
+      "target_sha256": "99b653e33b5875a38d5cae2d8707136803a59b14dcbd6e3805ac2d2418c425bb",
+      "bytes": 2101,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
       }
     },
     {
@@ -2017,6 +2039,17 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-life-progress.mjs",
+      "path": "companion/test-life-progress.mjs",
+      "target_sha256": "639f46bc5454468af1ae1ece54a93defbc7688f649818cee2edb1905f03e3add",
+      "bytes": 11792,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-life-recollection.mjs",
       "path": "companion/test-life-recollection.mjs",
       "target_sha256": "35d95311f9391ad5a9696b4ecf27073de82f1ae440866762374c5900fbe0ddd2",
@@ -2623,6 +2656,30 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-weekend-conversation.mjs",
+      "path": "companion/test-weekend-conversation.mjs",
+      "target_sha256": "f7dd4973e889347517045ec803b7fbbde4920644c40415bbcc178bbc231991eb",
+      "bytes": 14432,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-datetime": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-weekend-life.mjs",
+      "path": "companion/test-weekend-life.mjs",
+      "target_sha256": "54925fadf2652e038d5b10b185835b1254041a845232d319ad51b17aefa83713",
+      "bytes": 12397,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-datetime": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-workroom-preview.py",
       "path": "companion/test-workroom-preview.py",
       "target_sha256": "d613ed4f3444b1998623140b1019a78e450673ac31ba9b7832ecb468ac7cf5e1",
@@ -2827,8 +2884,8 @@
     },
     {
       "path": "docs/FEEDBACK_REVIEW.md",
-      "bytes": 16911,
-      "target_sha256": "b0cd373102683feb3686cc5b7299acb430e2b21bb6708b89d4cdb913ed5c9194",
+      "bytes": 19132,
+      "target_sha256": "a3e22c0d720ae578b35b5db3fd9813a1256cdf6c017496b86650651a40a71433",
       "kind": "anonymized-feedback-document"
     },
     {

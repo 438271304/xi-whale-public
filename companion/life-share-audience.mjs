@@ -117,7 +117,7 @@ export class LifeShareAudience {
     return {data, sender, text};
   }
 
-  collect(scope, now, shares) {
+  collect(scope, now, shares, {persist = true} = {}) {
     // A bounded short-term sample from already archived turns, never raw QQ,
     // model prose, forwarded content or image/card interpretation as feedback.
     const rows = this.conversationDb.prepare(`SELECT rowid,event,role,text,at FROM turns
@@ -125,7 +125,7 @@ export class LifeShareAudience {
       .all(scope.address, Math.max(0, now - SAMPLE_AGE), now, SAMPLE_LIMIT).reverse();
     const remembered = this.db.prepare('SELECT max(at) at FROM life_share_feedback WHERE scope=? AND at<=?').get(scope.address, now)?.at ?? null;
     let lastResponse = remembered;
-    const accepted = new Map(), recent = [];
+    const accepted = new Map(), recent = [], observed = [];
     const insert = this.db.prepare('INSERT OR IGNORE INTO life_share_feedback(scope,event,sender_id,at,text,basis,preferences) VALUES(?,?,?,?,?,?,?)');
     for (const row of rows) {
       const person = this.human(row, scope, now);
@@ -155,23 +155,35 @@ export class LifeShareAudience {
       if (!basis) continue;
       const share = shares.findLast(item => item.at < row.at);
       accepted.set(row.event, {sender, share: share?.id ?? null});
-      insert.run(scope.address, row.event, sender, row.at, isFeedback ? text : null, basis, JSON.stringify(preferences));
+      const feedback = {event: row.event, sender_id: sender, at: row.at, text: isFeedback ? text : null, basis, preferences: JSON.stringify(preferences)};
+      observed.push(feedback);
+      if (persist) insert.run(scope.address, row.event, sender, row.at, feedback.text, basis, feedback.preferences);
       lastResponse = Math.max(lastResponse ?? 0, row.at);
     }
-    return lastResponse;
+    return {lastResponse, observed};
   }
 
-  inspect(value) {
+  inspect(value, {persist = true} = {}) {
+    if (typeof persist !== 'boolean') throw TypeError('Invalid sharing audience persistence mode');
     const scope = checkedScope(value), now = this.clock();
     if (!Number.isSafeInteger(now) || now < 0) throw TypeError('Invalid sharing audience time');
-    const shares = this.shares(scope, now), lastResponse = this.collect(scope, now, shares);
+    const shares = this.shares(scope, now), {lastResponse, observed} = this.collect(scope, now, shares, {persist});
     const dayStart = Math.floor((now + OFFSET) / DAY) * DAY - OFFSET;
     const unanswered = shares.filter(share => share.at >= dayStart && (lastResponse === null || share.at >= lastResponse)).length;
-    const recent_feedback = this.db.prepare(`SELECT event,sender_id,at,text,basis FROM life_share_feedback
-      WHERE scope=? AND text IS NOT NULL AND at<=? ORDER BY at DESC,rowid DESC LIMIT 5`).all(scope.address, now).map(row => ({...row}));
+    const saved = this.db.prepare(`SELECT rowid AS sequence,event,sender_id,at,text,basis,preferences FROM life_share_feedback
+      WHERE scope=? AND at<=? ORDER BY at DESC,rowid DESC`).all(scope.address, now);
+    // Preview applies exactly the same attribution as a normal refresh. Merge
+    // newly observed feedback in memory, preserving INSERT OR IGNORE semantics.
+    const feedback = new Map(saved.map(row => [row.event + ':' + row.sender_id, row]));
+    let sequence = saved.reduce((max, row) => Math.max(max, row.sequence), 0);
+    if (!persist) for (const row of observed) {
+      const key = row.event + ':' + row.sender_id;
+      if (!feedback.has(key)) feedback.set(key, {...row, sequence: ++sequence});
+    }
+    const ordered = [...feedback.values()].sort((a, b) => b.at - a.at || b.sequence - a.sequence);
+    const recent_feedback = ordered.filter(row => row.text !== null).slice(0, 5).map(({event,sender_id,at,text,basis}) => ({event,sender_id,at,text,basis}));
     const preferences = [], seen = new Set();
-    for (const row of this.db.prepare(`SELECT event,sender_id,at,preferences FROM life_share_feedback
-      WHERE scope=? AND preferences<>'[]' AND at<=? ORDER BY at DESC,rowid DESC`).all(scope.address, now)) {
+    for (const row of ordered.filter(row => row.preferences !== '[]')) {
       for (const preference of JSON.parse(row.preferences)) {
         const key = row.sender_id + ':' + preference.key;
         if (seen.has(key)) continue;
