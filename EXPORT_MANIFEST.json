@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "purpose": "Sanitized engineering archive; not a runnable full backup",
-  "export_policy_sha256": "d18ad05b2ea4e1bae482455681411a39e78302c8a26a1aa7c4123cec15ddfaa6",
-  "source_files": 270,
+  "export_policy_sha256": "c7d3b6c8e6a7241c30d8823b5264a3718a3229e0576fd08920073fcda2bdd7eb",
+  "source_files": 282,
   "identifier_value_count": 9,
   "identifier_mapping_exported": false,
   "credential_scan": {
@@ -31,14 +31,14 @@
     },
     {
       "path": "EXPORT_POLICY.json",
-      "bytes": 98161,
-      "target_sha256": "d18ad05b2ea4e1bae482455681411a39e78302c8a26a1aa7c4123cec15ddfaa6",
+      "bytes": 102533,
+      "target_sha256": "c7d3b6c8e6a7241c30d8823b5264a3718a3229e0576fd08920073fcda2bdd7eb",
       "kind": "generated-document"
     },
     {
       "path": "README.md",
       "bytes": 2887,
-      "target_sha256": "03fc3f074795e3466f947da724c14166bf3713924b47e57cff96b8261edd06ae",
+      "target_sha256": "7e793d77dd3238e85af577b58a1ecfe65197e86c0e345872bfc4683a5d870f98",
       "kind": "generated-document"
     },
     {
@@ -147,8 +147,8 @@
       "source_root": "project",
       "source": "companion/cognition-tools.mjs",
       "path": "companion/cognition-tools.mjs",
-      "target_sha256": "fac2e248947f2d6c0caf5de842b5c034c7b9b0aaaae6825a49d792b9b57ca806",
-      "bytes": 14399,
+      "target_sha256": "440eadd12194db142db6bfe673606352a02a13275fcfbdddcf5b91bc52cd2125",
+      "bytes": 14641,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -158,8 +158,8 @@
       "source_root": "project",
       "source": "companion/conversation-capabilities.mjs",
       "path": "companion/conversation-capabilities.mjs",
-      "target_sha256": "62428380c4e2f73e2b0759880d18b8dc135857233c4ebcafa40920c18734596a",
-      "bytes": 3343,
+      "target_sha256": "dc5ad9cc4da91566d6ecf571c6b66080aad79ad908a1bbf3175142746aa47788",
+      "bytes": 3487,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -180,8 +180,8 @@
       "source_root": "project",
       "source": "companion/conversation-extras.mjs",
       "path": "companion/conversation-extras.mjs",
-      "target_sha256": "9dec00e346abdbc687584e3bc0d1e6485a2b8be7953d470714f41cb4b0797152",
-      "bytes": 7105,
+      "target_sha256": "4ab1b7488ec4b3d4d01534e0e3051eba727487b49e22b28f6da332bce9bdf090",
+      "bytes": 8428,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -257,8 +257,8 @@
       "source_root": "project",
       "source": "companion/conversation-service.mjs",
       "path": "companion/conversation-service.mjs",
-      "target_sha256": "a1a6286ace3e5078cc3db7fa2bd79d55ad8f94fb923f6c1bc05debdbdb02dd95",
-      "bytes": 33119,
+      "target_sha256": "075f12f65a65eebe0598a98656670fcc621329866c3cad0ea157aca4c1d4783f",
+      "bytes": 34667,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -290,8 +290,8 @@
       "source_root": "project",
       "source": "companion/curiosity-life.mjs",
       "path": "companion/curiosity-life.mjs",
-      "target_sha256": "a7a2a2598a8b583e65dcdbce7e5461650f66f84484536e09dfa536bd4dbbee27",
-      "bytes": 31496,
+      "target_sha256": "f823e83e8ba78d01c75cd85ba9c21bcdde1e7ffb89f997beed658e422880bc1b",
+      "bytes": 32001,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -434,8 +434,8 @@
       "source_root": "project",
       "source": "companion/experience-memory.mjs",
       "path": "companion/experience-memory.mjs",
-      "target_sha256": "c7a704e16c4acb0554bfa3ca0b5268df0fd826efc720c9d2f3241a3f832da95c",
-      "bytes": 45010,
+      "target_sha256": "24ef4668d99af52356a0287d8e1766de72018c649d876dd32f39ed57ff300ad1",
+      "bytes": 46689,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -577,8 +577,8 @@
       "source_root": "project",
       "source": "companion/home/app.js",
       "path": "companion/home/app.js",
-      "target_sha256": "21a0616ddbce82df928806f8bdcc65a58cce199cf5efebb4ee19b2cbc9a7f67a",
-      "bytes": 18753,
+      "target_sha256": "cfce5702f40757dcca311bdcafa159ff6dfa30177588dba57f926c6cec8c17bb",
+      "bytes": 24814,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -598,6 +598,17 @@
     },
     {
       "source_root": "project",
+      "source": "companion/home/capability_view.py",
+      "path": "companion/home/capability_view.py",
+      "target_sha256": "18f336452a97ac8c9d8a479a099bb1b578589e8784bb40557326a73f68616260",
+      "bytes": 15450,
+      "kind": "home-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/home/conversation_status.py",
       "path": "companion/home/conversation_status.py",
       "target_sha256": "0bed82d1db234ae10feff63cc1aa343aea58d3b8a028f7c6e6d2ba3860b39990",
@@ -612,8 +623,8 @@
       "source_root": "project",
       "source": "companion/home/index.html",
       "path": "companion/home/index.html",
-      "target_sha256": "5b11e4a1d7137ee531c750154d7e11542ef0d34e42cd24e054228a3b126c4127",
-      "bytes": 8645,
+      "target_sha256": "c21163d27396fb7256c86df0f9248f349fe5f21c5b9cdf00d2bb4f694cbca6ba",
+      "bytes": 9491,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -667,12 +678,13 @@
       "source_root": "project",
       "source": "companion/home/server.py",
       "path": "companion/home/server.py",
-      "target_sha256": "2dd54300fa81c1018d10d1162f6940558e666a1c95544ab695ec576103b4a880",
-      "bytes": 9556,
+      "target_sha256": "e7e477b4fd5b3ba03dd8d5f1c61dbbcf819035c68f398f6c085d80512b8678d3",
+      "bytes": 9692,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "windows-user-directory": 3
+        "windows-user-directory": 3,
+        "home-installation-roots-to-environment": 3
       }
     },
     {
@@ -691,11 +703,25 @@
       "source_root": "project",
       "source": "companion/home/style.css",
       "path": "companion/home/style.css",
-      "target_sha256": "f0ccea72d35abaffa5e31c1999e6325d513e4a71d037fb4202dfad575aefbe4b",
-      "bytes": 6147,
+      "target_sha256": "bac4546d9250c50afce341e84e39f749020a52fe345359998e93c888cd03fcec",
+      "bytes": 7383,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/test_capability_view.py",
+      "path": "companion/home/test_capability_view.py",
+      "target_sha256": "81b8af77028d9320f5c63eb999fd75bb2a971e91c4f2d2ec81f6405ea24ccf4e",
+      "bytes": 12819,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 3,
+        "synthetic-test-credential": 1,
+        "synthetic-test-epoch": 1
       }
     },
     {
@@ -857,8 +883,8 @@
       "source_root": "project",
       "source": "companion/isolated-qq-route.mjs",
       "path": "companion/isolated-qq-route.mjs",
-      "target_sha256": "e92961cdd63e22b089fe6b98050ef2d7911c0b79a4abfa3e42cc9f53b4503470",
-      "bytes": 10501,
+      "target_sha256": "4db9b537756973d10bfc9a4e7886815dc74d3f1158b328154988002feb9156b9",
+      "bytes": 12137,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -923,8 +949,8 @@
       "source_root": "project",
       "source": "companion/life-journal.mjs",
       "path": "companion/life-journal.mjs",
-      "target_sha256": "a4b2ffcd0f195c7b5083008ad8ebee593df5684d0eeaee91ee769b452e7324f0",
-      "bytes": 14583,
+      "target_sha256": "74ca124431443b0e904763c9e4f91ec17777d1900714c023ab30fb3c6cd597d5",
+      "bytes": 14613,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -947,6 +973,17 @@
       "path": "companion/life-own-corner.mjs",
       "target_sha256": "af0c050545e62b8ebeff116f36253c9ff591a17bff32f00929feac971e25efd9",
       "bytes": 9191,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-own-profile.mjs",
+      "path": "companion/life-own-profile.mjs",
+      "target_sha256": "2abb422eb71099a38b64c5e408b8210a915ab21ddfc883aac6afb139d3e6be4c",
+      "bytes": 5577,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -989,8 +1026,8 @@
       "source_root": "project",
       "source": "companion/life-self-reflection.mjs",
       "path": "companion/life-self-reflection.mjs",
-      "target_sha256": "04b001ff873693cf5404f2154c178191d4c431e3db5348651437e0298f965372",
-      "bytes": 12815,
+      "target_sha256": "df835ef959cfe5bedf86478f2d1a2dde2254ce89e87d59651f6b7a9a0c736e12",
+      "bytes": 12845,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1102,8 +1139,8 @@
       "source_root": "project",
       "source": "companion/private-conversation.mjs",
       "path": "companion/private-conversation.mjs",
-      "target_sha256": "1648dd38332e03ebe70bf04d50fabd73569d5f4f88d228d59cefef7d53ecdfc3",
-      "bytes": 22105,
+      "target_sha256": "fd65c033a9267a033a60205ec25dcef2e0057b74a09d9df301929f7896a810a7",
+      "bytes": 23540,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1326,8 +1363,8 @@
       "source_root": "project",
       "source": "companion/qq-self-profile.mjs",
       "path": "companion/qq-self-profile.mjs",
-      "target_sha256": "c728ce32d9ea7976ce1b539f2ce55ccfe966b2c6fbecb8bf9addf1451908119b",
-      "bytes": 17554,
+      "target_sha256": "fd66a7a36c2e797dfce70e088f6603236d23d3d9d9ac7afc67c4f293e18e233a",
+      "bytes": 21012,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -1344,6 +1381,28 @@
       "applied_transformations": {
         "utf8-lf": 1,
         "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-voice-experiences.mjs",
+      "path": "companion/qq-voice-experiences.mjs",
+      "target_sha256": "61a421f43ed1e3bd553acde74167998f267a7e1411a1248342e636d8b11ad8cc",
+      "bytes": 1729,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/qq-voice.mjs",
+      "path": "companion/qq-voice.mjs",
+      "target_sha256": "79bed23ebfe7b0fbeab15ebcac0885877c1755bee6e17e1569a3aa514358c8a1",
+      "bytes": 14405,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
       }
     },
     {
@@ -1441,8 +1500,8 @@
       "source_root": "project",
       "source": "companion/scoped-route-manager.mjs",
       "path": "companion/scoped-route-manager.mjs",
-      "target_sha256": "d4317c7c06c5072bffeef620d31694283f27a3d5b85ef034d11d9be5bddc6fe4",
-      "bytes": 1559,
+      "target_sha256": "bdeb69eb400cf9c82e997854565666b8b4131df323bb704264eefca75a51b7fc",
+      "bytes": 1863,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1564,6 +1623,18 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-capability-status.mjs",
+      "path": "companion/test-capability-status.mjs",
+      "target_sha256": "dcc0adfade9864b457c6d6fb56c4f7380985d0b8b3bc43113dcb0be217e951df",
+      "bytes": 5698,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-cognition-home.py",
       "path": "companion/test-cognition-home.py",
       "target_sha256": "69439b6cad862f4c55e0a0af7c8b4e76d359edb14a06ab455740d5fc11c56d7f",
@@ -1619,6 +1690,18 @@
       "applied_transformations": {
         "utf8-lf": 1,
         "synthetic-test-calendar": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-conversation-context-dedup.mjs",
+      "path": "companion/test-conversation-context-dedup.mjs",
+      "target_sha256": "e33dfcbaf6d69fa457486d8c062543f940ae27fd52f0f45a74ba6012d5505f09",
+      "bytes": 15810,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
       }
     },
     {
@@ -2191,6 +2274,31 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-life-own-profile.mjs",
+      "path": "companion/test-life-own-profile.mjs",
+      "target_sha256": "96ab223b44b821cac4ee5b497054f56c9d3bb97cf96e88352e471e70977b208b",
+      "bytes": 8964,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-profile-integration.mjs",
+      "path": "companion/test-life-profile-integration.mjs",
+      "target_sha256": "1d214e28212ed44ac69c2e687cef9c0f11c0b3a21f03203c17f436470b6943ce",
+      "bytes": 13206,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-life-progress.mjs",
       "path": "companion/test-life-progress.mjs",
       "target_sha256": "639f46bc5454468af1ae1ece54a93defbc7688f649818cee2edb1905f03e3add",
@@ -2676,6 +2784,30 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-qq-voice-integration.mjs",
+      "path": "companion/test-qq-voice-integration.mjs",
+      "target_sha256": "0badc9b3867f59a172ce39519b90e0d03a2805e96a90877d2f5105febcd40510",
+      "bytes": 6139,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-qq-voice.mjs",
+      "path": "companion/test-qq-voice.mjs",
+      "target_sha256": "a88d98aa36c4b0cdc92cd40f8e05493fe54a2f9ac68e724663302c1e0554202b",
+      "bytes": 15759,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-negative-path-label": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-qzone-experiences.mjs",
       "path": "companion/test-qzone-experiences.mjs",
       "target_sha256": "d4f2b395d07e6c9f31df0f3ae2c380e6fa09f4a04b147ddb57da9f9f6c90a691",
@@ -2799,6 +2931,18 @@
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-self-profile-lifecycle.mjs",
+      "path": "companion/test-self-profile-lifecycle.mjs",
+      "target_sha256": "1d59b2f4e32e9db45f61754b4f610dd1d636e02664ad82c3d27dd5c2e01f7135",
+      "bytes": 10189,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
       }
     },
     {
@@ -3110,8 +3254,8 @@
     },
     {
       "path": "docs/FEEDBACK_REVIEW.md",
-      "bytes": 20837,
-      "target_sha256": "3a787ea92062538ff311c66055d131bda3963222c06b63112660f06402666cee",
+      "bytes": 22533,
+      "target_sha256": "09f93bc1fdd66a8a891c649e7ac3f54815998e740de0c7519d4f96bf09d1f098",
       "kind": "anonymized-feedback-document"
     },
     {

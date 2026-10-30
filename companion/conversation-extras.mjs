@@ -27,7 +27,7 @@ export function conversationExtras({workspace,notesRoot,familyGroup,fetcher=fetc
  const tieba=new TiebaClaw({tokenReader:tiebaTokenReader??(tiebaSecret&&existsSync(tiebaSecret)?()=>{
   const data=readFileSync(tiebaSecret);if(data.length>4096)throw Error('Invalid dedicated token');return data.toString('utf8').trim();
  }:undefined)});
- let ownCreative=null;
+ let ownCreative=null,closed=false;
  const shelf=publicReading({fetcher});
  const home=homeTools([{name:'write_file',handler:async({path,content})=>{
   if(path!=='projects/home/card.json')throw Error('Only the home card is writable');
@@ -61,7 +61,25 @@ export function conversationExtras({workspace,notesRoot,familyGroup,fetcher=fetc
  provide.ownCreativeTools=context=>ownCreative?.tools(context)??[];
  provide.publicTools=({signal}={})=>[...publicExploration({client:publicClient,signal}),...(bili?bili.tools({signal}):[]),...tieba.tools({signal})];
   provide.ownHomeTools=()=>[home.find(tool=>tool.name==='home_read')];
- provide.close=async()=>{await workshop?.close();await bili?.close();workroom?.close();};return provide;
+ // Display connected adapters only. Execution readiness verifies large binaries
+ // and belongs to an actual tool request, not every UI/status refresh. Unknown
+ // readiness is deliberate; prior result metadata is displayed separately.
+ provide.capabilityStatus=()=>{
+  const item=(configured,available,autonomous,blocker=null)=>({configured,available:closed?false:available,autonomous,blocker:closed?'service-closed':blocker});
+  const frames=!!bili&&typeof bili.sampler==='function'&&!!bili.analyzer,speech=!!bili?.speech;
+  const claw=typeof tieba.tokenReader==='function';
+  return {
+   public_web:item(true,null,true),
+   // The fixed Claw adapter grants no ordinary Tieba-wide access claim.
+   ordinary_tieba:item(null,null,null),
+   claw:item(claw,claw?null:false,true,claw?null:'credential-reader-not-configured'),
+   bilibili_subtitles:item(!!bili,bili&&!bili.closed?null:false,!!bili,bili?null:'reader-not-connected'),
+   bilibili_frames:item(frames,!frames||bili.closed?false:null,!!bili,!frames?'reader-not-connected':null),
+   bilibili_speech:item(speech,!speech||bili.closed?false:null,!!bili,!speech?'reader-not-connected':null),
+   own_workshop:item(!!workshop,!workshop||workshop.closed||workshop.paused?false:null,!!ownCreative,workshop?.paused?'workshop-paused':null),
+  };
+ };
+ provide.close=async()=>{closed=true;await workshop?.close();await bili?.close();workroom?.close();};return provide;
 }
 export function importStickerSeeds(media,{manifest,assets}){
  // Exactly the seven previously deployed PNGs, not every research download.

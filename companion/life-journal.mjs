@@ -4,7 +4,7 @@ const SOURCE='life-journal',PREFIX='journal:';
 const types=new Set(['activity','daily-review']);
 const qqIncoming=new Set(['live-transport','admitted-transport','referenced-qq-api','conversation-turns','admitted-poke-transport','received-qq-forward-node']);
 const qqOutgoing=new Set(['acknowledged-delivery','acknowledged-qq-outgoing','isolated-qq-outgoing','conversation-turns']);
-const ownObserved=new Set(['public-exploration','verified-workshop-result','own-workroom-change','verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker']);
+const ownObserved=new Set(['public-exploration','verified-workshop-result','own-workroom-change','verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker','verified-own-profile-result']);
 const qqScope=scope=>/^(?:group|private):\d{5,15}$/.test(scope);
 const archivedQQ=source=>/^qq-history-pages\/\d{5,15}\.jsonl$/.test(source)||/^runs\/[A-Za-z0-9_-]{1,100}\/events\.jsonl$/.test(source);
 function eligibleSource(record,source){

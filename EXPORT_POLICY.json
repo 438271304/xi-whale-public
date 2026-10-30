@@ -667,6 +667,19 @@
     },
     {
       "root": "project",
+      "source": "companion/home/capability_view.py",
+      "output": "companion/home/capability_view.py",
+      "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/home/conversation_status.py",
       "output": "companion/home/conversation_status.py",
       "kind": "home-source",
@@ -774,6 +787,19 @@
       "source": "companion/home/style.css",
       "output": "companion/home/style.css",
       "kind": "home-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/home/test_capability_view.py",
+      "output": "companion/home/test_capability_view.py",
+      "kind": "synthetic-test-source",
       "transform_rules": [
         "known-qq-identifiers",
         "windows-user-directory",
@@ -1059,6 +1085,19 @@
       "root": "project",
       "source": "companion/life-own-corner.mjs",
       "output": "companion/life-own-corner.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-own-profile.mjs",
+      "output": "companion/life-own-profile.mjs",
       "kind": "source",
       "transform_rules": [
         "known-qq-identifiers",
@@ -1525,6 +1564,32 @@
     },
     {
       "root": "project",
+      "source": "companion/qq-voice-experiences.mjs",
+      "output": "companion/qq-voice-experiences.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/qq-voice.mjs",
+      "output": "companion/qq-voice.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/qzone-experiences.mjs",
       "output": "companion/qzone-experiences.mjs",
       "kind": "source",
@@ -1772,6 +1837,19 @@
     },
     {
       "root": "project",
+      "source": "companion/test-capability-status.mjs",
+      "output": "companion/test-capability-status.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-cognition-home.py",
       "output": "companion/test-cognition-home.py",
       "kind": "synthetic-test-source",
@@ -1826,6 +1904,19 @@
       "root": "project",
       "source": "companion/test-continuous-life-integration.mjs",
       "output": "companion/test-continuous-life-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-conversation-context-dedup.mjs",
+      "output": "companion/test-conversation-context-dedup.mjs",
       "kind": "synthetic-test-source",
       "transform_rules": [
         "known-qq-identifiers",
@@ -2474,6 +2565,32 @@
     },
     {
       "root": "project",
+      "source": "companion/test-life-own-profile.mjs",
+      "output": "companion/test-life-own-profile.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-profile-integration.mjs",
+      "output": "companion/test-life-profile-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-life-progress.mjs",
       "output": "companion/test-life-progress.mjs",
       "kind": "synthetic-test-source",
@@ -3020,6 +3137,32 @@
     },
     {
       "root": "project",
+      "source": "companion/test-qq-voice-integration.mjs",
+      "output": "companion/test-qq-voice-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-qq-voice.mjs",
+      "output": "companion/test-qq-voice.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-qzone-experiences.mjs",
       "output": "companion/test-qzone-experiences.mjs",
       "kind": "synthetic-test-source",
@@ -3152,6 +3295,19 @@
       "root": "project",
       "source": "companion/test-scoped-tools.mjs",
       "output": "companion/test-scoped-tools.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-self-profile-lifecycle.mjs",
+      "output": "companion/test-self-profile-lifecycle.mjs",
       "kind": "synthetic-test-source",
       "transform_rules": [
         "known-qq-identifiers",
@@ -3544,6 +3700,6 @@
     "git_history_included": false,
     "private_source_fingerprints_included": false,
     "historical_test_details": "Reviewed baseline preserved; added/updated synthetic calendar fixtures shifted together; installed-provider root is environment-supplied.",
-    "feedback": "docs/FEEDBACK_REVIEW.md: 15 anonymized paraphrases; no private messages, runtime records, raw reports or generation logs"
+    "feedback": "docs/FEEDBACK_REVIEW.md: 16 anonymous paraphrases; no actual voice, chats, raw reports or paid experiment scripts"
   }
 }

@@ -2,7 +2,7 @@
 // transport, persona file, or separate memory store.
 const incoming=new Set(['live-transport','admitted-transport','referenced-qq-api','conversation-turns','admitted-poke-transport','received-qq-forward-node']);
 const outgoing=new Set(['acknowledged-delivery','acknowledged-qq-outgoing','isolated-qq-outgoing','conversation-turns']);
-const own=new Set(['own-workroom-change','verified-workshop-result','public-exploration','verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker']);
+const own=new Set(['own-workroom-change','verified-workshop-result','public-exploration','verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker','verified-own-profile-result']);
 const protectedKey=/identity|guardian|permission|capabilit|credential|password|affection|好感|亲密度|身份|监护|权限|凭证|密钥|核心/i;
 const fields=new Set(['kind','key','operation','expected_revision','value','reason','evidence_ids','evidence_refs','journal_refs']);
 const qqScope=value=>/^(?:group|private):\d{5,15}$/.test(value);

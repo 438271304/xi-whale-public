@@ -271,6 +271,25 @@ export class ExperienceMemory{
   }
   return records;
  }
+ withTranscriptReferences(payload,presentedSources=[]){
+  if(!Array.isArray(presentedSources)||!presentedSources.length||!Array.isArray(payload?.related))return payload;
+  const related=payload.related.map(row=>{
+   const shown=presentedSources.slice(0,24).find(source=>source?.scope===row.scope&&String(source.event)===String(row.event)&&source.role===row.role&&source.body_complete===true);
+   if(!shown||!/^([a-f0-9]{64})$/.test(shown.source_text_sha256??'')||!/^([a-f0-9]{64})$/.test(shown.body_sha256??''))return row;
+   const record=this.get({id:row.id,maxChars:24000});
+   // Conservative with revised/enriched records: the transcript token has no
+   // independent proof that a later revision or additional metadata was seen.
+   if(!record.found||record.scope!==row.scope||String(record.event)!==String(row.event)||record.role!==row.role||record.version_count!==1||Object.keys(record.metadata??{}).length)return row;
+   const original=record.next_offset!==null?this.db.prepare('SELECT text FROM experience_versions WHERE id=? AND experience_id=?').get(record.revision,record.id)?.text:record.text;
+   if(typeof original!=='string'||hash(original)!==shown.source_text_sha256)return row;
+   const body=messageBody(original);
+   if(hash(body)!==shown.body_sha256||row.original_body_length!==body.length||typeof row.body!=='string'||!body.startsWith(row.body))return row;
+   // Only repeated body text is replaced. Source, author, time, corrections,
+   // attachments and their separate analysis views stay in this request.
+   const result={...row,body_in_transcript:true};delete result.body;delete result.body_complete;return result;
+  });
+  return {...payload,related};
+ }
  context({scope,current='',currentEvent=null,senderId=null,maxChars=6000,limit=6}={}){
   scope=scopeKey(scope);maxChars=boundedInteger(maxChars,6000,500,16000);limit=boundedInteger(limit,6,1,12);
   const raw=typeof current==='string'?current:JSON.stringify(current);senderId??=extractSender(raw);

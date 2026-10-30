@@ -12,6 +12,7 @@ import {QQSelfProfile} from './qq-self-profile.mjs';
 import {selfAvatarAdapter} from './qq-self-avatar.mjs';
 import {ForwardIntake} from './forward-intake.mjs';
 import {QQRecall} from './qq-recall.mjs';
+import {QQVoice} from './qq-voice.mjs';
 import {sendScopedReply} from './scoped-send.mjs';
 import {QQSelfQZone} from './qq-self-qzone.mjs';
 import {rememberQzonePublication} from './qzone-experiences.mjs';
@@ -32,6 +33,7 @@ export function isolatedQQRoute(world,{root,client,publicProfile,operatingContra
  const selfProfile=new QQSelfProfile({path:join(root,'qq-self-profile.sqlite3'),avatars:selfAvatarAdapter({media:service.media}),driver:{callApi:(...args)=>{if(!world.driver)throw Error('Existing QQ driver not ready');return world.driver.callApi(...args);}},authorize:async()=>!service.paused&&!service.closed});
  service.selfProfile=selfProfile;
  service.selfQzone=new QQSelfQZone({path:join(root,'qzone.sqlite3'),driver:{callApi:(...args)=>{if(!world.driver)throw Error('Existing QQ driver not ready');return world.driver.callApi(...args);}},authorize:async()=>!service.paused&&!service.closed,onVerified:async receipt=>rememberQzonePublication(service.cognition,receipt)});
+ service.qqVoice=new QQVoice({path:join(root,'qq-voice.sqlite3'),root:join(root,'qq-voice-jobs'),driver:{callApi:(...args)=>{if(!world.driver)throw Error('Existing QQ driver not ready');return world.driver.callApi(...args);}},service});
  service.forwardIntake=new ForwardIntake({path:join(root,'forwards.sqlite3'),driver:{callApi:(...args)=>{if(!world.driver)throw Error('Existing QQ driver not ready');return world.driver.callApi(...args);}},service,attachments});
  const social=new SocialRhythm({path:join(root,'social.sqlite3'),service,world,policy,topics:socialTopics,config:socialConfig,clock:()=>clock?clock().getTime():Date.now(),budgetAvailable:()=>client.canInitiate?.()===true});
  social.life=new CuriosityLife({path:join(root,'life.sqlite3'),service,social,world,policy,client,topics:socialTopics,tools:({signal})=>extraTools?.publicTools?.({signal})??publicExploration({client,signal}),homeTools:extraTools?.ownHomeTools?.()??[],creative:extraTools?.ownCreativeTools?{context:()=>extraTools.ownCreativeContext(),tools:context=>extraTools.ownCreativeTools(context)}:null,clock:()=>clock?clock().getTime():Date.now()});
@@ -110,5 +112,25 @@ export function isolatedQQRoute(world,{root,client,publicProfile,operatingContra
   })();return stopPromise;
  };
  // Core pause/resume must explicitly forward these before production activation.
- return {world,service,social,context,get closed(){return closed;},pause:async()=>{if(closing){await stopPromise;return;}generation++;batch.cancel();const paused=service.pause();await social.pause();await paused;},resume:()=>{if(closing)return;service.resume();social.resume();}};
+ const capabilityStatus=()=>{
+  const now=clock?clock().getTime():Date.now(),life=social.life;
+  const connected=(configured,autonomous)=>({configured,available:configured&&typeof world.driver?.callApi==='function',autonomous,blocker:configured?null:'adapter-not-connected'});
+  let extra={};try{extra=extraTools?.capabilityStatus?.()??{};}catch{}
+  const items={...extra,
+   public_web:extra.public_web??{configured:true,available:null,autonomous:!!life,blocker:null},
+   qzone_read:connected(typeof service.selfQzone?.readOwn==='function',!!life?.ownCorner),
+   qzone_publish:connected(typeof service.selfQzone?.publish==='function',typeof life?.heartbeat?.publish==='function'),
+   proactive_faces:connected(typeof life?.shareMedia?.revalidate==='function',!!life?.shareComposer),
+   proactive_images:connected(typeof life?.shareMedia?.revalidate==='function'&&!!service.media,!!life?.shareComposer),
+   own_profile:connected(typeof service.selfProfile?.tools==='function',!!life?.ownProfile),
+   qq_voice:service.qqVoice.capabilities(),
+  };
+  for(const item of Object.values(items)){
+   if(!life||life.closed)item.autonomous=false;
+   if(service.closed||closed){item.available=false;item.blocker='service-closed';}
+   else if(service.paused){item.available=false;item.blocker='service-paused';}
+  }
+  return {observed_at:now,items};
+ };
+ return {world,service,social,context,capabilityStatus,get closed(){return closed;},pause:async()=>{if(closing){await stopPromise;return;}generation++;batch.cancel();const paused=service.pause();await social.pause();await paused;},resume:()=>{if(closing)return;service.resume();social.resume();}};
 }

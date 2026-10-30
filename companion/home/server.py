@@ -1,6 +1,6 @@
 from urllib.parse import urlsplit,parse_qs
 """Read-only, loopback-only home for Xi. No chat/credential/file browsing API."""
-import json, sqlite3, urllib.request
+import json, sqlite3, urllib.request, os
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
@@ -10,16 +10,17 @@ from workroom_view import public_projects,public_preview,PREVIEW_CSP
 from interactive_workroom import public_interactive_preview,public_interactive_child,response_headers as interactive_headers
 from life_view import life_view
 from inner_life_view import inner_life_view
+from capability_view import capability_view
 
 HERE = Path(__file__).resolve().parent
 INTERACTIVE_READY = (HERE / 'interactive-release.json').is_file()
 PROJECT = HERE.parent.parent
-ROOT = Path('C:/Users/USER/PersonalAgentRuntime/whale-v1')
+ROOT = Path(os.environ['XI_RUNTIME_ROOT'])
 WORK = ROOT / 'home/companion/workspace'
-BACKUPS = Path('C:/Users/USER/PersonalAgentBackups')
+BACKUPS = Path(os.environ['XI_BACKUP_ROOT'])
 WORKROOM = ROOT / 'home/companion/scoped-chat/workroom.sqlite3'
 LIFE = ROOT / 'home/companion/scoped-chat/life.sqlite3'
-CHANNELS = Path('C:/Users/USER/PersonalAgentBackups/companion-runtime/clean-lab-0.2.8/resources/app/guardian/channels.json')
+CHANNELS = Path(os.environ['XI_CHANNELS_PATH'])
 TZ = timezone(timedelta(hours=8))
 
 def stamp(path):
@@ -27,6 +28,7 @@ def stamp(path):
 
 def snapshot():
     now = datetime.now(TZ)
+    core_status = {}
     result = dict(at=now.isoformat(), name='汐', runtime={'online':False}, card={}, budget=None,
                   stickers=[], collection_count=0, backups=[], issues=[])
     try:
@@ -49,6 +51,7 @@ def snapshot():
         result['issues'].append('新聊天记录状态暂不可读，不以零条代替')
     try:result['cognition']=cognition_status(ROOT/'home/companion/scoped-chat')
     except Exception:result['cognition']={'available':False}
+    result['capabilities']=capability_view(ROOT/'home/companion/scoped-chat',core_status.get('qq_route',{}).get('capabilities'),int(datetime.now(TZ).timestamp()*1000))
     card = WORK / 'projects/home/card.json'
     try:
         if card.stat().st_size > 16384: raise ValueError()

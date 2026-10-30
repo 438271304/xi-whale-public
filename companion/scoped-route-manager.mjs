@@ -24,5 +24,8 @@ export class ScopedRouteManager{
   });
  }
  async drain(){await this.binding?.drain();await this.current?.route.drain();}
- status(){const entry=this.current,ready=!!entry?.started&&!entry.route.closed&&!entry.route.service.closed;return {prepared:!!entry,ready,closed:entry?.route.closed??null,paused:entry?.route.service.paused??null,accepting:ready&&!entry.route.service.paused};}
+ status(){const entry=this.current,ready=!!entry?.started&&!entry.route.closed&&!entry.route.service.closed;
+  let capabilities=null;try{capabilities=entry?.route.capabilityStatus?.()??null;}catch{}
+  if(capabilities&&!ready)capabilities={...capabilities,items:Object.fromEntries(Object.entries(capabilities.items).map(([key,value])=>[key,{...value,available:false,blocker:'route-not-ready'}]))};
+  return {prepared:!!entry,ready,closed:entry?.route.closed??null,paused:entry?.route.service.paused??null,accepting:ready&&!entry.route.service.paused,capabilities};}
 }

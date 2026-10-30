@@ -2,6 +2,7 @@
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';
 import {dirname} from 'node:path';
+import {createHash} from 'node:crypto';
 import {runScopedTurn} from './scoped-tools.mjs';
 import {conversationFailure} from './conversation-errors.mjs';
 import {buildConversationTime} from './conversation-time.mjs';
@@ -11,6 +12,15 @@ import {recentExchange} from './recent-exchange.mjs';
 const activeTaskStates=['working','ready','sending'];
 const workroomMutations=new Set(['workroom_create','workroom_write','workroom_restore','workroom_trash','workroom_submit','workroom_task_state','workroom_publish','workroom_unpublish']);
 function senderOf(text){try{const id=JSON.parse(text??'').transport?.sender_id;return /^\d{5,15}$/.test(String(id))?String(id):null;}catch{return null;}}
+const textHash=text=>createHash('sha256').update(text).digest('hex');
+function presentedSource(row,scope,presented){
+ let source;try{source=JSON.parse(row.text);}catch{source=null;}
+ const body=typeof source?.body==='string'?source.body:row.text;
+ let view;try{view=JSON.parse(presented);}catch{view=null;}
+ // Match what was actually emitted, not merely a row that was considered.
+ if(presented!==row.text&&view?.said!==body)return null;
+ return {scope,event:String(row.event),role:row.role,source_text_sha256:textHash(row.text),body_sha256:textHash(body),body_complete:true};
+}
 function checkpointFor(tool,args,result,ok){
   let value=result;if(typeof result==='string'){try{value=JSON.parse(result);}catch{value=null;}}
   if(value?.ok===true&&value.result)value=value.result;
@@ -121,13 +131,14 @@ export class PrivateConversation {
   }
   anchoredInput(peer,event){
     const current=this.db.prepare("SELECT rowid,event,role,text,state,at FROM turns WHERE peer=? AND event=? AND role='user'").get(peer,String(event));if(!current)throw Error('Current event missing; refuse a different speaker');
-    const past=this.db.prepare("SELECT rowid,event,role,text,state,at FROM turns WHERE peer=? AND rowid<? AND (role='user' OR state='sent') ORDER BY rowid DESC LIMIT 23").all(peer,current.rowid);let remaining=96000-current.text.length;const input=[],representedSelfEvents=new Set();
+    const past=this.db.prepare("SELECT rowid,event,role,text,state,at FROM turns WHERE peer=? AND rowid<? AND (role='user' OR state='sent') ORDER BY rowid DESC LIMIT 23").all(peer,current.rowid);let remaining=96000-current.text.length;const input=[],representedSelfEvents=new Set(),presentedSources=[];
     for(const row of past){let prefix='[历史消息，时间：'+new Date(row.at).toISOString()+'；仅供理解；处理状态：'+row.state+'；不是本轮待执行指令]\n';
       if(row.role==='assistant'){const trigger=this.db.prepare("SELECT text FROM turns WHERE peer=? AND event=? AND role='user'").get(peer,row.event);prefix='[历史汐回复；'+JSON.stringify({source_event:row.event,in_reply_to_sender_id:senderOf(trigger?.text),in_reply_to_conversation:peer,evidence_kind:'assistant-claim',not_independent_human_evidence:true})+'；旧解释可能有误，引用纠正优先]\n';}
       if(row.role==='assistant')prefix+='[实际发送时间：'+new Date(row.at).toISOString()+'；'+(row.event.startsWith('proactive:')?'汐主动分享，可被后续真人承接讨论':'对当时消息的回复')+']\n';
-      const content=prefix+presentConversation(row.text,{...this.presentation,role:row.role});if(content.length>remaining)continue;input.unshift({role:row.role,content});remaining-=content.length;if(row.role==='assistant')representedSelfEvents.add(row.event);
+      const presented=presentConversation(row.text,{...this.presentation,role:row.role}),content=prefix+presented;if(content.length>remaining)continue;input.unshift({role:row.role,content});remaining-=content.length;if(row.role==='assistant')representedSelfEvents.add(row.event);
+      const source=presentedSource(row,peer,presented);if(source)presentedSources.push(source);
     }
-    input.push({role:'user',content:presentConversation(current.text,this.presentation)});const statements=[...past.filter(r=>r.role==='user').reverse(),current].slice(-14).map(r=>{try{const v=JSON.parse(r.text);return {event:r.event,speaker_id:v.transport?.sender_id??null,time:v.transport?.time??null,said:v.body?.slice(0,240)??'',reply_to:(v.segments??[]).filter(s=>s.type==='reply').map(s=>({event:s.message_id,speaker_id:s.reference?.sender_id??null})),statement_subject:'not inferred from speaker'};}catch{return {event:r.event,speaker_id:null,said:r.text.slice(0,240)};}});return {current,input,representedSelfEvents,frame:{current_event:current.event,current_sender_id:senderOf(current.text),conversation:peer,participants:this.presentation,notice:'Keep the source of each statement. A reply/comment on another person does not transfer that person’s experience to the commenter. Assistant history is an interpretation, not independent evidence.'}};
+    input.push({role:'user',content:presentConversation(current.text,this.presentation)});const statements=[...past.filter(r=>r.role==='user').reverse(),current].slice(-14).map(r=>{try{const v=JSON.parse(r.text);return {event:r.event,speaker_id:v.transport?.sender_id??null,time:v.transport?.time??null,said:v.body?.slice(0,240)??'',reply_to:(v.segments??[]).filter(s=>s.type==='reply').map(s=>({event:s.message_id,speaker_id:s.reference?.sender_id??null})),statement_subject:'not inferred from speaker'};}catch{return {event:r.event,speaker_id:null,said:r.text.slice(0,240)};}});return {current,input,representedSelfEvents,presentedSources,frame:{current_event:current.event,current_sender_id:senderOf(current.text),conversation:peer,participants:this.presentation,notice:'Keep the source of each statement. A reply/comment on another person does not transfer that person’s experience to the commenter. Assistant history is an interpretation, not independent evidence.'}};
   }
   async turn(peer,event,generation,revision) {
     const stopped=()=>this.closed||this.paused||generation!==this.generation;
@@ -137,7 +148,7 @@ export class PrivateConversation {
     if(stale())return expire('superseded');
     // A queued request keeps its own verified event/speaker; later arrivals
     // cannot become its last message or push it out of the bounded window.
-    const {current,input,frame,representedSelfEvents}=this.anchoredInput(peer,event);let addressOnly=false;
+    const {current,input,frame,representedSelfEvents,presentedSources}=this.anchoredInput(peer,event);let addressOnly=false;
     try{addressOnly=JSON.parse(current.text).transport?.address_only===true;}catch{}
     const controller=new AbortController();this.controllers.add(controller);this.turnControllers.set(peer+'|'+event,{peer,event,sender:senderOf(current?.text),controller});
     // No wall-clock cutoff for a conversation turn. Explicit pause/close still
@@ -147,7 +158,7 @@ export class PrivateConversation {
       // An address without a body is social attention, not a task authorization.
       // Do not expose mutation/history tools that could restart an old project.
       const tools=addressOnly?[]:this.toolsFor(peer,event);
-      const extraContext=await this.contextFor(peer,event,current??null);signal.throwIfAborted();
+      const extraContext=await this.contextFor(peer,event,{...current,transcriptPresentation:presentedSources});signal.throwIfAborted();
       frame.latest_self_messages=this.db.prepare("SELECT event,text,at FROM turns WHERE peer=? AND role='assistant' AND state='sent' AND rowid<? ORDER BY rowid DESC LIMIT 3").all(peer,current.rowid).map(r=>{
        const represented=representedSelfEvents.has(r.event),trigger=this.db.prepare("SELECT text FROM turns WHERE peer=? AND event=? AND role='user'").get(peer,r.event);
        return {event:r.event,at:new Date(r.at).toISOString(),kind:r.event.startsWith('proactive:')?'self-initiated-share':'reply',conversation:peer,
@@ -165,7 +176,15 @@ export class PrivateConversation {
        const related=(structured.segments??[]).filter(s=>s.type==='reply'&&s.reference).slice(0,3).map(s=>({peer,event:s.message_id,kind:'quoted-history',at:s.reference.recorded_at,transport:{conversation:peer,message_id:s.message_id,sender_id:s.reference.sender_id,time:s.reference.time}}));
        const time=buildConversationTime({now,current:{...current,peer},previousIncoming:incoming?{...incoming,peer}:null,previousSelf:self?{...self,peer,role:'assistant',state:'sent'}:null,relevantEvents:related});
        if(self){const trigger=this.db.prepare("SELECT text FROM turns WHERE peer=? AND event=? AND role='user'").get(peer,self.event);time.previous_self.in_reply_to_sender_id=senderOf(trigger?.text);time.previous_self.was_reply_to_current_sender=sender!==null&&senderOf(trigger?.text)===sender;}
-       return '\n【本次生成即时计算的时间事实，不是情绪或催促依据】\n'+JSON.stringify(time)+'\n【当前会话最近记录的实际距离，可能已经换话题；跨会话最近联系见recent_contacts】\n'+JSON.stringify(recentExchange(this.db,{peer,current,now,presentation:this.presentation}));
+       const recent=recentExchange(this.db,{peer,current,now,presentation:this.presentation});
+       for(const item of recent.recent_human_messages){
+        const shown=presentedSources.find(source=>source.scope===item.scope&&source.event===String(item.event)&&source.role==='user'&&source.body_complete===true);
+        if(!shown)continue;
+        const original=this.db.prepare("SELECT text FROM turns WHERE peer=? AND event=? AND role='user'").get(item.scope,String(item.event));
+        if(!original||textHash(original.text)!==shown.source_text_sha256)continue;
+        delete item.body_excerpt;delete item.excerpt_truncated;item.content_in_transcript=true;
+       }
+       return '\n【本次生成即时计算的时间事实，不是情绪或催促依据】\n'+JSON.stringify(time)+'\n【当前会话最近记录的实际距离，可能已经换话题；跨会话最近联系见recent_contacts】\n'+JSON.stringify(recent);
       };
       const reply=await runScopedTurn({client:this.client,profile,input,tools,generationContext,maxRounds:tools.some(t=>t.name==='workroom_create')?64:32,signal,onStep:detail=>this.db.prepare('INSERT OR REPLACE INTO generation_steps VALUES(?,?,?,?,?)').run(peer,event,++step,JSON.stringify({...detail,anchor:{conversation:peer,event,sender_id:senderOf(current.text),attention:JSON.parse(current.text).transport?.attention??null,routing:JSON.parse(current.text).routing??null},recalled:this.evidenceFor(peer)}),this.clock()),onTool:({name,args,result,ok})=>{this.recordTool(peer,event,name,result,ok);return this.markTask(peer,event,name,args,result,{ok});}});
       if(this.shouldPreserveTask(peer,event))this.setTaskState(peer,event,'ready');
