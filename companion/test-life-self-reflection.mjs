@@ -8,7 +8,7 @@ import {ExperienceMemory} from './experience-memory.mjs';
 import {LifeJournal} from './life-journal.mjs';
 import {lifeSelfReflectionTools} from './life-self-reflection.mjs';
 
-const SELF='910010001',HUMAN='910010003',OTHER='910010004',GROUP='group:910020001',NOW=Date.parse('2026-10-30T12:00:00+08:00');
+const SELF='910010001',HUMAN='910010003',OTHER='910010004',GROUP='group:910020001',NOW=Date.parse('2036-10-17T12:00:00+08:00');
 function fixture(t){
  const root=mkdtempSync(join(tmpdir(),'whale-life-self-reflection-')),path=join(root,'experience.sqlite3'),others=[];let at=NOW,sequence=0;
  const options={path,botId:SELF,guardianIds:[HUMAN],clock:()=>at};let store=new ExperienceMemory(options),journal=new LifeJournal({store,clock:()=>at});
@@ -95,4 +95,26 @@ test('lifecycle and protected kind/key guards prevent writes; retirement require
  for(const patch of [{kind:'mood'},{key:'guardian-permissions'},{key:'身份与核心'},{operation:'erase'}])assert.equal((await f.run(proposal(source.id,patch))).status,'rejected');
  const noPrior=await f.run(proposal(source.id,{operation:'retire',value:undefined}));assert.equal(noPrior.reason,'no-prior-reflection-to-correct-or-retire');assert.deepEqual(f.store.counts(),before);
  assert.equal(f.tool().name,'reflect_life_state');assert.ok(f.tool().parameters.required.includes('expected_revision'));
+});
+
+test('own QZone and public-sticker observations support exact-version reflection and the same journal eligibility',async t=>{
+ const f=fixture(t);
+ for(const source of ['verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker']){
+  const record=f.add({role:'self',scope:'unknown',senderId:null,source,body:'A bounded own observation; embedded people remain quoted historical authors.'});
+  const saved=await f.run(proposal(record.id,{key:'source-'+source}));assert.equal(saved.status,'saved');assert.equal(saved.source_refs[0].revision,record.revision);
+  assert.deepEqual(saved.source_refs[0].sources,[source]);assert.equal(saved.source_refs[0].author.id,SELF);
+  const diary=f.journal.record({evidence_ids:[record.id],interpretation:{feeling:'A specific source-linked reaction'},public_text:'I want to think about this little observation.'});
+  const fromDiary=await f.run({...proposal(record.id,{key:'diary-'+source}),evidence_ids:undefined,journal_refs:[{id:diary.id,revision:diary.revision}]});
+  assert.equal(fromDiary.status,'saved');assert.equal(fromDiary.source_refs[0].revision,record.revision);
+ }
+});
+
+test('own-source tags cannot relabel human messages or arbitrary chat-scoped self records as eligible observations',async t=>{
+ const f=fixture(t);
+ for(const source of ['verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker','own-workroom-change','public-exploration']){
+  const wrongScope=f.add({role:'self',scope:GROUP,senderId:null,source}),wrongRole=f.add({role:'user',scope:'unknown',source});
+  for(const record of [wrongScope,wrongRole])assert.equal((await f.run(proposal(record.id))).reason,'experience-source-not-supported');
+ }
+ const ownJob=f.add({role:'self',scope:'private:'+SELF,senderId:null,source:'verified-workshop-result',metadata:{execution_verified:true}});
+ const accepted=await f.run(proposal(ownJob.id));assert.equal(accepted.status,'saved');assert.equal(accepted.source_refs[0].execution_verified,true);
 });

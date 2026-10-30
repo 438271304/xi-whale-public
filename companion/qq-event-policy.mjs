@@ -1,4 +1,5 @@
 import {heartbeatDelay} from './guardian-persona.mjs';
+import {buildNativeMessage,nativeSummary} from './qq-face-output.mjs';
 const outgoingChecks=new WeakMap();
 // Only a guarded world receives this internal route. No model-supplied purpose
 // string can turn an ordinary private reply into a life initiation.
@@ -19,15 +20,31 @@ export async function sendLifeQQDelivery(world,target,text,options={}){
  try{
   const route=lifeDeliveries.get(world);if(!route)throw Error('Guardian: life delivery requires an installed QQ guard');
   if(!options||typeof options!=='object'||Array.isArray(options))throw Error('Guardian: invalid life delivery callbacks');
-  const {beforeTransport,onTransportAttempt}=options;
-  if(beforeTransport!==undefined&&typeof beforeTransport!=='function'||onTransportAttempt!==undefined&&typeof onTransportAttempt!=='function')throw Error('Guardian: invalid life delivery callbacks');
+  const {beforeTransport,onTransportAttempt,prepareMedia}=options;
+  if(beforeTransport!==undefined&&typeof beforeTransport!=='function'||onTransportAttempt!==undefined&&typeof onTransportAttempt!=='function'||prepareMedia!==undefined&&typeof prepareMedia!=='function')throw Error('Guardian: invalid life delivery callbacks');
   if(!['group','private'].includes(target?.kind)||!/^\d{5,15}$/.test(String(target.id))||typeof text!=='string'||!text.trim()||text.length>500)throw Error('Guardian: invalid life delivery');
   const destination=Object.freeze({kind:target.kind,id:String(target.id)});
   await route.authorize(destination); // Includes the asynchronous current-friend lookup.
   if(await beforeTransport?.()===false)throw Error('Guardian: life delivery was declined before transport');
+  // Supplied by the application, never by a model tool argument. This final
+  // synchronous check binds existing approved bytes to the saved expression.
+  const media=prepareMedia?.()??{};
+  if(!media||typeof media!=='object'||Array.isArray(media)||typeof media.then==='function'||Object.keys(media).some(key=>!['faces','imageBytes','mime'].includes(key)))throw Error('Guardian: invalid prepared life media');
+  const faces=media.faces??[],imageBytes=media.imageBytes??null;
+  if(!Array.isArray(faces))throw Error('Guardian: invalid prepared life faces');
+  const native=faces.length||imageBytes!==null?buildNativeMessage({text,faces,imageBytes}):null;
+  if(native&&(!world.host?.pushEvent||!world.driver?.callApi))throw Error('Guardian: life media sender not ready');
   route.check(destination); // Final synchronous clock/target/watch/feature check.
   onTransportAttempt?.();
   attempted=true;
+  if(native){
+   const result=await world.driver.callApi(destination.kind==='group'?'send_group_msg':'send_private_msg',{[destination.kind==='group'?'group_id':'user_id']:Number(destination.id),message:native});
+   if(!Number.isSafeInteger(result?.message_id))throw Error('Life delivery has no definite message receipt; do not retry');
+   const ts=new Date().toISOString(),summary=[text,nativeSummary(faces),imageBytes?'[image attachment]':''].filter(Boolean).join('\n');
+   const event=await world.host.pushEvent({type:'qq.self',source:'qq',ts,text:summary,meta:{message_id:result.message_id,user_id:route.botId,conv:destination,native_faces:faces.map(face=>({id:String(face.id),name:face.name})),life_initiation:true,has_image:!!imageBytes}});
+   world.knownMessages?.set(String(result.message_id),{conv:destination,ts:event?.ts??ts});
+   return {message_id:result.message_id,transport_returned:true};
+  }
   // QQWorld's original API accepts an expression object, not a bare string.
   return await route.transport.call(world,destination,{text});
  }catch(error){throw deliveryFailure(error,attempted);}
@@ -117,6 +134,7 @@ export function guardQQWorld(world, policy, clock = () => new Date(), ledger = n
     }
   };
   const lifeRoute={
+    botId:String(policy.bot_id),
     transport:lifeDeliveries.get(world)?.transport??outgoing,
     check:checkLife,
     authorize:async target=>{

@@ -5,6 +5,10 @@ import {UnifiedCognition} from './cognition-tools.mjs';
 import {LifeContinuity} from './life-continuity.mjs';
 import {queueLifeContact} from './life-contact.mjs';
 import {LifeShareComposer} from './life-share-compose.mjs';
+import {LifeShareMedia} from './life-share-media.mjs';
+import {ScopedMedia} from './scoped-media.mjs';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 
 // All identities and records are synthetic. All three databases are in memory;
 // no provider, transport, production data, network or file fixtures are used.
@@ -16,7 +20,7 @@ const audience={unanswered_count:2,recent_feedback:[{event:'feedback-1',role:'us
 const finish=(decision='share',text='One small, sourced observation.',reason='This is the one point I want to bring back.')=>({name:'finish_life_share',args:{decision,reason,...(text===undefined?{}:{text})}});
 const initial=req=>JSON.parse(req.input.find(item=>item.role==='user').content);
 
-function fixture(t){
+function fixture(t,{withMedia=false}={}){
  const cognition=new UnifiedCognition('unused-in-memory-fixture',{path:':memory:',clock:()=>NOW,botId:SELF,guardianIds:[FATHER,MOTHER]});
  const db=new DatabaseSync(':memory:'),conversationDb=new DatabaseSync(':memory:');
  db.exec('CREATE TABLE activities(id TEXT PRIMARY KEY,topic TEXT,motivation TEXT,state TEXT,summary TEXT,created INTEGER,updated INTEGER); CREATE TABLE discoveries(id TEXT,activity TEXT,url TEXT,title TEXT,excerpt TEXT,at INTEGER)');
@@ -28,16 +32,19 @@ function fixture(t){
   const output=result?.output??[{type:'function_call',name:result.name,call_id:'synthetic-call-'+(++sequence),arguments:JSON.stringify(result.args)}];
   return {response:{id:'synthetic-response-'+(++sequence),status:'completed',output},attempts:[]};
  }};
- const dependencies={db,store:cognition.store,journal:cognition.journal,conversationDb,client,profile:'Synthetic personal identity.',clock:()=>NOW};
+ const mediaStore=withMedia?new ScopedMedia(':memory:'):null;
+ const media=withMedia?new LifeShareMedia({service:{botId:SELF,media:mediaStore,paused:false,closed:false,stickers:{sourceForImage:()=>null}}}):null;
+ const dependencies={db,store:cognition.store,journal:cognition.journal,conversationDb,client,profile:'Synthetic personal identity.',clock:()=>NOW,...(media?{media}:{})};
  const composer=new LifeShareComposer(dependencies);
- t.after(()=>{conversationDb.close();db.close();cognition.close();});
+ t.after(()=>{mediaStore?.close();conversationDb.close();db.close();cognition.close();});
  const record=(event,text,{role='self',address='unknown',senderId=null,source='public-exploration',revisionKind='observation',at=NOW-60000}={})=>cognition.store.recordMessage({scope:address,event,role,senderId,text:typeof text==='string'?text:JSON.stringify(text),source,revisionKind,at});
  const activity=()=>{const id='fixture-activity-'+(++sequence);db.prepare("INSERT INTO activities VALUES(?,NULL,NULL,'planning','',?,?)").run(id,NOW,NOW);return id;};
  const discovery=({summary='A stored public observation.',sources=[{url:'https://example.org/source',title:'Synthetic source',level:'text-read'}],...extra}={})=>{
   const source=record('discovery-'+(++sequence),{summary,sources,...extra});
   return {source,intent:continuity.queue(activity(),source.id,'A preliminary private draft.',target)};
  };
- return {cognition,db,conversationDb,composer,dependencies,continuity,requests,record,discovery,
+ return {cognition,db,conversationDb,composer,dependencies,continuity,requests,record,discovery,media,mediaStore,
+  publicImage(){return mediaStore.importApprovedSeed(readFileSync(new URL('./assets/stickers/deepseek-bixin.png',import.meta.url)),'Existing approved public fixture').id;},
   plan(...actions){steps.push(...actions);},consumed(){assert.equal(steps.length,0);},
   run(intent,options={}){return composer.compose({intent,scope,audience,...options});},
   saved(){return db.prepare('SELECT * FROM life_share_expression ORDER BY rowid').all();},
@@ -232,4 +239,122 @@ test('sending attempts cannot appear as earlier shares or crowd out actual inbou
  });
  assert.equal((await f.run(intent)).decision,'later');f.consumed();
  assert.equal(f.conversationDb.prepare("SELECT count(*) n FROM turns WHERE state='sending'").get().n,10,'Reading context must not settle in-flight deliveries');
+});
+
+const mediaFinish=(attachments,text='One complete expression.')=>({name:'finish_life_share',args:{decision:'share',text,reason:'This optional expression fits this recipient.',...(attachments===undefined?{}:{attachments})}});
+const lastTool=req=>JSON.parse(req.input.filter(item=>item.type==='function_call_output').at(-1).output);
+const textDigest=text=>createHash('sha256').update(text.replace(/\s+/g,'')).digest('hex');
+
+test('optional face lookup and public image page feed one saved expression and the same durable intent revision',async t=>{
+ const f=fixture(t,{withMedia:true}),{intent}=f.discovery(),image=f.publicImage(),before=f.cognition.store.counts();
+ f.plan(req=>{
+  assert.deepEqual(req.tools.map(tool=>tool.name),['finish_life_share','find_life_share_faces','list_life_share_images']);
+  assert.equal(initial(req).draft_media_plan,null);return {name:'find_life_share_faces',args:{query:'0'}};
+ },req=>{assert.ok(lastTool(req).matches.some(face=>face.id==='0'));return {name:'list_life_share_images',args:{limit:4}};},req=>{
+  assert.equal(lastTool(req).items[0].public_image_id,image);return mediaFinish({native_face_ids:['0'],public_image_id:image});
+ });
+ const prepared=await f.run(intent);f.consumed();assert.equal(f.requests.length,3);
+ assert.equal(prepared.binding.intent_id,intent.id);assert.equal(prepared.binding.revision,intent.revision);assert.equal(prepared.binding.target_id,FATHER);
+ assert.equal(prepared.media_plan.public_image_id,image);assert.equal(f.continuity.get(intent.id).media_plan,null);
+ const saved=f.continuity.prepareExpression(intent,prepared);assert.equal(saved.revision,intent.revision+1);assert.deepEqual(saved.media_plan,prepared.media_plan);
+ const raw=f.db.prepare('SELECT text,media_plan FROM life_share_intents WHERE id=?').get(intent.id);
+ assert.equal(raw.text,prepared.text);assert.equal(typeof raw.media_plan,'string');assert.deepEqual(JSON.parse(raw.media_plan),prepared.media_plan);
+ const restored=new LifeContinuity(f.db,{clock:()=>NOW}).get(intent.id);assert.deepEqual(restored.media_plan,prepared.media_plan);
+ assert.ok(f.media.revalidate(restored.media_plan).imageBytes.length);assert.equal(f.saved().length,1);assert.equal(f.saved()[0].state,'prepared');
+ assert.deepEqual(f.cognition.store.counts(),before);assert.equal(f.mediaStore.db.prepare('SELECT count(*) n FROM image_sends').get().n,0);
+});
+
+test('empty inventory or choosing no attachments leaves text viable and preserves the old empty-media digest',async t=>{
+ const f=fixture(t,{withMedia:true}),{intent}=f.discovery();
+ f.plan({name:'list_life_share_images',args:{}},req=>{assert.deepEqual(lastTool(req).items,[]);return mediaFinish({native_face_ids:[]},' A simple text thought. ');});
+ const prepared=await f.run(intent),saved=f.continuity.prepareExpression(intent,prepared);f.consumed();
+ assert.equal(prepared.media_plan,null);assert.equal(saved.media_plan,null);assert.equal(saved.digest,textDigest('A simple text thought.'));
+ const noAdapter=fixture(t),plain=noAdapter.discovery().intent;noAdapter.plan(mediaFinish(undefined));
+ assert.equal((await noAdapter.run(plain)).media_plan,null);noAdapter.consumed();
+});
+
+test('invalid private image or extra attachment fields cannot become a prepared share; ordinary text can still be selected',async t=>{
+ for(const kind of ['private','unknown-face','url','later-attachment']){
+  const f=fixture(t,{withMedia:true}),{intent}=f.discovery();
+  const bytes=readFileSync(new URL('./assets/stickers/deepseek-bixin.png',import.meta.url));
+  const privateId=f.mediaStore.insert('private-'+FATHER,bytes,'synthetic-source').id;
+  const bad=kind==='private'?mediaFinish({public_image_id:privateId}):kind==='unknown-face'?mediaFinish({native_face_ids:['999999']}):kind==='url'?mediaFinish({url:'https://example.org/not-allowed'}):{name:'finish_life_share',args:{decision:'later',reason:'Wait.',attachments:{native_face_ids:['0']}}};
+  f.plan(bad,req=>{assert.match(req.input.at(-1).output,/rejected/);return mediaFinish(undefined);});
+  const result=await f.run(intent);f.consumed();assert.equal(result.media_plan,null);assert.equal(result.decision,'share');
+  assert.equal(f.continuity.get(intent.id).media_plan,null);assert.equal(f.saved().length,1);
+ }
+});
+
+test('prepared attachments cannot be reused for another intent, recipient or stale revision',async t=>{
+ const f=fixture(t,{withMedia:true}),{intent}=f.discovery(),other=f.discovery().intent;
+ f.plan(mediaFinish({native_face_ids:['0']}));const prepared=await f.run(intent);f.consumed();
+ assert.throws(()=>f.continuity.prepareExpression(other,prepared),/another intent/);
+ const before=f.continuity.get(intent.id),changed=f.continuity.reconsider(intent.id,{decision:'later',reason:'A different audience now.',recipient:'mother',target_kind:'private',target_id:MOTHER,recipient_reason:'A new deliberate recipient.'},[{id:intent.id}]);
+ assert.throws(()=>f.continuity.prepareExpression(before,prepared),/changed/);
+ assert.throws(()=>f.continuity.prepareExpression(changed,prepared),/another intent/);
+ assert.deepEqual(f.continuity.get(intent.id),changed);assert.equal(changed.media_plan,null);
+ await assert.rejects(f.run(changed),/intended recipient/);assert.equal(f.requests.length,1);
+});
+
+test('the expression binding is captured before generation, including when the caller changes its snapshot',async t=>{
+ const f=fixture(t,{withMedia:true}),{intent}=f.discovery();
+ f.plan(()=>{intent.recipient_reason='Mutated only after generation began';return mediaFinish({native_face_ids:['0']});});
+ const prepared=await f.run(intent);f.consumed();assert.equal(prepared.binding.recipient_reason,target.recipient_reason);
+ assert.throws(()=>f.continuity.prepareExpression(intent,prepared),/another intent/);
+ assert.equal(f.continuity.get(intent.id).media_plan,null);
+});
+
+test('same text plus different media has distinct stable digests, while a fresh text-only expression explicitly clears the old plan',async t=>{
+ const f=fixture(t,{withMedia:true}),a=f.discovery().intent,b=f.discovery().intent,c=f.discovery().intent;
+ const make=async(intent,ids)=>{f.plan(mediaFinish(ids===undefined?undefined:{native_face_ids:ids}));const decision=await f.run(intent);return f.continuity.prepareExpression(intent,decision);};
+ const first=await make(a,['0']),second=await make(b,['1']),same=await make(c,['0']);
+ assert.notEqual(first.digest,second.digest);assert.equal(first.digest,same.digest);assert.notEqual(first.digest,textDigest(first.text));
+ const before=first,cleared=await make(first,undefined);f.consumed();assert.equal(cleared.media_plan,null);assert.equal(cleared.digest,textDigest(cleared.text));
+ assert.equal(cleared.revision,before.revision+1);assert.equal(f.db.prepare('SELECT count(*) n FROM life_share_intents WHERE activity=?').get(a.activity).n,1);
+});
+
+test('later and private decisions retain the previous expression plan; a changed recipient or draft clears that bound plan',async t=>{
+ for(const decision of ['later','keep_private']){
+  const f=fixture(t,{withMedia:true}),{intent}=f.discovery();f.plan(mediaFinish({native_face_ids:['0']}));
+  const original=f.continuity.prepareExpression(intent,await f.run(intent));f.plan(finish(decision));
+  const deferred=f.continuity.prepareExpression(original,await f.run(original));f.consumed();
+  assert.deepEqual(deferred.media_plan,original.media_plan);assert.equal(deferred.text,original.text);assert.equal(deferred.digest,original.digest);
+  assert.equal(deferred.state,decision==='later'?'queued':'discarded');
+  if(decision==='later'){
+   const changed=f.continuity.reconsider(deferred.id,{decision:'later',reason:'Changed the draft.',text:'A genuinely new thought.'},[{id:deferred.id}]);
+   assert.equal(changed.media_plan,null);assert.equal(changed.digest,textDigest(changed.text));
+  }
+ }
+});
+
+test('sending, uncertain and sent intents never exchange attachments or create a second intent',async t=>{
+ for(const terminal of ['sending','uncertain','sent']){
+  const f=fixture(t,{withMedia:true}),{intent}=f.discovery();f.plan(mediaFinish({native_face_ids:['0']}));
+  const queued=f.continuity.prepareExpression(intent,await f.run(intent));
+  f.plan(mediaFinish({native_face_ids:['1']}));const pendingReplacement=await f.run(queued);f.consumed();
+  f.continuity.begin(queued.id,'one-attempt',queued.revision);if(terminal!=='sending')f.continuity.settle(queued.id,terminal,{message_id:42});
+  const frozen=f.continuity.get(queued.id);assert.throws(()=>f.continuity.prepareExpression(queued,pendingReplacement),/changed/);
+  assert.throws(()=>f.continuity.prepareExpression(frozen,pendingReplacement),/no longer pending/);
+  assert.deepEqual(f.continuity.queue(queued.activity,'another-source','Another text.',target),frozen);
+  assert.deepEqual(f.continuity.get(queued.id),frozen);assert.equal(f.db.prepare('SELECT count(*) n FROM life_share_intents').get().n,1);
+ }
+});
+
+test('media storage rejects malformed metadata and missing bindings before changing the intent',async t=>{
+ const f=fixture(t,{withMedia:true}),{intent}=f.discovery();f.plan(mediaFinish({native_face_ids:['0']}));const prepared=await f.run(intent);f.consumed();
+ for(const change of [p=>delete p.binding,p=>p.media_plan.metadata.native_faces[0].name='forged',p=>p.media_plan.native_face_ids=[0],p=>p.media_plan.metadata.path='C:/not-a-plan']){
+  const invalid=structuredClone(prepared);change(invalid);assert.throws(()=>f.continuity.prepareExpression(intent,invalid));
+  assert.deepEqual(f.continuity.get(intent.id),intent);
+ }
+});
+
+test('nullable media migration preserves old text, digest, receipts and old named-column writes',t=>{
+ const db=new DatabaseSync(':memory:');t.after(()=>db.close());
+ db.exec('CREATE TABLE life_share_intents(id TEXT PRIMARY KEY,activity TEXT UNIQUE NOT NULL,evidence TEXT NOT NULL,text TEXT NOT NULL,digest TEXT NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL,next_review INTEGER NOT NULL,attempt TEXT,receipt TEXT)');
+ db.prepare('INSERT INTO life_share_intents VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run('legacy','legacy-activity','legacy-source','Preserved text.','old-digest','sent','old',1,2,3,'old-attempt','{"message_id":7}');
+ const continuity=new LifeContinuity(db,{clock:()=>NOW}),old=continuity.get('legacy');
+ assert.equal(old.text,'Preserved text.');assert.equal(old.digest,'old-digest');assert.equal(old.receipt,'{"message_id":7}');assert.equal(old.media_plan,null);
+ db.prepare("INSERT INTO life_share_intents(id,activity,evidence,text,digest,state,reason,created,updated,next_review) VALUES('old-writer','old-writer-activity','source','Still plain text','plain-digest','queued','old writer',1,1,1)").run();
+ assert.equal(continuity.get('old-writer').media_plan,null);assert.equal(continuity.get('old-writer').text,'Still plain text');
+ new LifeContinuity(db,{clock:()=>NOW});assert.deepEqual(continuity.get('legacy'),old);
 });

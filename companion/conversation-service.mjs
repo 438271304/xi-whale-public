@@ -18,6 +18,7 @@ import {FixedFisharchiveCatalog} from './fisharchive-stickers.mjs';
 import {conversationFocus} from './conversation-focus.mjs';
 import {ConversationListening} from './conversation-listening.mjs';
 import {conversationCapabilities} from './conversation-capabilities.mjs';
+import {verifiedPublicSticker} from './life-public-stickers.mjs';
 export class ConversationService{
  constructor({root,client,publicProfile,operatingContract='',isAllowed,send,botId,guardianIds=[],peerBots=[],imageAnalyzer=null,stickerOptions={},extraTools=()=>[],startPaused=false,wait=ms=>new Promise(r=>setTimeout(r,ms))}){
   mkdirSync(root,{recursive:true});this.pending=new Map();this.closed=false;this.paused=false;
@@ -43,6 +44,22 @@ export class ConversationService{
    })();
    this.analysisInFlight.set(key,flight);try{return await flight;}finally{if(this.analysisInFlight.get(key)===flight)this.analysisInFlight.delete(key);}
   };
+   this.analyzePublicSticker=async(id,{signal,canAct=()=>false}={})=>{
+    const guard=async()=>{signal?.throwIfAborted();if(this.paused||this.closed||await canAct()!==true)throw Error('Public sticker observation ended');signal?.throwIfAborted();if(this.paused||this.closed)throw Error('Public sticker observation ended');};
+    await guard();const {scope}=verifiedPublicSticker(this,id),cached=this.media.analysis(scope,id);if(cached&&['vision-ok','ocr-only'].includes(cached.status))return cached;
+    if(!this.imageAnalyzer)return {status:'analysis-unavailable',reason:'image-analyzer-not-configured',untrusted_image_content:true};
+    const key=scope.key+'|'+id;
+    if(this.analysisInFlight.has(key)){const result=await this.analysisInFlight.get(key);await guard();return result;}
+    const flight=(async()=>{
+     await guard();verifiedPublicSticker(this,id);
+     const controller=new AbortController(),abort=()=>controller.abort(signal?.reason);signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();this.imageControllers.add(controller);
+     const job=Promise.resolve().then(()=>{controller.signal.throwIfAborted();return this.imageAnalyzer.analyze(this.media.imageBytes(scope,id).bytes,{signal:controller.signal});});this.imageJobs.add(job);
+     try{const result=await job;await guard();controller.signal.throwIfAborted();verifiedPublicSticker(this,id);return this.media.saveAnalysis(scope,id,result);}
+     catch(error){if(signal?.aborted||this.paused||this.closed)throw error;return {status:'analysis-failed',reason:'public-sticker-analysis-failed',untrusted_image_content:true};}
+     finally{signal?.removeEventListener('abort',abort);this.imageJobs.delete(job);this.imageControllers.delete(controller);}
+    })();
+    this.analysisInFlight.set(key,flight);try{return await flight;}finally{this.analysisInFlight.delete(key);}
+   };
   this.media=new ScopedMedia(join(root,'media.sqlite3'));this.history=new ScopedHistory(join(root,'history.sqlite3'));
   this.stickers=new FixedFisharchiveCatalog({...stickerOptions,path:join(root,'public-stickers.sqlite3'),media:this.media,authorize:()=>!this.paused&&!this.closed});
   this.cognition=new UnifiedCognition(root,{botId:this.botId,peerBotIds:this.peerBots,guardianIds:this.guardianIds});
@@ -53,7 +70,7 @@ export class ConversationService{
    toolsFor:(peer,event)=>{
     const turn=this.pending.get(peer+'|'+event);if(!turn)throw Error('Missing admitted source');
     const tools=scopedTools({base:join(root,'notes'),scope:turn.scope,history:async(scope,args)=>JSON.stringify(this.history.search(scope,args.keyword,args.offset??0)),memory:{search:args=>JSON.parse(this.cognition.tools(turn.scope,event).find(t=>t.name==='read_conversation_history').handler({query:args.keyword,offset:args.offset??0,limit:8})),note:args=>this.cognition.note(turn.scope,args)}});
-    tools.push(...this.cognition.tools(turn.scope,event));
+     tools.push(...this.cognition.tools(turn.scope,event,{signal:this.engine.turnControllers.get(peer+'|'+event)?.controller.signal,canAct:async()=>!this.paused&&!this.closed&&await isAllowed(turn.scope)&&!this.paused&&!this.closed}));
     if(this.social?.life)tools.push(...this.social.life.conversationTools(turn.scope,{message:turn.message,guardian:this.guardianIds.includes(String(turn.message.user_id)),authorize:async()=>!this.paused&&!this.closed&&await isAllowed(turn.scope)}));
     tools.push({name:'conversation_tasks',description:'Read persistent conversation and asynchronous workshop progress in this chat. Blocked DSH means no execution occurred. Ordinary chatter does not cancel projects. Interrupted work is not silently replayed.',parameters:{type:'object',properties:{},additionalProperties:false},handler:()=>JSON.stringify({conversation:this.engine.taskStatus(peer),workshop:this.extraTasks(turn.scope)})});
     if(this.selfProfile)tools.push(...this.selfProfile.tools().map(t=>({...t,handler:async args=>{if(this.paused||this.closed||!await isAllowed(turn.scope))throw Error('Profile action paused or source denied');return t.handler(args);}})));
@@ -222,7 +239,7 @@ export class ConversationService{
    catch(error){this.engine.db.prepare("UPDATE turns SET state=? WHERE peer=? AND event=? AND role='assistant'").run(trackedTransport&&!attempted?'deferred':'uncertain',scope.address,event);throw error;}
   })();this.receiving.add(job);job.finally(()=>this.receiving.delete(job)).catch(()=>{});return job;
  }
- async pause(){this.paused=true;this.forwardIntake?.pause();const extras=this.pauseExtras(),space=this.selfQzone?.pause(),stickers=this.stickers.pause();for(const controller of this.imageControllers)controller.abort();const drain=this.engine.pause();await Promise.allSettled([...this.receiving]);await drain;await extras;await space;await stickers;}
+ async pause(){this.paused=true;this.forwardIntake?.pause();const extras=this.pauseExtras(),space=this.selfQzone?.pause(),stickers=this.stickers.pause();for(const controller of this.imageControllers)controller.abort();const images=Promise.allSettled([...this.analysisInFlight.values(),...this.imageJobs]);const drain=this.engine.pause();await Promise.allSettled([...this.receiving]);await drain;await images;await extras;await space;await stickers;}
  resume(){if(!this.closed){this.paused=false;this.forwardIntake?.resume();this.selfQzone?.resume();this.stickers.resume();this.engine.resume();this.resumeExtras();}}
- async close(){if(this.closePromise)return this.closePromise;this.closed=true;this.paused=true;return this.closePromise=(async()=>{this.forwardIntake?.pause();const extras=this.pauseExtras(),space=this.selfQzone?.pause(),stickers=this.stickers.pause();for(const controller of this.imageControllers)controller.abort();const drain=this.engine.pause();await Promise.allSettled([...this.receiving]);await drain;await extras;await space;await stickers;await this.engine.close();await this.selfQzone?.close();await this.closeExtras();await this.stickers.close();this.forwardIntake?.close();this.listening.close();this.media.close();this.history.close();this.cognition.close();})();}
+ async close(){if(this.closePromise)return this.closePromise;this.closed=true;this.paused=true;return this.closePromise=(async()=>{this.forwardIntake?.pause();const extras=this.pauseExtras(),space=this.selfQzone?.pause(),stickers=this.stickers.pause();for(const controller of this.imageControllers)controller.abort();const images=Promise.allSettled([...this.analysisInFlight.values(),...this.imageJobs]);const drain=this.engine.pause();await Promise.allSettled([...this.receiving]);await drain;await images;await extras;await space;await stickers;await this.engine.close();await this.selfQzone?.close();await this.closeExtras();await this.stickers.close();this.forwardIntake?.close();this.listening.close();this.media.close();this.history.close();this.cognition.close();})();}
 }

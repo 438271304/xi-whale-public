@@ -1,6 +1,45 @@
 import {randomUUID, createHash} from 'node:crypto';
+import {findNativeFaces,selectNativeFaces} from './qq-face-output.mjs';
 
-const digest = text => createHash('sha256').update(text.replace(/\s+/g, '')).digest('hex');
+// Storage validation is not send authorization: LifeShareMedia still rechecks
+// public provenance and the actual bytes immediately before the one transport.
+function jsonData(value,depth=0){
+  if(depth>8)throw Error('Invalid saved media plan');
+  if(value===null||typeof value==='string'||typeof value==='boolean'||Number.isSafeInteger(value))return value;
+  if(Array.isArray(value)){
+    if(value.length>8||Reflect.ownKeys(value).some(key=>key!=='length'&&!(typeof key==='string'&&String(Number(key))===key&&Number.isSafeInteger(Number(key))&&Number(key)>=0&&Number(key)<value.length)))throw Error('Invalid saved media array');
+    return Array.from({length:value.length},(_,i)=>{const p=Object.getOwnPropertyDescriptor(value,String(i));if(!p||!Object.hasOwn(p,'value'))throw Error('Invalid saved media array');return jsonData(p.value,depth+1);});
+  }
+  if(!value||typeof value!=='object'||![Object.prototype,null].includes(Object.getPrototypeOf(value))||Reflect.ownKeys(value).some(key=>typeof key!=='string'))throw Error('Invalid saved media object');
+  return Object.fromEntries(Reflect.ownKeys(value).sort().map(key=>{const p=Object.getOwnPropertyDescriptor(value,key);if(!p.enumerable||!Object.hasOwn(p,'value'))throw Error('Invalid saved media field');return [key,jsonData(p.value,depth+1)];}));
+}
+const keys=(value,wanted)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join('|')===[...wanted].sort().join('|');
+const hash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+function savedMedia(plan){
+  if(plan===null||plan===undefined)return null;
+  const value=jsonData(plan),serialized=JSON.stringify(value);
+  if(serialized.length>2500||value.schema!==1||!keys(value,['schema','metadata',...(value.native_face_ids!==undefined?['native_face_ids']:[]),...(value.public_image_id!==undefined?['public_image_id']:[])]))throw Error('Invalid saved media plan');
+  const expected=[];
+  if(value.native_face_ids!==undefined){
+    const faces=selectNativeFaces(value.native_face_ids);expected.push('native_faces','native_face_map');
+    if(JSON.stringify(value.native_face_ids)!==JSON.stringify(faces.map(face=>face.id))||JSON.stringify(jsonData(faces))!==JSON.stringify(value.metadata?.native_faces)||JSON.stringify(jsonData(findNativeFaces('',0).source))!==JSON.stringify(value.metadata?.native_face_map))throw Error('Invalid saved native face metadata');
+  }
+  if(value.public_image_id!==undefined){
+    expected.push('public_image');const image=value.metadata?.public_image,source=image?.source;
+    if(typeof value.public_image_id!=='string'||!/^[a-f0-9-]{36}$/.test(value.public_image_id)||!keys(image,['mime','sha256','source'])||!hash(image.sha256))throw Error('Invalid saved public image metadata');
+    if(source?.kind==='approved-legacy-sticker'){
+      if(image.mime!=='image/png'||!keys(source,['kind','seed_id'])||!/^deepseek-(?:bao-jing-shui-jiao|bixin|bu-lai|da-ku|jushou-dazhaohu|touding-wenhao|zhangkai-shuangshou-huanhu)$/.test(source.seed_id))throw Error('Invalid legacy image metadata');
+    }else if(source?.kind==='fixed-public-catalog'){
+      if(image.mime!=='image/jpeg'||!keys(source,['kind','filename','manifest_sha256','download_sha256','prepared_sha256','metadata_stripped','first_frame_only','author_known'])||
+        typeof source.filename!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_.-]{0,179}\.(?:png|jpe?g|webp|gif)$/i.test(source.filename)||source.filename.includes('..')||
+        !hash(source.manifest_sha256)||!hash(source.download_sha256)||source.prepared_sha256!==image.sha256||source.metadata_stripped!==true||typeof source.first_frame_only!=='boolean'||source.author_known!==false)throw Error('Invalid catalog image metadata');
+    }else throw Error('Unsupported saved public image provenance');
+  }
+  if(!expected.length||!keys(value.metadata,expected))throw Error('Invalid saved attachment metadata');
+  return serialized;
+}
+const digest = (text,media=null) => createHash('sha256').update(media===null?text.replace(/\s+/g,''):'life-media-expression-v1\0'+text.replace(/\s+/g,'')+'\0'+media).digest('hex');
+const expressionBinding=prior=>({intent_id:prior.id,revision:prior.revision,digest:prior.digest,recipient:prior.recipient,target_kind:prior.target_kind,target_id:prior.target_id,recipient_reason:prior.recipient_reason});
 const active = row => row.value?.active !== false;
 const bounded = (value, max) => {
   if (typeof value !== 'string' || !value.trim() || value.length > max) throw Error('A bounded nonempty value is required');
@@ -47,7 +86,7 @@ export class LifeContinuity {
     db.exec('BEGIN IMMEDIATE');
     try{
       const columns=new Set(db.prepare('PRAGMA table_info(life_share_intents)').all().map(column=>column.name));
-      for(const [name,type] of [['recipient',"TEXT NOT NULL DEFAULT 'family'"],['target_kind','TEXT'],['target_id','TEXT'],['recipient_reason','TEXT'],['revision','INTEGER NOT NULL DEFAULT 1']]){
+      for(const [name,type] of [['recipient',"TEXT NOT NULL DEFAULT 'family'"],['target_kind','TEXT'],['target_id','TEXT'],['recipient_reason','TEXT'],['revision','INTEGER NOT NULL DEFAULT 1'],['media_plan','TEXT']]){
         if(!columns.has(name))db.exec('ALTER TABLE life_share_intents ADD COLUMN '+name+' '+type);
       }
       db.exec("UPDATE life_share_intents SET state='uncertain',revision=revision+1, reason='restart-during-delivery-no-automatic-retry' WHERE state='sending'; COMMIT");
@@ -120,7 +159,7 @@ export class LifeContinuity {
     text = bounded(text, 500);
     if (typeof evidence !== 'string' || !evidence) throw Error('A saved discovery evidence ID is required');
     const prior = this.db.prepare('SELECT * FROM life_share_intents WHERE activity=?').get(activity);
-    if (prior) return prior; // One intent per discovery; uncertain/sent never re-queued.
+    if (prior) return this.get(prior.id); // One intent per discovery; uncertain/sent never re-queued.
     const target=recipient===undefined?legacyAudience():audience(recipient);
     const id = randomUUID(), now = this.clock();
     this.db.prepare("INSERT INTO life_share_intents (id,activity,evidence,text,digest,state,reason,created,updated,next_review,attempt,receipt,recipient,target_kind,target_id,recipient_reason) VALUES(?,?,?,?,?,'queued','wanted-to-share',?,?,?,NULL,NULL,?,?,?,?)")
@@ -128,7 +167,7 @@ export class LifeContinuity {
     return this.get(id);
   }
 
-  get(id) { return this.db.prepare('SELECT * FROM life_share_intents WHERE id=?').get(id) ?? null; }
+  get(id) {const row=this.db.prepare('SELECT * FROM life_share_intents WHERE id=?').get(id);return row?{...row,media_plan:row.media_plan===null?null:JSON.parse(row.media_plan)}:null;}
 
   pending({rotate = false} = {}) {
     if (typeof rotate !== 'boolean') throw Error('Invalid pending sharing rotation');
@@ -163,14 +202,16 @@ export class LifeContinuity {
     const current=this.get(id);
     if (!offered.some(row => row.id === id) || current?.state !== 'queued') throw Error('Choose a currently pending discovery');
     let {decision,reason,text}=args;
+    if(Object.hasOwn(args,'media_plan')||Object.hasOwn(args,'attachments'))throw Error('Only a new prepared expression can choose attachments');
     if (!['share', 'later', 'discard'].includes(decision)) throw Error('Invalid sharing decision');
     reason = bounded(reason, 400);
     const patch=Object.fromEntries(audienceFields.filter(field=>Object.hasOwn(args,field)).map(field=>[field,args[field]]));
     const target=audience(patch,{prior:Object.fromEntries(audienceFields.map(field=>[field,current[field]])),
       allowUnbound:current.recipient==='family'&&current.target_kind===null&&current.target_id===null});
     text=text===undefined?current.text:bounded(text,500);
-    const changed=this.db.prepare("UPDATE life_share_intents SET revision=revision+1,text=?,digest=?,state=?,reason=?,updated=?,next_review=?,recipient=?,target_kind=?,target_id=?,recipient_reason=? WHERE id=? AND state='queued' AND recipient=? AND target_kind IS ? AND target_id IS ? AND revision=?")
-      .run(text,digest(text),decision === 'discard' ? 'discarded' : 'queued', reason, this.clock(), this.clock() + 1800000,
+    const media=text!==current.text||audienceFields.some(field=>target[field]!==current[field])?null:savedMedia(current.media_plan);
+    const changed=this.db.prepare("UPDATE life_share_intents SET revision=revision+1,text=?,digest=?,media_plan=?,state=?,reason=?,updated=?,next_review=?,recipient=?,target_kind=?,target_id=?,recipient_reason=? WHERE id=? AND state='queued' AND recipient=? AND target_kind IS ? AND target_id IS ? AND revision=?")
+      .run(text,digest(text,media),media,decision === 'discard' ? 'discarded' : 'queued', reason, this.clock(), this.clock() + 1800000,
         target.recipient,target.target_kind,target.target_id,target.recipient_reason,id,current.recipient,current.target_kind,current.target_id,current.revision);
     if(!changed.changes)throw Error('Sharing intention changed; reconsider the current record');
     return this.get(id);
@@ -191,13 +232,17 @@ export class LifeContinuity {
       .run(reason, this.clock(), this.clock() + 1800000, id);
   }
 
-  prepareExpression(prior, {decision, text, reason}) {
+  prepareExpression(prior, {decision, text, reason,media_plan=null,binding=null}) {
     if (!['share','later','keep_private'].includes(decision)) throw Error('Invalid expression decision');
+    if(prior?.state!=='queued')throw Error('Sharing expression is no longer pending');
+    if(binding!==null&&JSON.stringify(jsonData(binding))!==JSON.stringify(jsonData(expressionBinding(prior))))throw Error('Prepared expression belongs to another intent, recipient or revision');
+    if(media_plan!==null&&binding===null)throw Error('Media expression needs its exact intent binding');
     reason = bounded(reason, 240);
     text = decision === 'share' ? bounded(text, 360) : prior.text;
-    const changed = this.db.prepare("UPDATE life_share_intents SET revision=revision+1,text=?,digest=?,state=?,reason=?,updated=?,next_review=? WHERE id=? AND state='queued' AND digest=? AND recipient=? AND target_kind IS ? AND target_id IS ? AND recipient_reason IS ? AND revision=?")
-      .run(text,digest(text),decision==='keep_private'?'discarded':'queued',reason,this.clock(),this.clock()+1800000,
-        prior.id,prior.digest,prior.recipient,prior.target_kind,prior.target_id,prior.recipient_reason,prior.revision);
+    const previous=savedMedia(prior.media_plan),media=decision==='share'?savedMedia(media_plan):previous;
+    const changed = this.db.prepare("UPDATE life_share_intents SET revision=revision+1,text=?,digest=?,media_plan=?,state=?,reason=?,updated=?,next_review=? WHERE id=? AND state='queued' AND digest=? AND media_plan IS ? AND recipient=? AND target_kind IS ? AND target_id IS ? AND recipient_reason IS ? AND revision=?")
+      .run(text,digest(text,media),media,decision==='keep_private'?'discarded':'queued',reason,this.clock(),this.clock()+1800000,
+        prior.id,prior.digest,previous,prior.recipient,prior.target_kind,prior.target_id,prior.recipient_reason,prior.revision);
     if (changed.changes !== 1) throw Error('Sharing intention changed during expression preparation');
     return this.get(prior.id);
   }

@@ -14,6 +14,7 @@ export function conversationFailure(error,phase,signal){
  else if(status&&status>=400)category=status===429?'provider-rate-limit':status<500?'provider-request-rejected':'provider-unavailable';
  else if(error?.code==='SCOPED_TOOL_ROUNDS')category='tool-round-limit';
  else if(error?.code==='SCOPED_REPLY_INVALID')category='invalid-model-reply';
+ else if(error?.code==='SCOPED_RESPONSE_INCOMPLETE')category='incomplete-model-response';
  else if(phase==='tool-setup')category='tool-setup-failed';
  else if(phase==='receipt')category='receipt-storage-failed';
  return {phase,category,error_type:name,http_status:status,attempt_count:Math.min(attempts.length,100)};

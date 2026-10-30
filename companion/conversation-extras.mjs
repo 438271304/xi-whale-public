@@ -60,6 +60,7 @@ export function conversationExtras({workspace,notesRoot,familyGroup,fetcher=fetc
  provide.ownCreativeContext=()=>ownCreative?.context()??{available:false,notice:'Own creative stores are not connected.'};
  provide.ownCreativeTools=context=>ownCreative?.tools(context)??[];
  provide.publicTools=({signal}={})=>[...publicExploration({client:publicClient,signal}),...(bili?bili.tools({signal}):[]),...tieba.tools({signal})];
+  provide.ownHomeTools=()=>[home.find(tool=>tool.name==='home_read')];
  provide.close=async()=>{await workshop?.close();await bili?.close();workroom?.close();};return provide;
 }
 export function importStickerSeeds(media,{manifest,assets}){

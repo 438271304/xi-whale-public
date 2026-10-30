@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "purpose": "Sanitized engineering archive; not a runnable full backup",
-  "export_policy_sha256": "fce800179bc9aa95ac9f88f8eed8ac02b3c861a78cec89a359659d4cfbccc52c",
-  "source_files": 251,
+  "export_policy_sha256": "d18ad05b2ea4e1bae482455681411a39e78302c8a26a1aa7c4123cec15ddfaa6",
+  "source_files": 270,
   "identifier_value_count": 9,
   "identifier_mapping_exported": false,
   "credential_scan": {
@@ -31,14 +31,14 @@
     },
     {
       "path": "EXPORT_POLICY.json",
-      "bytes": 91184,
-      "target_sha256": "fce800179bc9aa95ac9f88f8eed8ac02b3c861a78cec89a359659d4cfbccc52c",
+      "bytes": 98161,
+      "target_sha256": "d18ad05b2ea4e1bae482455681411a39e78302c8a26a1aa7c4123cec15ddfaa6",
       "kind": "generated-document"
     },
     {
       "path": "README.md",
       "bytes": 2887,
-      "target_sha256": "c08c9a0ef7665cb91f7b44a995cab5838beb12123a6757630258f92fb369c13f",
+      "target_sha256": "03fc3f074795e3466f947da724c14166bf3713924b47e57cff96b8261edd06ae",
       "kind": "generated-document"
     },
     {
@@ -147,8 +147,8 @@
       "source_root": "project",
       "source": "companion/cognition-tools.mjs",
       "path": "companion/cognition-tools.mjs",
-      "target_sha256": "638790517791c6b54a3b4853bf64e25c026125568c3626e87ade48286ef08b7c",
-      "bytes": 12682,
+      "target_sha256": "fac2e248947f2d6c0caf5de842b5c034c7b9b0aaaae6825a49d792b9b57ca806",
+      "bytes": 14399,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -158,8 +158,8 @@
       "source_root": "project",
       "source": "companion/conversation-capabilities.mjs",
       "path": "companion/conversation-capabilities.mjs",
-      "target_sha256": "b97730e4ce74aaedc6b989b2a49e911de077ad7c7dfc0f13aed7a471f24c4baa",
-      "bytes": 3235,
+      "target_sha256": "62428380c4e2f73e2b0759880d18b8dc135857233c4ebcafa40920c18734596a",
+      "bytes": 3343,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -169,8 +169,8 @@
       "source_root": "project",
       "source": "companion/conversation-errors.mjs",
       "path": "companion/conversation-errors.mjs",
-      "target_sha256": "3f16631c7f560020a285146bd452bd4861d610895c313063cd0a94cb321c814e",
-      "bytes": 1552,
+      "target_sha256": "3e7d083a8c92583726a578a9c6d3fdd52f7cc722d1594c35cb8f8b74bde4390c",
+      "bytes": 1642,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -180,8 +180,8 @@
       "source_root": "project",
       "source": "companion/conversation-extras.mjs",
       "path": "companion/conversation-extras.mjs",
-      "target_sha256": "122939e2febc4f5560f7263e276ee848daeff506452421b5c66404ef7761b366",
-      "bytes": 7034,
+      "target_sha256": "9dec00e346abdbc687584e3bc0d1e6485a2b8be7953d470714f41cb4b0797152",
+      "bytes": 7105,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -257,8 +257,8 @@
       "source_root": "project",
       "source": "companion/conversation-service.mjs",
       "path": "companion/conversation-service.mjs",
-      "target_sha256": "5dba8618e7932e4178357f6a9340bc7103d22dca91545c8a92329b637544d3ea",
-      "bytes": 30804,
+      "target_sha256": "a1a6286ace3e5078cc3db7fa2bd79d55ad8f94fb923f6c1bc05debdbdb02dd95",
+      "bytes": 33119,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -290,8 +290,8 @@
       "source_root": "project",
       "source": "companion/curiosity-life.mjs",
       "path": "companion/curiosity-life.mjs",
-      "target_sha256": "0e7f2fb3799911697b433e7e9addddfa78152a94c8c3127ba8bb0299f2842ed4",
-      "bytes": 28913,
+      "target_sha256": "a7a2a2598a8b583e65dcdbce7e5461650f66f84484536e09dfa536bd4dbbee27",
+      "bytes": 31496,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -434,8 +434,8 @@
       "source_root": "project",
       "source": "companion/experience-memory.mjs",
       "path": "companion/experience-memory.mjs",
-      "target_sha256": "cb25ce9e69a76b4dfd22bcd18863780af5990947d0e057842a261b925701e2c6",
-      "bytes": 44794,
+      "target_sha256": "c7a704e16c4acb0554bfa3ca0b5268df0fd826efc720c9d2f3241a3f832da95c",
+      "bytes": 45010,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -577,8 +577,8 @@
       "source_root": "project",
       "source": "companion/home/app.js",
       "path": "companion/home/app.js",
-      "target_sha256": "3142667f4ede28e749f45a4b553d17460a015742a91b5018252bd9889c294967",
-      "bytes": 15092,
+      "target_sha256": "21a0616ddbce82df928806f8bdcc65a58cce199cf5efebb4ee19b2cbc9a7f67a",
+      "bytes": 18753,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -612,8 +612,8 @@
       "source_root": "project",
       "source": "companion/home/index.html",
       "path": "companion/home/index.html",
-      "target_sha256": "c5d30c7d1f9b2462c256aadc7b36732e6906697c39289ddb96be90ab1371886d",
-      "bytes": 7619,
+      "target_sha256": "5b11e4a1d7137ee531c750154d7e11542ef0d34e42cd24e054228a3b126c4127",
+      "bytes": 8645,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -645,8 +645,8 @@
       "source_root": "project",
       "source": "companion/home/life_view.py",
       "path": "companion/home/life_view.py",
-      "target_sha256": "3e833ae1bbf5267b6a02596e393c341957a92133bdb0b8348ba951ab9846e926",
-      "bytes": 3068,
+      "target_sha256": "e746eedebacfb15eb380b2db8cedd1a87ff95eb956e32dcdecf105ad541f7384",
+      "bytes": 10764,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -691,8 +691,8 @@
       "source_root": "project",
       "source": "companion/home/style.css",
       "path": "companion/home/style.css",
-      "target_sha256": "9d366b12293f217f362d8c97ad2327c98c2d11d8e001ef916eb37643b0078d71",
-      "bytes": 5256,
+      "target_sha256": "f0ccea72d35abaffa5e31c1999e6325d513e4a71d037fb4202dfad575aefbe4b",
+      "bytes": 6147,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -707,6 +707,18 @@
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/home/test_life_view.py",
+      "path": "companion/home/test_life_view.py",
+      "target_sha256": "f179af68b89a197dd3ef72a1e2cd7e0bcf94bbe94e6a23d3a947901a8e02c028",
+      "bytes": 12665,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 2
       }
     },
     {
@@ -845,8 +857,8 @@
       "source_root": "project",
       "source": "companion/isolated-qq-route.mjs",
       "path": "companion/isolated-qq-route.mjs",
-      "target_sha256": "1bb5e79775b9c7b49a6ba7176cf1543cefc59346985e8b17c6bd51aa6d105197",
-      "bytes": 10458,
+      "target_sha256": "e92961cdd63e22b089fe6b98050ef2d7911c0b79a4abfa3e42cc9f53b4503470",
+      "bytes": 10501,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -867,8 +879,8 @@
       "source_root": "project",
       "source": "companion/life-contact.mjs",
       "path": "companion/life-contact.mjs",
-      "target_sha256": "fa855b85df58e708d4def62a5dc833cc222d166bd63bda19fdd07b0fe789b9d9",
-      "bytes": 3779,
+      "target_sha256": "e704810de7e205c7b2ab6d9e08b3cb517627b4f2dfbe1b5aad8bcc9d0b382bba",
+      "bytes": 3798,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -878,8 +890,19 @@
       "source_root": "project",
       "source": "companion/life-continuity.mjs",
       "path": "companion/life-continuity.mjs",
-      "target_sha256": "6b6785fbb82629eab8f8665acd1c6fcd0a9a4a8d766d636443702f06cfdad391",
-      "bytes": 15025,
+      "target_sha256": "ec612054f4f5260937f525aea9a8cdc0b80349cc23c27548109b7eba8f06374f",
+      "bytes": 20318,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-day-context.mjs",
+      "path": "companion/life-day-context.mjs",
+      "target_sha256": "4b23c645d99220ec8244a38160e522795ca870f498618748659065e71bb42f47",
+      "bytes": 13094,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -889,8 +912,8 @@
       "source_root": "project",
       "source": "companion/life-heartbeat.mjs",
       "path": "companion/life-heartbeat.mjs",
-      "target_sha256": "d27c990eb72dd4c3cd901095445e49dc42033337dcec69e88355693cf9a4021c",
-      "bytes": 21746,
+      "target_sha256": "3403a479b398dfbe7a26549f04df453917ced131f17236e73cbf0e3575cb0880",
+      "bytes": 23681,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -909,10 +932,43 @@
     },
     {
       "source_root": "project",
+      "source": "companion/life-opportunity-log.mjs",
+      "path": "companion/life-opportunity-log.mjs",
+      "target_sha256": "5423102ce856137f81e2ef56716a6fa1aefab13a2525db8eb18f5cff7953fb57",
+      "bytes": 13259,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-own-corner.mjs",
+      "path": "companion/life-own-corner.mjs",
+      "target_sha256": "af0c050545e62b8ebeff116f36253c9ff591a17bff32f00929feac971e25efd9",
+      "bytes": 9191,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/life-progress.mjs",
       "path": "companion/life-progress.mjs",
       "target_sha256": "16452f6dc20ebb87517efbcf598520f29e05dabc1357157b1dcafd427b57aead",
       "bytes": 15201,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-public-stickers.mjs",
+      "path": "companion/life-public-stickers.mjs",
+      "target_sha256": "e7e80f2e22b8948fdba8a23793dccabe4412a27a6d24c672ad677dce78eee516",
+      "bytes": 13802,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -933,8 +989,8 @@
       "source_root": "project",
       "source": "companion/life-self-reflection.mjs",
       "path": "companion/life-self-reflection.mjs",
-      "target_sha256": "1243e965f77f91962bec82999b6e865633ab9a54af22f52e2359b27817af538d",
-      "bytes": 12487,
+      "target_sha256": "04b001ff873693cf5404f2154c178191d4c431e3db5348651437e0298f965372",
+      "bytes": 12815,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -955,8 +1011,19 @@
       "source_root": "project",
       "source": "companion/life-share-compose.mjs",
       "path": "companion/life-share-compose.mjs",
-      "target_sha256": "2113ca8694fa8d625566ea4ffa4d58d375e1318dbee20bd1668f839c25186919",
-      "bytes": 8954,
+      "target_sha256": "b7c8ee583f6a51f6dd6aa4499cb2b2286f2dd921e06711cb072d774b1e4ba24c",
+      "bytes": 12374,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-share-media.mjs",
+      "path": "companion/life-share-media.mjs",
+      "target_sha256": "0187460a95139234151dae5e10709daa27cea534deef58e50f66425b709e6f9e",
+      "bytes": 8356,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -990,6 +1057,17 @@
       "path": "companion/migrate-scoped-history.mjs",
       "target_sha256": "f6137369e3f803e33a34329a34e01bb1d45a2e3cd3123c6cdc5f35180aaff504",
       "bytes": 2193,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/person-impressions.mjs",
+      "path": "companion/person-impressions.mjs",
+      "target_sha256": "d8fd74cd2577d0d4f8efce8845d47dbac7de6df6f573a9b45cf7550d0ce21624",
+      "bytes": 17352,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1112,8 +1190,8 @@
       "source_root": "project",
       "source": "companion/qq-event-policy.mjs",
       "path": "companion/qq-event-policy.mjs",
-      "target_sha256": "cf48b7a53fed7dc08966af6c525595e72419db119e14b786830abafb1ab98919",
-      "bytes": 9171,
+      "target_sha256": "bb749f66080dc95fa0b0353b86aa2097fd77b5b6ce965046523caca0c1af0664",
+      "bytes": 11027,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1272,8 +1350,8 @@
       "source_root": "project",
       "source": "companion/qzone-experiences.mjs",
       "path": "companion/qzone-experiences.mjs",
-      "target_sha256": "48036f8b1e75bd0d29d2792317e1a49522ae8d8be103b0e87d59c661a0316ba0",
-      "bytes": 2236,
+      "target_sha256": "51cab00eb2224b49bf828d5de9f4fdbffc4b16cb234d50929e743b94ad79ed73",
+      "bytes": 4502,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -1385,8 +1463,8 @@
       "source_root": "project",
       "source": "companion/scoped-tools.mjs",
       "path": "companion/scoped-tools.mjs",
-      "target_sha256": "2ab39857c7e97809d81975dca154326c423a04145147944d755e7196b4bc0229",
-      "bytes": 9356,
+      "target_sha256": "d8e4a610bb29c9cd23483b4b9216bf605c46f1e34b4646e1b2474c748c9dc867",
+      "bytes": 9795,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1529,6 +1607,18 @@
       "applied_transformations": {
         "utf8-lf": 1,
         "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-continuous-life-integration.mjs",
+      "path": "companion/test-continuous-life-integration.mjs",
+      "target_sha256": "32dc90e7d99aca1156408448259549c295b34703175988e412f449cfea14e700",
+      "bytes": 8944,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 2
       }
     },
     {
@@ -1966,11 +2056,12 @@
       "source_root": "project",
       "source": "companion/test-life-contact.mjs",
       "path": "companion/test-life-contact.mjs",
-      "target_sha256": "86abd10be42abee71ed74f8b329f977286556ba516a866e824a4f884ce1f5b01",
+      "target_sha256": "ad859db49282a67af45a0cffdf9528676c13b361265248fc952023df230896df",
       "bytes": 11285,
       "kind": "synthetic-test-source",
       "applied_transformations": {
-        "utf8-lf": 1
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
       }
     },
     {
@@ -1984,6 +2075,18 @@
         "utf8-lf": 1,
         "known-qq-identifiers": 2,
         "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-day-context.mjs",
+      "path": "companion/test-life-day-context.mjs",
+      "target_sha256": "8f74cd52d021a3684148ab5692445a60ce8fb474f53a97c11e7af1618770d43c",
+      "bytes": 12968,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 19
       }
     },
     {
@@ -2039,6 +2142,55 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-life-media-delivery.mjs",
+      "path": "companion/test-life-media-delivery.mjs",
+      "target_sha256": "b8097f6e9da5996549ccc8536a5bb9503bb76c25dcba419ff9b4717a9dd3feac",
+      "bytes": 11619,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-media-integration.mjs",
+      "path": "companion/test-life-media-integration.mjs",
+      "target_sha256": "b56301eb215c407f852e21a3349185e0636747a64ee59d622260dff37c8077f4",
+      "bytes": 11711,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-opportunity-log.mjs",
+      "path": "companion/test-life-opportunity-log.mjs",
+      "target_sha256": "d1b72aff3b3a8c83b6426b1c8dae125863d38b1e26da721b9252b461bc0c49fd",
+      "bytes": 11060,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-own-corner.mjs",
+      "path": "companion/test-life-own-corner.mjs",
+      "target_sha256": "581aa3a0614c12d469e858e1deed26c68b50b79b9321b0a4134714f1479dfc13",
+      "bytes": 11049,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-life-progress.mjs",
       "path": "companion/test-life-progress.mjs",
       "target_sha256": "639f46bc5454468af1ae1ece54a93defbc7688f649818cee2edb1905f03e3add",
@@ -2046,6 +2198,19 @@
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-public-stickers.mjs",
+      "path": "companion/test-life-public-stickers.mjs",
+      "target_sha256": "3321a50e9e8bf7e20d6f2ef0823685d7c99f4740fe21395e082b49c8d04ced55",
+      "bytes": 16526,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-negative-token-label": 2,
+        "synthetic-test-calendar": 1
       }
     },
     {
@@ -2063,11 +2228,12 @@
       "source_root": "project",
       "source": "companion/test-life-self-reflection.mjs",
       "path": "companion/test-life-self-reflection.mjs",
-      "target_sha256": "d4156f4c81559e5618f35cdf23e33273f79bc957917bcaf80ed4e6cc1bea205a",
-      "bytes": 13157,
+      "target_sha256": "3d29a281f84b336d5d748526ef4cf832bf379059d3478c7b3b3ecdb255eac606",
+      "bytes": 15162,
       "kind": "synthetic-test-source",
       "applied_transformations": {
-        "utf8-lf": 1
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
       }
     },
     {
@@ -2086,12 +2252,36 @@
       "source_root": "project",
       "source": "companion/test-life-share-compose.mjs",
       "path": "companion/test-life-share-compose.mjs",
-      "target_sha256": "a6e17f2884f457552e2eff0088e747ea24c20c1e02264be634ec54d593d9cf22",
-      "bytes": 18450,
+      "target_sha256": "2861a1c3229d2d8a64e19705eb6e8b02512b983992d674b3e106bd94a78cc1e1",
+      "bytes": 29987,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
         "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-share-media.mjs",
+      "path": "companion/test-life-share-media.mjs",
+      "target_sha256": "84a8fa9030946d09a6fdc0ebe05ce48a25813c8f3a17fb3079dcb797a6682a07",
+      "bytes": 11610,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-stream-provider.mjs",
+      "path": "companion/test-life-stream-provider.mjs",
+      "target_sha256": "9da84831726f691c546a362ce78dabff8d4223edfae3e22c129078c0cb04df57",
+      "bytes": 11601,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "windows-user-directory": 1,
+        "installed-provider-root-to-environment": 1
       }
     },
     {
@@ -2184,6 +2374,18 @@
       "applied_transformations": {
         "utf8-lf": 1,
         "windows-user-directory": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-person-impressions.mjs",
+      "path": "companion/test-person-impressions.mjs",
+      "target_sha256": "a0e0710de5abe23c4138cbee91f10527f492b7cf7889b2c25f75dc2e37c470c0",
+      "bytes": 15861,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 2
       }
     },
     {
@@ -2287,6 +2489,17 @@
       "applied_transformations": {
         "utf8-lf": 1,
         "known-qq-identifiers": 4
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-public-sticker-service.mjs",
+      "path": "companion/test-public-sticker-service.mjs",
+      "target_sha256": "1ebd83912651c8caf7272fde990122798d1f7f498d60196f82d7f562100a3c98",
+      "bytes": 10351,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1
       }
     },
     {
@@ -2463,10 +2676,23 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-qzone-experiences.mjs",
+      "path": "companion/test-qzone-experiences.mjs",
+      "target_sha256": "d4f2b395d07e6c9f31df0f3ae2c380e6fa09f4a04b147ddb57da9f9f6c90a691",
+      "bytes": 6905,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-qzone-integration.mjs",
       "path": "companion/test-qzone-integration.mjs",
-      "target_sha256": "b6f68ecd567d3b7caaf0e45528bee4d0e8459ee350f18dc53a3d402902581cd9",
-      "bytes": 5322,
+      "target_sha256": "7861618029ed8269d4dd2fd29bdcead3b50fe5cd859ae1b60e0f9ba01e1117cd",
+      "bytes": 5667,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2884,8 +3110,8 @@
     },
     {
       "path": "docs/FEEDBACK_REVIEW.md",
-      "bytes": 19132,
-      "target_sha256": "a3e22c0d720ae578b35b5db3fd9813a1256cdf6c017496b86650651a40a71433",
+      "bytes": 20837,
+      "target_sha256": "3a787ea92062538ff311c66055d131bda3963222c06b63112660f06402666cee",
       "kind": "anonymized-feedback-document"
     },
     {

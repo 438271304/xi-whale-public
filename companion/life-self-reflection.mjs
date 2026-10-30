@@ -2,7 +2,7 @@
 // transport, persona file, or separate memory store.
 const incoming=new Set(['live-transport','admitted-transport','referenced-qq-api','conversation-turns','admitted-poke-transport','received-qq-forward-node']);
 const outgoing=new Set(['acknowledged-delivery','acknowledged-qq-outgoing','isolated-qq-outgoing','conversation-turns']);
-const own=new Set(['own-workroom-change','verified-workshop-result','public-exploration']);
+const own=new Set(['own-workroom-change','verified-workshop-result','public-exploration','verified-own-qzone-read','verified-own-qzone-publication','observed-public-sticker']);
 const protectedKey=/identity|guardian|permission|capabilit|credential|password|affection|好感|亲密度|身份|监护|权限|凭证|密钥|核心/i;
 const fields=new Set(['kind','key','operation','expected_revision','value','reason','evidence_ids','evidence_refs','journal_refs']);
 const qqScope=value=>/^(?:group|private):\d{5,15}$/.test(value);
@@ -28,7 +28,9 @@ function sourceRef(store,id,revision,at){
  if(!Number.isSafeInteger(record.at)||record.at>at||!version||!Number.isSafeInteger(version.recorded_at)||version.recorded_at>at)fail('future-experience-reference',{evidence_id:id});
  const sources=store.db.prepare('SELECT DISTINCT source FROM experience_sources WHERE experience_id=? AND revision_id=? ORDER BY source').all(id,record.revision).map(r=>r.source);
  const confirmed=record.role==='assistant'&&!['sending','uncertain'].includes(record.state)&&(record.state==='sent'||sources.some(s=>['acknowledged-delivery','acknowledged-qq-outgoing','isolated-qq-outgoing'].includes(s)));
- const accepted=sources.filter(source=>record.role==='self'?own.has(source):qqScope(record.scope)&&(
+ // Match LifeJournal's own-observation provenance: only self observations in
+ // unknown scope, plus the separately owned verified workshop-result scope.
+ const accepted=sources.filter(source=>record.role==='self'?own.has(source)&&(record.scope==='unknown'||source==='verified-workshop-result'&&qqScope(record.scope)):qqScope(record.scope)&&(
   record.role==='user'&&(incoming.has(source)||archived(source))||record.role==='assistant'&&(outgoing.has(source)||archived(source))&&confirmed));
  if(!accepted.length)fail('experience-source-not-supported',{evidence_id:id});
  return {id:record.id,revision:record.revision,at:record.at,recorded_at:version.recorded_at,scope:record.scope,role:record.role,

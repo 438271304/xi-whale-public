@@ -8,7 +8,7 @@ import {UnifiedCognition} from './cognition-tools.mjs';
 import {LifeContinuity} from './life-continuity.mjs';
 import {queueLifeContact} from './life-contact.mjs';
 
-const BOT='910810001',MOTHER='910810003',FATHER='910810002',DAY=Date.parse('2026-10-30T12:00:00+08:00');
+const BOT='910810001',MOTHER='910810003',FATHER='910810002',DAY=Date.parse('2036-10-17T12:00:00+08:00');
 const target={recipient:'mother',target_kind:'private',target_id:MOTHER,recipient_reason:'An actual shared detail made me think of Mom.'};
 function fixture(t){
  const root=mkdtempSync(join(tmpdir(),'whale-life-contact-')),cognition=new UnifiedCognition(root,{botId:BOT,guardianIds:[FATHER,MOTHER]});

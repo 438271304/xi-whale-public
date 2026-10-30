@@ -21,8 +21,9 @@ export const LIFE_SHARE_EXPRESSION_PROMPT=`
 用finish_life_share选择share/later/keep_private。share的text是准备实际发出的全部正文，最多360字符；通常远短于上限，必要时可带一条已有来源链接。reason只写一句简短的取舍说明，不要写推理过程。这里没有发送工具，选share也不代表已经发出。`;
 
 export class LifeShareComposer{
- constructor({db,store,journal,conversationDb,client,profile,clock=()=>Date.now()}){
-  Object.assign(this,{db,store,journal,conversationDb,client,profile,clock});
+ constructor({db,store,journal,conversationDb,client,profile,media=null,clock=()=>Date.now()}){
+  if(media!==null&&['prepare','findFaces','listPublicImages'].some(name=>typeof media[name]!=='function'))throw Error('Existing life media adapter required');
+  Object.assign(this,{db,store,journal,conversationDb,client,profile,media,clock});
   db.exec(`CREATE TABLE IF NOT EXISTS life_share_expression(
    id TEXT PRIMARY KEY,intent TEXT,at INTEGER,state TEXT,input TEXT,result TEXT);
    UPDATE life_share_expression SET state='interrupted' WHERE state='preparing';`);
@@ -69,26 +70,45 @@ export class LifeShareComposer{
  }
  input({intent,scope,audience}){
   return {purpose:'one recipient-aware expression decision; no sending',recipient:intent.recipient,
-   recipient_reason:intent.recipient_reason,draft:intent.text,...this.material(intent),
+   recipient_reason:intent.recipient_reason,draft:intent.text,draft_media_plan:intent.media_plan??null,...this.material(intent),
    recipient_context:this.recent(scope),audience:{unanswered_count:audience.unanswered_count,
     recent_feedback:audience.recent_feedback,preferences:audience.preferences},
    notice:'No research transcript or arbitrary tools are included. A brief grounded thought, a defer, or keeping it private are all valid.'};
  }
  async compose({intent,scope,audience,signal}){
+  if(intent?.state!=='queued'||intent.target_kind!==scope.kind||String(intent.target_id)!==String(scope.id)||!Number.isSafeInteger(intent.revision))throw Error('Expression must use the current intended recipient');
+  const binding=Object.freeze({intent_id:intent.id,revision:intent.revision,digest:intent.digest,recipient:intent.recipient,target_kind:intent.target_kind,target_id:intent.target_id,recipient_reason:intent.recipient_reason});
   const input=this.input({intent,scope,audience}),id=randomUUID();let decision=null;
   this.db.prepare("INSERT INTO life_share_expression VALUES(?,?,?,'preparing',?,NULL)").run(id,intent.id,this.clock(),JSON.stringify(input));
   const finish={name:'finish_life_share',description:'Choose one bounded expression or keep it for yourself. This saves a decision; it does not send anything.',parameters:{type:'object',properties:{
-   decision:{type:'string',enum:['share','later','keep_private']},text:{type:'string',maxLength:360},reason:{type:'string',maxLength:240}},required:['decision','reason'],additionalProperties:false},endsTurn:true,
+   decision:{type:'string',enum:['share','later','keep_private']},text:{type:'string',maxLength:360},reason:{type:'string',maxLength:240},
+   attachments:{type:'object',properties:{native_face_ids:{type:'array',items:{type:'string'},maxItems:3},public_image_id:{type:'string',maxLength:36}},additionalProperties:false}},required:['decision','reason'],additionalProperties:false},endsTurn:true,
    handler:args=>{
     if(!['share','later','keep_private'].includes(args.decision)||typeof args.reason!=='string'||!args.reason.trim()||args.reason.length>240)throw Error('Choose a bounded expression decision');
     if(args.decision==='share'&&(typeof args.text!=='string'||!args.text.trim()||args.text.length>360))throw Error('A share requires a bounded complete message');
-    decision={decision:args.decision,reason:args.reason.trim(),...(args.decision==='share'?{text:args.text.trim()}:{})};
+    signal?.throwIfAborted();let media_plan=null;
+    if(args.attachments!==undefined){
+     const a=args.attachments;
+     if(!a||typeof a!=='object'||Array.isArray(a)||Object.keys(a).some(key=>!['native_face_ids','public_image_id'].includes(key))||
+      a.native_face_ids!==undefined&&(!Array.isArray(a.native_face_ids)||a.native_face_ids.length>3||a.native_face_ids.some(id=>typeof id!=='string'))||
+      a.public_image_id!==undefined&&typeof a.public_image_id!=='string')throw Error('Choose a bounded optional attachment selection');
+     const nonempty=(a.native_face_ids?.length??0)>0||a.public_image_id!==undefined;
+     if(nonempty&&(args.decision!=='share'||!this.media))throw Error('Attachments require a share and the existing public media adapter');
+     if(this.media&&args.decision==='share')media_plan=this.media.prepare(a,{signal});
+    }
+    decision={decision:args.decision,reason:args.reason.trim(),...(args.decision==='share'?{text:args.text.trim()}:{}),media_plan,binding};
     return 'Decision saved; not a sent message.';
    }};
   try{
+   const tools=[finish];
+   if(this.media){
+    tools.push({name:'find_life_share_faces',description:'Optionally find known native QQ face IDs for this one expression. Names are catalog labels, not a claim about anyone’s feelings. No sending.',parameters:{type:'object',properties:{query:{type:'string',maxLength:100},offset:{type:'integer',minimum:0}},required:['query'],additionalProperties:false},handler:args=>{signal?.throwIfAborted();return JSON.stringify(this.media.findFaces(args));}});
+    tools.push({name:'list_life_share_images',description:'Optionally inspect a small page of already approved public images for this expression. Labels are not image understanding. No download, analysis, target selection or sending.',parameters:{type:'object',properties:{offset:{type:'integer',minimum:0,maximum:1000000},limit:{type:'integer',minimum:1,maximum:6}},additionalProperties:false},handler:args=>{signal?.throwIfAborted();if(args.limit!==undefined&&(!Number.isSafeInteger(args.limit)||args.limit<1||args.limit>6))throw Error('Choose a small image page');return JSON.stringify(this.media.listPublicImages({...args,limit:args.limit??4}));}});
+   }
+   const attachmentPrompt=this.media?'\n表达也可以带一点可选的表情：可按需查已知原生表情或现有公共图库，在finish_life_share的attachments中选择至多3个native_face_ids和1个public_image_id。它们属于这一条完整表达，不是第二次发送。文字独立成立时直接finish，不需要查图或凑附件。省略attachments就是这次新表达不带附件，之前草稿的附件不会自动沿用。图库标签只是来源描述，不能据此声称已经看懂图片。':'';
    await runScopedTurn({client:this.client,profile:(typeof this.profile==='function'?this.profile():this.profile)+LIFE_SHARE_EXPRESSION_PROMPT,
-    input:[{role:'user',content:JSON.stringify(input)}],tools:[finish],signal,maxRounds:2,
-    generationContext:()=> '\n当前北京时间：'+new Date(this.clock()+8*3600000).toISOString().replace('Z','+08:00')});
+    input:[{role:'user',content:JSON.stringify(input)}],tools,signal,maxRounds:this.media?4:2,
+    generationContext:()=> attachmentPrompt+'\n当前北京时间：'+new Date(this.clock()+8*3600000).toISOString().replace('Z','+08:00')});
    signal?.throwIfAborted();if(!decision)throw Error('No explicit expression decision');
    this.db.prepare("UPDATE life_share_expression SET state='prepared',result=? WHERE id=?").run(JSON.stringify(decision),id);
    return {...decision,expression_id:id};

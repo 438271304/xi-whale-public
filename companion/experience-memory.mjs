@@ -196,21 +196,22 @@ export class ExperienceMemory{
   this.db.prepare('INSERT INTO self_state VALUES(?,?,?,?,?,?,?,?)').run(kind,key,revision,serialized,JSON.stringify(refs),basis,plain(source,120),when);
   return {saved:true,kind,key,revision,basis,at:when};
  }
- getState({kind=null,key=null,limit=20,history=false,excludeJournal=false,activeOnly=false}={}){
+ getState({kind=null,key=null,limit=20,history=false,excludeJournal=false,excludePersonImpressions=false,activeOnly=false}={}){
   limit=boundedInteger(limit,20,1,100);if(kind!==null&&!stateKinds.has(kind))throw Error('Invalid self-state kind');const where=[],args=[];
   if(!history)where.push('s.revision=(SELECT max(v.revision) FROM self_state v WHERE v.kind=s.kind AND v.key=s.key)');
   if(excludeJournal)where.push("NOT (s.kind='self' AND (substr(s.key,1,8)='journal:' OR s.source='life-journal'))");
+  if(excludePersonImpressions)where.push("COALESCE(s.source,'')<>'person-impressions'");
   if(activeOnly)where.push("COALESCE(json_type(s.value,'$.active'),'')<>'false'");
   if(kind!==null){where.push('s.kind=?');args.push(kind);}if(key!==null){where.push('s.key=?');args.push(String(key));}
   return this.db.prepare('SELECT s.* FROM self_state s '+(where.length?'WHERE '+where.join(' AND '):'')+' ORDER BY s.at DESC,s.kind,s.key,s.revision DESC LIMIT ?').all(...args,limit).map(r=>({...r,value:decode(r.value),evidence:decode(r.evidence,[])}));
  }
  contextState({limit=12}={}){
   limit=boundedInteger(limit,12,1,30);const selected=[],seen=new Set();
-  const add=row=>{const key=row.kind+'\0'+row.key;if(row.value?.active!==false&&!seen.has(key)&&selected.length<limit){seen.add(key);selected.push(row);}};
+   const add=row=>{const key=row.kind+'\0'+row.key;if(row.source!=='person-impressions'&&row.value?.active!==false&&!seen.has(key)&&selected.length<limit){seen.add(key);selected.push(row);}};
   // Unfinished questions often arrive more frequently than enduring interests.
   // Retain both without manufacturing state or rewriting old versions.
-  for(const kind of ['interest','mood','relationship','self','unfinished','idea','concern'])for(const row of this.getState({kind,limit:kind==='unfinished'?2:1,excludeJournal:true,activeOnly:true}))add(row);
-  for(const row of this.getState({limit:30,excludeJournal:true,activeOnly:true}))add(row);return selected;
+  for(const kind of ['interest','mood','relationship','self','unfinished','idea','concern'])for(const row of this.getState({kind,limit:kind==='unfinished'?2:1,excludeJournal:true,excludePersonImpressions:true,activeOnly:true}))add(row);
+  for(const row of this.getState({limit:30,excludeJournal:true,excludePersonImpressions:true,activeOnly:true}))add(row);return selected;
  }
  people({id=null,scope=null,limit=12}={}){limit=boundedInteger(limit,12,1,30);const where=[],args=[];if(id!==null){where.push('id=?');args.push(String(id));}if(scope!==null){where.push('scope=?');args.push(scopeKey(scope));}return this.db.prepare('SELECT scope,id,label,at FROM remembered_people '+(where.length?'WHERE '+where.join(' AND '):'')+' ORDER BY at DESC LIMIT ?').all(...args,limit).map(r=>({...r,author:authorFor(r.id,this.identities,r.label),display_only:true,identity_or_authority_grant:false}));}
  knownConversations({kind=null,limit=20}={}){

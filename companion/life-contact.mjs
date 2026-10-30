@@ -18,7 +18,7 @@ export function queueLifeContact({db,continuity,store,activity,audience,text,rea
  // intent's actual current destination, not the first author's historical choice.
  const prior=db.prepare("SELECT s.* FROM life_contact_sources c JOIN life_share_intents s ON s.activity=c.activity WHERE c.basis=? AND s.recipient=? AND s.target_kind=? AND s.target_id=? AND s.state IN ('queued','sending','sent','uncertain') ORDER BY s.updated DESC LIMIT 1").get(basis,audience.recipient,audience.target_kind,audience.target_id);
  if(prior){
-  if(prior.state==='queued')return {status:'existing-intention',intent:prior,ready:now>=prior.next_review};
+  if(prior.state==='queued')return {status:'existing-intention',intent:continuity.get(prior.id),ready:now>=prior.next_review};
   if(prior.state!=='sent'||inbound(audience.target_kind+':'+audience.target_id)<=prior.updated)return {status:'already-contacted-no-chase',intent:null,ready:false};
  }
  const state=db.prepare('SELECT state FROM activities WHERE id=?').get(activity)?.state;

@@ -3,6 +3,7 @@ const text=(id,value)=>$(id).textContent=value;
 function list(id,values,empty){const root=$(id);root.replaceChildren();for(const s of values?.length?values:[empty]){const li=document.createElement('li');li.textContent=s;root.append(li);}}
 const names={'deepseek-bao-jing-shui-jiao.png':'困了，晚安','deepseek-bixin.png':'和你聊得来','deepseek-bu-lai.png':'不赖嘛','deepseek-da-ku.png':'有点委屈','deepseek-jushou-dazhaohu.png':'嗨，来啦','deepseek-touding-wenhao.png':'诶？','deepseek-zhangkai-shuangshou-huanhu.png':'好耶！'};
 let loading=false,lifeLoading=false,innerLoading=false;
+$('life-open-workroom').addEventListener('click',()=>document.querySelector('[data-tab="workroom"]').click());
 async function refresh(){if(loading)return;loading=true;$('refresh').disabled=true;void refreshLife();void Promise.resolve().then(refreshInnerLife);try{const r=await fetch('/api/home',{cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();text('fresh','读取于 '+new Date(d.at).toLocaleTimeString('zh-CN'));text('issues',d.issues.join(' · '));text('online',!d.runtime.online?'暂时联系不上':d.runtime.paused?'正在暂停':d.runtime.phase==='idle'?'在这里，等下一阵浪':'正在忙着');text('mood',d.card.mood||'心情，留给她自己写');text('energy',d.card.energy||'尚未记录精力，不估一个数字');text('today',d.card.today||'这一页留白，等汐自己来布置。');text('wish',d.card.wish||'等她冒出一个自己的主意。');text('cardtime',d.card_updated?'展示卡文件更新于 '+new Date(d.card_updated).toLocaleString('zh-CN'):'尚无展示卡 · 不等于没有心情');list('interests',d.card.interests,'尚未选择展示，不急着填满');list('learned',d.card.learned,'这里等她放进值得记住的小发现');text('collectioncount',`资料目录共 ${d.collection_count} 张图片 · 不是全部公开收藏`);const root=$('stickers');if(root.dataset.files!==JSON.stringify(d.stickers)){root.replaceChildren();root.dataset.files=JSON.stringify(d.stickers);for(const f of d.stickers){const fig=document.createElement('figure');fig.className='sticker';const img=document.createElement('img');img.src='/stickers/'+encodeURIComponent(f);img.alt=names[f]||'鲸鱼娘表情';img.loading='lazy';const cap=document.createElement('figcaption');cap.textContent=img.alt;fig.append(img,cap);root.append(fig);}}if(d.budget){const b=d.budget;text('spent','¥ '+b.settled.toFixed(3));text('budget',`今日已核算 ${b.calls} 次调用 · ${b.cap===null?'未设置每日费用上限':'每日上限 ¥'+b.cap}`);text('pending',`另有 ¥${b.pending.toFixed(2)} 未知费用预留（${b.pending_count} 笔，含历史未结项）`);}else{text('spent','暂不可读');text('budget','');text('pending','');}renderConversation(d);renderCognition(d);void refreshWorkroom();list('backups',d.backups.map(b=>new Date(b.at).toLocaleString('zh-CN')+' · '+(b.portable?'可迁移加密 · ':'旧本机加密 · ')+b.name),'尚未找到本机快照');}catch{text('fresh','读取失败 · 页面可能保留上次内容');text('issues','本地小窝服务暂时不可用。显示内容可能已过时。');}finally{loading=false;$('refresh').disabled=false;}}
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-selected',String(x===b));});document.querySelectorAll('.panel').forEach(panel=>panel.hidden=panel.id!==b.dataset.tab);}));$('refresh').addEventListener('click',refresh);refresh();setInterval(()=>{if(!document.hidden)refresh();},30000);
 
@@ -50,14 +51,33 @@ function lifeTime(value){
  const date=new Date(value);if(Number.isNaN(date.getTime()))return '时间尚未记下';
  return new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
 }
+function lifeFacts(row){
+ const levels={'search-lead':'搜索线索','page-text':'网页正文','thread-posts':'帖子正文',subtitles:'字幕','speech-transcript':'机器语音转写','sampled-frames':'抽样画面','metadata-only':'简介',unknown:'范围未记录'};
+ const parts=[];
+ if(Number.isSafeInteger(row.saved_source_count))parts.push('已保存 '+row.saved_source_count+' 条来源记录');
+ if(row.reading_levels)parts.push(...Object.entries(row.reading_levels).filter(([,count])=>Number.isSafeInteger(count)&&count>0).map(([level,count])=>(levels[level]||'范围未知')+' '+count));
+ return parts.join(' · ')||'尚无可确认的阅读记录';
+}
+function lifeOutcome(row){
+ if(row.outcome==='creative-continuation-saved')return '已留下部分创作进度';
+ if(row.outcome==='creative-workspace-updated')return '已保存创作步骤，执行结果另看工作间';
+ if(row.state==='failed')return '本次未完成';
+ if(['interrupted','paused'].includes(row.state))return '本次中断，保留已有记录';
+ if(row.state==='thinking')return '机会已开始，结果尚未记录';
+ if(row.activity_state==='completed'&&['explore','exploration'].includes(row.choice))return '发现已保存，问题未必已解决';
+ if(row.activity_state==='unfinished')return '机会结束，仍有未完步骤';
+ return row.state==='finished'?'本次机会已结束':'结果待核对';
+}
 function renderLife(data){
  const posts=$('life-posts'),steps=$('life-heartbeats');posts.replaceChildren();steps.replaceChildren();
  if(!data?.available){
   text('life-connection',data?.status==='temporarily-unavailable'?'记录暂时读不到':'尚未连接');
   text('life-post-empty',data?.status==='temporarily-unavailable'?'她留下的文字暂时读不到，稍后再来看看。':'生活记录尚未连接，这里先留一点空白。');
-  $('life-post-empty').hidden=false;text('life-next','下一次考虑机会，等记录接通后再看。');return;
+  $('life-post-empty').hidden=false;text('life-next','下一次考虑机会，等记录接通后再看。');text('life-last-record','最近记录日期尚不可读');
+  for(const id of ['life-explorations','life-attempts','life-creative'])list(id,[],'记录暂不可读，不能据此判断没有活动。');return;
  }
  text('life-connection','这些是她选择留下的记录');
+ text('life-last-record',data.last_recorded_day?'最近记录日期：'+data.last_recorded_day+' · '+lifeTime(data.last_recorded_at):'尚无有效时间的生活记录');
  const entries=Array.isArray(data.posts)?data.posts.slice(0,12):[];
  $('life-post-empty').hidden=entries.length>0;text('life-post-empty','她还没有选择把短文放在这里，不急着填满。');
  for(const post of entries){
@@ -67,16 +87,23 @@ function renderLife(data){
   if(Number.isFinite(post.created))time.dateTime=new Date(post.created).toISOString();card.append(body,time);posts.append(card);
  }
  const choices={create:'摆弄自己的小作品',rest:'安静待一会儿',quiet:'安静待一会儿',explore:'去看看感兴趣的事',exploration:'去看看感兴趣的事',journal:'留一点自己的文字',reflect:'回望今天的小发现',review:'回望今天的小发现',share:'想起一件想分享的事',corner:'给小角落留一段话',publish:'给小角落留一段话',later:'留到以后再想',discard:'这次先放下',keep_quiet:'安静待一会儿'};
- const states={finished:'已留下记录',thinking:'正在考虑',completed:'已留下记录',done:'已留下记录',quiet:'选择安静',running:'正在慢慢做',failed:'这次暂未完成',interrupted:'暂时停下',paused:'暂时停下',skipped:'这次先歇一歇'};
  for(const heartbeat of (Array.isArray(data.heartbeats)?data.heartbeats:[]).slice(0,6)){
   const item=document.createElement('li'),title=document.createElement('p'),reason=document.createElement('p'),time=document.createElement('time');
-  title.className='life-step-title';title.textContent=(choices[heartbeat.choice]||'给自己留一点时间')+(states[heartbeat.state]?' · '+states[heartbeat.state]:'');
-  reason.className='life-step-reason';reason.textContent=typeof heartbeat.reason==='string'?heartbeat.reason.slice(0,180):'这次没有另外展示原因。';
+  title.className='life-step-title';title.textContent=(choices[heartbeat.choice]||'给自己留一点时间')+' · '+lifeOutcome(heartbeat);
+  reason.className='life-step-reason';reason.textContent=['explore','exploration'].includes(heartbeat.choice)?lifeFacts(heartbeat):'这里只展示已记录的状态。';
   time.textContent=lifeTime(heartbeat.at);if(Number.isFinite(heartbeat.at))time.dateTime=new Date(heartbeat.at).toISOString();
   item.append(title,reason,time);steps.append(item);
  }
  if(!steps.childElementCount){const item=document.createElement('li');item.textContent='还没有留下最近活动的记录。';steps.append(item);}
- text('life-next',Number.isFinite(data.next_at)&&data.next_at>Date.now()?'下一次考虑机会：'+lifeTime(data.next_at):'下一次考虑机会，等她再留个时间。');
+ const activities=Array.isArray(data.activities)?data.activities:[];
+ const explored=activities.filter(row=>row.kind==='explore').slice(0,3).map(row=>lifeTime(row.updated)+' · '+(row.state==='completed'?'发现已保存':row.state==='failed'?'本次未完成':row.state==='interrupted'?'本次中断':'尚有未完步骤')+'；'+lifeFacts(row));
+ list('life-explorations',explored,data.coverage?.activity_metadata_available?'最近几次机会中暂无探索记录。':'探索记录尚未接通。');
+ const toolNames={public_fetch:'网页读取',public_search:'公开搜索',bilibili_read:'视频资料读取',bilibili_listen:'片段语音转写',bilibili_search:'视频搜索',bilibili_status:'视频入口检查',tieba_status:'帖子入口检查',tieba_list:'帖子列表',tieba_thread:'主题帖读取',tieba_floor:'楼层读取'};
+ const attemptStates={ok:'返回成功',empty:'没有结果',partial:'只取得部分',failed:'本次失败',unavailable:'入口不可用',unconfigured:'入口未连接',interrupted:'本次中断'};
+ list('life-attempts',(Array.isArray(data.attempts)?data.attempts:[]).slice(0,3).map(row=>lifeTime(row.at)+' · '+(toolNames[row.tool]||'读取尝试')+'：'+(attemptStates[row.status]||'状态待核对')),data.coverage?.attempt_metadata_available?'尚未记录新的读取尝试。':'尝试记录尚未接通，旧记录不倒推。');
+ const creativeSteps={'space-opened':'查看了自己的工作间','saved-step':'已保存或提交一步，执行结果待核对','partial-step-saved':'留下部分进度，可以接着做'};
+ list('life-creative',activities.filter(row=>row.kind==='create').slice(0,3).map(row=>lifeTime(row.updated)+' · '+(creativeSteps[row.creative_step]||(['failed','interrupted','unfinished'].includes(row.state)?'这次创作尚未完成':'创作机会已有记录，作品结果待核对'))),data.coverage?.activity_metadata_available?'最近几次机会中暂无创作记录。':'创作机会记录尚未接通。');
+ text('life-next',data.schedule_state==='scheduled'&&Number.isFinite(data.next_at)?'下次考虑时间：'+lifeTime(data.next_at):data.schedule_state==='due'?'记录的考虑时间已到，是否开始以实际机会为准。':'尚无当前下次考虑时间。');
 }
 async function refreshLife(){
  if(lifeLoading)return;lifeLoading=true;

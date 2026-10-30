@@ -19,14 +19,14 @@ export function scopedTools({base,scope,history,memory}){
 }
 
 // A minimal bounded tool loop for the isolated engine; no sends or arbitrary tools.
-export const imageMutationTools=new Set(['queue_public_exploration','control_public_exploration','qzone_draft','qzone_publish','write_note','self_state','correct_memory','self_profile_update','self_profile_restore','workshop_submit','workshop_control','workshop_resume','workshop_restore_draft','home_update','home_draft','social_observations','workroom_create','workroom_write','workroom_restore','workroom_trash','workroom_submit','workroom_task_state','workroom_publish','workroom_unpublish']);
+export const imageMutationTools=new Set(['queue_public_exploration','control_public_exploration','qzone_draft','qzone_publish','write_note','self_state','reflect_person_impression','correct_memory','self_profile_update','self_profile_restore','workshop_submit','workshop_control','workshop_resume','workshop_restore_draft','home_update','home_draft','social_observations','workroom_create','workroom_write','workroom_restore','workroom_trash','workroom_submit','workroom_task_state','workroom_publish','workroom_unpublish']);
 // The same existing external-image-turn boundary applies to own-space aliases.
 for(const name of [...imageMutationTools])if(/^work(room|shop)_/.test(name))imageMutationTools.add('own_'+name);
 const recoveryNote='\n上一条生成未形成可发送的完整结果。请减少反复推演，完成当前这一步；不要重做已有成功工具操作。最终聊天回复保持简短，长代码写入工作间文件，不整段粘贴到聊天。';
 function replyText(output){return output.filter(i=>i.type==='message'&&i.role==='assistant').flatMap(i=>i.content??[]).map(c=>c.type==='output_text'?c.text:c.type==='refusal'?c.refusal:'').filter(Boolean).join('\n').trim();}
 function responseSummary(result,recovery){const output=result.response.output??[],reason=result.response.incomplete_details?.reason;return {recovery,response_status:['completed','incomplete','failed','cancelled'].includes(result.response.status)?result.response.status:'unknown',incomplete_reason:['max_output_tokens','content_filter'].includes(reason)?reason:null,output_tokens:result.attempts?.at(-1)?.meters?.output??null,text_chars:replyText(output).length,reasoning_chars:output.filter(x=>x.type==='reasoning').flatMap(x=>x.content??x.summary??[]).reduce((n,p)=>n+(typeof p.text==='string'?p.text.length:0),0),tool_count:output.filter(x=>x.type==='function_call').length};}
 function truncated(result,limit){const reason=result.response.incomplete_details?.reason;return result.response.status==='incomplete'&&(reason==='max_output_tokens'||!reason&&(result.attempts?.at(-1)?.meters?.output??0)>=limit);}
-export async function runScopedTurn({client,profile,input,tools,signal,maxRounds=32,onStep=()=>{},onTool=()=>{},generationContext=()=>'\n【本次生成当前时间】\n'+JSON.stringify(buildConversationTime({now:Date.now()}).computed_at)}){
+export async function runScopedTurn({client,profile,input,tools,signal,maxRounds=32,streamResponses=false,onStep=()=>{},onTool=()=>{},generationContext=()=>'\n【本次生成当前时间】\n'+JSON.stringify(buildConversationTime({now:Date.now()}).computed_at)}){
  const transcript=structuredClone(input).map(item=>item.type?item:{...item,type:'message'}),seen=new Set();
  const context=transcript.map(item=>({version:2,item,context:{}}));
  let available=tools,recoveryUsed=false,readOnly=false;
@@ -34,9 +34,9 @@ export async function runScopedTurn({client,profile,input,tools,signal,maxRounds
   signal?.throwIfAborted();
   const definitions=available.map(({name,description,parameters})=>({type:'function',name,description,parameters}));
   let effective,configured;
-  const generate=async()=>{const live=await generationContext();signal?.throwIfAborted();const spec=await client.generationSettings?.()??{};configured={model:spec.model??'deepseek-flash',thinking:spec.thinking??true,reasoningEffort:spec.reasoningEffort??'high',maxTokens:spec.maxTokens??8192};effective=generationOptions(spec);return client.respond({...effective,instructions:profile+(recoveryUsed?recoveryNote:'')+(typeof live==='string'?live:''),input:transcript,tools:definitions},{signal,context});};
+  const generate=async()=>{const live=await generationContext({round:round+1,maxRounds,recovery:recoveryUsed});signal?.throwIfAborted();const spec=await client.generationSettings?.()??{};configured={model:spec.model??'deepseek-flash',thinking:spec.thinking??true,reasoningEffort:spec.reasoningEffort??'high',maxTokens:spec.maxTokens??8192};effective=generationOptions(spec);return client.respond({...effective,instructions:profile+(recoveryUsed?recoveryNote:'')+(typeof live==='string'?live:''),input:transcript,tools:definitions},{signal,context,...(streamResponses?{onEvent:()=>{}}:{})});};
   let result=await generate();
-  try{onStep({...responseSummary(result,recoveryUsed),effective_parameters:effective,configured_parameters:configured,tool_names:result.response.output.filter(x=>x.type==='function_call').map(x=>x.name)});}catch{}
+  try{onStep({round:round+1,...responseSummary(result,recoveryUsed),effective_parameters:effective,configured_parameters:configured,tool_names:result.response.output.filter(x=>x.type==='function_call').map(x=>x.name)});}catch{}
   let output=result.response.output;
   const text=replyText(output),hasCalls=output.some(i=>i.type==='function_call');
   const incomplete=truncated(result,effective.max_output_tokens);
@@ -45,12 +45,13 @@ export async function runScopedTurn({client,profile,input,tools,signal,maxRounds
    // Nothing from this response has executed. Regenerate this one uncommitted
    // step once; previous successful tool results stay in the context.
    signal?.throwIfAborted();recoveryUsed=true;result=await generate();
-   try{onStep({...responseSummary(result,true),effective_parameters:effective,configured_parameters:configured,tool_names:result.response.output.filter(x=>x.type==='function_call').map(x=>x.name)});}catch{}
+   try{onStep({round:round+1,...responseSummary(result,true),effective_parameters:effective,configured_parameters:configured,tool_names:result.response.output.filter(x=>x.type==='function_call').map(x=>x.name)});}catch{}
    output=result.response.output;
   }
   signal?.throwIfAborted();
   if(truncated(result,effective.max_output_tokens))throw Object.assign(Error('Generation output limit'),{code:'SCOPED_OUTPUT_LIMIT',attempts:result.attempts});
   const calls=output.filter(i=>i.type==='function_call');
+  if(result.response.status!==undefined&&result.response.status!=='completed'||calls.some(call=>call.status!==undefined&&call.status!=='completed'))throw Object.assign(Error('Generation is not complete; no partial tool call executed'),{code:'SCOPED_RESPONSE_INCOMPLETE'});
   if(!calls.length){
    const text=replyText(output);
    if(!text)throw Object.assign(Error('Invalid reply'),{code:'SCOPED_REPLY_INVALID'});return text;
