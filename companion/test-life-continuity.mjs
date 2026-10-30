@@ -134,7 +134,7 @@ test('choosing quiet before exploration does not claim or interrupt a queued hum
 test('search summaries cannot complete a discovery or create a share intent',async t=>{
  const f=fixture(t);let saveRejected=false,shareRejected=false;
  f.plan(choose(),{name:'public_search',args:{query:'Tides'}},save,
-  req=>{saveRejected=/rejected|failed/i.test(lastOutput(req));return share;},
+  req=>{const result=lastOutput(req);saveRejected=result.status==='rejected'&&result.saved===false;return share;},
   req=>{shareRejected=/rejected|failed/i.test(lastOutput(req));return quiet;});
  await f.life.tick();f.assertConsumed();assert.ok(saveRejected);assert.ok(shareRejected);
  assert.equal(f.life.db.prepare('SELECT count(*) n FROM discoveries').get().n,1,'A search lead is retained without being promoted to reading');

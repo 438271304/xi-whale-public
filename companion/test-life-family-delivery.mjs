@@ -23,7 +23,7 @@ function fixture(t){
  const policy={bot_id:BOT,group_id:GROUP,group_ids:[GROUP],father_id:FATHER,mother_id:MOTHER,friend_private_enabled:true,follow_configured_groups:true};
  const social={inbound:address=>lastInbound.get(address)??0,availability:{status:scope=>({active:contactPauses.has(scope.address)})}};
  const world={handleEvent:async()=>({accepted:true}),getWatched:()=>watched,setWatched:(groups,users)=>{watched={groups,users};},
-  driver:{callApi:async name=>{assert.equal(name,'get_friend_list');friendChecks++;if(friendHook)await friendHook();return friends.map(user_id=>({user_id}));}},
+  driver:{callApi:async name=>{assert.equal(name,'get_friend_list');friendChecks++;if(friendHook&&friendChecks>1)await friendHook();return friends.map(user_id=>({user_id}));}},
   sendToTarget:async(target,expression)=>{
    assert.deepEqual(Object.keys(expression),['text']);calls.push({target:{...target},text:expression.text});
    if(failTransport)throw Error('Synthetic transport failed after attempt');return {message_id:961000+calls.length};
@@ -66,7 +66,7 @@ for(const recipient of ['father','mother'])test(recipient+' receives a single ex
  await assert.rejects(()=>f.world.sendToTarget({kind:'private',id},{text:'ordinary reply without lease'}),/fresh message/);
  f.busy(conversationScope('group',GROUP));f.explore(recipient);
  const result=await f.life.tick();f.consumed();assert.equal(result.status,'sent');
- assert.equal(f.calls.length,1);assert.deepEqual(f.calls[0].target,{kind:'private',id});assert.equal(f.friendChecks,1);
+ assert.equal(f.calls.length,1);assert.deepEqual(f.calls[0].target,{kind:'private',id});assert.equal(f.friendChecks,2);
  const intent=f.intents()[0];assert.equal(intent.recipient,recipient);assert.equal(intent.target_id,id);assert.equal(intent.state,'sent');
  assert.equal(JSON.parse(intent.receipt).scope,scope.address);
  assert.deepEqual(f.turns().map(turn=>({peer:turn.peer,state:turn.state})),[{peer:scope.address,state:'sent'}]);
@@ -79,11 +79,11 @@ for(const recipient of ['father','mother'])test(recipient+' receives a single ex
  await f.life.tick();f.consumed();assert.equal(f.calls.length,1);assert.equal(f.intents().length,1);
 });
 
-test('non-parent private initiation is rejected by both actual service and installed QQ guard',async t=>{
+test('ordinary service has no implicit initiation grant; internal life guard accepts a verified current friend',async t=>{
  const f=fixture(t),scope=privateScope(OTHER);let callback=0;
  await assert.rejects(()=>f.service.initiate(scope,'proactive:nonparent','A synthetic message',{purpose:'life-share',trackedTransport:true,send:async()=>callback++}),/Invalid initiation/);
- await assert.rejects(()=>sendLifeQQDelivery(f.world,{kind:'private',id:OTHER},'A synthetic message'),/parent/);
- assert.equal(callback,0);assert.equal(f.calls.length,0);assert.equal(f.turns().length,0);
+ await sendLifeQQDelivery(f.world,{kind:'private',id:OTHER},'A synthetic message');
+ assert.equal(callback,0);assert.equal(f.calls.length,1);assert.equal(f.turns().length,0);
 });
 
 for(const change of ['friend-revoked','night','paused','inbound-revision','contact-pause'])test(change+' during async friend lookup defers intent and turn with zero transport attempts',async t=>{
@@ -97,7 +97,7 @@ for(const change of ['friend-revoked','night','paused','inbound-revision','conta
   if(change==='contact-pause')f.pauseContact(scope);
  });
  f.explore('father');const result=await f.life.tick();f.consumed();await f.paused();
- assert.equal(result.status,'saved-share-deferred');assert.equal(f.friendChecks,1);assert.equal(f.calls.length,0);
+ assert.equal(result.status,'saved-share-deferred');assert.equal(f.friendChecks,2);assert.equal(f.calls.length,0);
  assert.equal(f.intents().length,1);assert.equal(f.intents()[0].state,'queued');
  assert.deepEqual(f.turns().map(turn=>({peer:turn.peer,state:turn.state})),[{peer:scope.address,state:'deferred'}]);
  assert.equal(f.life.db.prepare('SELECT state FROM activity_shares').get().state,'deferred');
@@ -125,7 +125,7 @@ test('a persisted legacy family intent binds its null target to the exact watche
  assert.deepEqual(f.calls[0].target,{kind:'group',id:GROUP});const stored=f.intents()[0];
  assert.equal(stored.recipient,'family');assert.equal(stored.target_kind,'group');assert.equal(stored.target_id,GROUP);assert.equal(stored.state,'sent');
  assert.equal(JSON.parse(stored.receipt).scope,'group:'+GROUP);assert.equal(f.outgoing().filter(row=>row.event===JSON.parse(stored.receipt).event)[0].scope,'group:'+GROUP);
- assert.equal(f.friendChecks,0);
+ assert.equal(f.friendChecks,1);
 });
 
 test('reach_out_from_life privately talks to Mom from her actual words and an own saved project, without fabricating a public exploration',async t=>{

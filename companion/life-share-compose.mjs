@@ -44,36 +44,45 @@ export class LifeShareComposer{
   }
   return record;
  }
- corrections(record){
-  return (record.corrections??[]).slice(0,4).map(({id,kind,at,sender_id,scope,text,value})=>({id,kind,at,sender_id,scope,
-   text:clip(text??(value?JSON.stringify(value):''),400),notice:'Later attributed correction; do not repeat the original claim as settled fact.'}));
+ corrections(record,destination=null){
+  const allowed=scope=>!destination||scope==='unknown'||scope===destination.kind+':'+destination.id;
+  return (record.corrections??[]).slice(0,4).map(({id,kind,at,sender_id,scope,text,value,evidence})=>{
+   const scoped=scope!=null?allowed(scope):!destination||Array.isArray(evidence)&&evidence.length>0&&evidence.every(ref=>{const source=this.store.get({id:ref.id,maxChars:1});return source.found&&allowed(source.scope);});
+   if(!scoped)return {id,kind,at,disclosure:'other-conversation-correction-withheld',notice:'A later correction exists. Do not present the original claim as settled; its private correction details are unavailable to this audience.'};
+   return {id,kind,at,sender_id,scope,text:clip(text??(value?JSON.stringify(value):''),400),notice:'Later attributed correction; do not repeat the original claim as settled fact.'};
+  });
  }
- material(intent){
+ material(intent,scope=null){
   const record=this.record({id:intent.evidence});
   if(!record.found)throw Error('Saved sharing evidence is unavailable');
   const content=parse(record.text),refs=content?.kind==='contact-intention'?content.source_refs:null;
+  let withheld=0;
+  const shareable=item=>!scope||item.scope==null||item.scope==='unknown'||item.scope===scope.kind+':'+scope.id;
+  const corrections=item=>{const result=this.corrections(item,scope);withheld+=result.filter(c=>c.disclosure).length;return result;};
   const evidence=refs?refs.slice(0,4).map(ref=>{
    const item=this.record({id:ref.id,revision:ref.revision});
    if(!item.found)throw Error('The saved contact source version is unavailable');
+   if(!shareable(item)){withheld++;return {id:item.id,revision:item.revision,disclosure:'other-conversation-source-withheld',notice:'This experience may explain wanting contact, but its words and private details are not material to disclose to this recipient.'};}
    return {id:item.id,revision:item.revision,at:item.at,role:item.role,scope:item.scope,
-    author:ref.author,text:clip(body(item.text),480),corrections:this.corrections(item),notice:'Original source, not proof that its situation still holds now.'};
+    author:ref.author,text:clip(body(item.text),480),corrections:corrections(item),notice:'Original source, not proof that its situation still holds now.'};
   }):[{id:record.id,revision:record.revision,at:record.at,role:record.role,
    summary:clip(content?.summary??body(record.text),900),
-   sources:(content?.sources??[]).slice(0,3).map(({url,title,level})=>({url,title,level})),corrections:this.corrections(record)}];
+   sources:(content?.sources??[]).slice(0,3).map(({url,title,level})=>({url,title,level})),corrections:corrections(record)}];
   // A reaction remains optional. It is never manufactured to qualify a share.
   const ids=new Set([intent.evidence,...(refs??[]).map(ref=>ref.id)]);
-  const reactions=(this.journal?.recent({days:7,limit:12}).entries??[])
-   .filter(entry=>entry.facts.evidence.some(ref=>ids.has(ref.id))).slice(0,2)
+  const reactions=(withheld?[]:this.journal?.recent({days:7,limit:12}).entries??[])
+   .filter(entry=>entry.facts.evidence.some(ref=>ids.has(ref.id))&&entry.facts.evidence.every(ref=>ref.scope!=null&&shareable(ref))).slice(0,2)
    .map(entry=>({id:entry.id,revision:entry.revision,at:entry.at,interpretation:entry.interpretation,
     notice:'Her saved interpretation; not a new source fact or another person’s confirmed feeling.'}));
-  return {evidence,reactions};
+  return {evidence,reactions,withheld_source_count:withheld};
  }
  input({intent,scope,audience}){
-  return {purpose:'one recipient-aware expression decision; no sending',recipient:intent.recipient,
-   recipient_reason:intent.recipient_reason,draft:intent.text,draft_media_plan:intent.media_plan??null,...this.material(intent),
+  const material=this.material(intent,scope),withheld=material.withheld_source_count>0;
+  return {purpose:'one recipient-aware expression decision; no sending',recipient:intent.recipient,target:{kind:scope.kind,id:scope.id},
+   recipient_reason:withheld?'A remembered experience made me want contact; other-conversation details are withheld.':intent.recipient_reason,draft:withheld?null:intent.text,draft_media_plan:intent.media_plan??null,...material,
    recipient_context:this.recent(scope),audience:{unanswered_count:audience.unanswered_count,
     recent_feedback:audience.recent_feedback,preferences:audience.preferences},
-   notice:'No research transcript or arbitrary tools are included. A brief grounded thought, a defer, or keeping it private are all valid.'};
+   notice:'No research transcript or arbitrary tools are included. Withheld sources do not authorize disclosure or invented context: use only available material for a personal greeting, or defer/keep private. A brief grounded thought, a defer, or keeping it private are all valid.'};
  }
  async compose({intent,scope,audience,signal}){
   if(intent?.state!=='queued'||intent.target_kind!==scope.kind||String(intent.target_id)!==String(scope.id)||!Number.isSafeInteger(intent.revision))throw Error('Expression must use the current intended recipient');

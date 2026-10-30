@@ -1200,6 +1200,32 @@
     },
     {
       "root": "project",
+      "source": "companion/life-social-context.mjs",
+      "output": "companion/life-social-context.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-social-targets.mjs",
+      "output": "companion/life-social-targets.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/life-workshop.mjs",
       "output": "companion/life-workshop.mjs",
       "kind": "source",
@@ -2331,6 +2357,19 @@
     },
     {
       "root": "project",
+      "source": "companion/test-image-action-boundary.mjs",
+      "output": "companion/test-image-action-boundary.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-image-intake-feedback.mjs",
       "output": "companion/test-image-intake-feedback.mjs",
       "kind": "synthetic-test-source",
@@ -2656,6 +2695,19 @@
     },
     {
       "root": "project",
+      "source": "companion/test-life-share-choice.mjs",
+      "output": "companion/test-life-share-choice.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-life-share-compose.mjs",
       "output": "companion/test-life-share-compose.mjs",
       "kind": "synthetic-test-source",
@@ -2671,6 +2723,45 @@
       "root": "project",
       "source": "companion/test-life-share-media.mjs",
       "output": "companion/test-life-share-media.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-social-context.mjs",
+      "output": "companion/test-life-social-context.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-social-delivery.mjs",
+      "output": "companion/test-life-social-delivery.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-life-social-targets.mjs",
+      "output": "companion/test-life-social-targets.mjs",
       "kind": "synthetic-test-source",
       "transform_rules": [
         "known-qq-identifiers",
@@ -3700,6 +3791,6 @@
     "git_history_included": false,
     "private_source_fingerprints_included": false,
     "historical_test_details": "Reviewed baseline preserved; added/updated synthetic calendar fixtures shifted together; installed-provider root is environment-supplied.",
-    "feedback": "docs/FEEDBACK_REVIEW.md: 16 anonymous paraphrases; no actual voice, chats, raw reports or paid experiment scripts"
+    "feedback": "docs/FEEDBACK_REVIEW.md: 17 anonymous paraphrases; no private chats/audio, raw reports, local execution proof or paid probes"
   }
 }

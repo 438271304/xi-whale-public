@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {DatabaseSync} from 'node:sqlite';
-import {mkdtempSync} from 'node:fs';
+import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {ProactiveAvailability} from './proactive-availability.mjs';
 
 const FATHER = '900000001', MOTHER = '900000008', OTHER = '900000009';
-const start = Date.parse('2026-10-30T10:00:00+08:00');
+const FRIEND = '910010008';
+const start = Date.parse('2036-10-17T10:00:00+08:00');
 const text = value => ({type: 'text', data: {text: value}});
 const message = (body, {sender = FATHER, event = 100, at = start, segments} = {}) => ({
   post_type: 'message', message_type: 'private', sub_type: 'friend', user_id: Number(sender), sender: {user_id: Number(sender)},
@@ -46,7 +47,7 @@ test('plain busyness or lack of response never creates a pause', t => {
 
 test('today/tonight expire at the source day Beijing midnight; reads do not invent a new revision', t => {
   for (const body of ['今天别主动发消息', '今晚别主动发消息给我', '我今天在开会，先别找我']) {
-    const f = fixture(t), source = Date.parse('2026-10-30T23:50:00+08:00'), midnight = Date.parse('2026-10-31T00:00:00+08:00');
+    const f = fixture(t), source = Date.parse('2036-10-17T23:50:00+08:00'), midnight = Date.parse('2036-10-18T00:00:00+08:00');
     f.at(source); assert.equal(f.availability.observe(message(body, {at: source})).changed, true);
     assert.equal(f.status().expires, midnight); f.at(midnight - 1); assert.equal(f.status().active, true);
     f.at(midnight); assert.equal(f.status().active, false); assert.equal(f.status().reason, 'same-day-pause-expired');
@@ -55,9 +56,9 @@ test('today/tonight expire at the source day Beijing midnight; reads do not inve
 });
 
 test('a delayed today-request does not get extended into the following day', t => {
-  const f = fixture(t), source = Date.parse('2026-10-29T23:50:00+08:00');
+  const f = fixture(t), source = Date.parse('2036-10-16T23:50:00+08:00');
   const result = f.availability.observe(message('今天别主动发消息', {at: source}));
-  assert.equal(result.status.active, false); assert.equal(result.status.expires, Date.parse('2026-10-30T00:00:00+08:00'));
+  assert.equal(result.status.active, false); assert.equal(result.status.expires, Date.parse('2036-10-17T00:00:00+08:00'));
 });
 
 test('only an explicit present resume clears a pause; it does not clear another parent scope', t => {
@@ -136,4 +137,79 @@ test('pause and latest source are persistent across restart; a passive DM does n
   assert.equal(after.active, true); assert.equal(after.sourceEvent, before.sourceEvent); assert.equal(after.sourceTime, before.sourceTime); assert.equal(after.revision, before.revision);
   assert.equal(gate.observe(message('我问你个事', {event: 200, at: start + 60000})).changed, false);
   assert.equal(gate.status('private:' + FATHER).active, true); assert.equal(gate.status('private:' + FATHER).blocksPassiveReplies, false);
+});
+
+test('a current admitted friend can control only their own proactive contact without receiving send authority', t => {
+  const f = fixture(t), admitted = {admittedFriend:true};
+  assert.equal(f.status(FRIEND).authorized, false);
+  const passive = f.availability.observe(message('我在忙', {sender:FRIEND}), admitted);
+  assert.equal(passive.accepted, true); assert.equal(passive.changed, false);
+  assert.equal(f.status(FRIEND).authorized, false, 'Ordinary chat is not retained as a friend authorization cache');
+  assert.equal(f.db.prepare('SELECT count(*) n FROM proactive_availability_events').get().n, 0);
+  const pause = f.availability.observe(message('先别主动找我', {sender:FRIEND,event:101,at:start+1000}), admitted);
+  assert.equal(pause.changed, true); assert.equal(pause.status.active, true);
+  assert.equal(pause.status.authorizationBasis, 'saved-admitted-friend-control');
+  assert.equal(pause.status.authorizesContact, false); assert.equal(pause.status.blocksPassiveReplies, false);
+  assert.equal(f.status(FATHER).active, false); assert.equal(f.status(MOTHER).active, false);
+  const later = message('可以主动找我了', {sender:FRIEND,event:102,at:start+2000});
+  assert.equal(f.availability.observe(later).accepted, false, 'A previous control does not authorize a later unadmitted message');
+  assert.equal(f.status(FRIEND).active, true);
+  assert.equal(f.availability.observe(later, admitted).action, 'resume');
+  assert.equal(f.status(FRIEND).active, false); assert.equal(f.status(FRIEND).revision, 2);
+});
+
+test('internal admission is strict and cannot replace the real private friend sender or scope', t => {
+  const f = fixture(t), pause = message('先别主动找我', {sender:FRIEND});
+  assert.equal(f.availability.observe({...pause,admittedFriend:true}).accepted, false);
+  for (const value of [false,undefined,1,'true',{},[]]) {
+    assert.equal(f.availability.observe(pause,{admittedFriend:value}).accepted, false);
+  }
+  for (const invalid of [
+    {...pause,sender:{user_id:Number(FATHER)}},
+    {...pause,message_type:'group',group_id:910020001},
+    {...pause,sub_type:'group'},
+    {...pause,post_type:'message_sent'},
+    {...pause,scope:'private:'+FATHER},
+    {...pause,peer:'private:'+FATHER},
+    {...pause,conversation:{kind:'private',id:FATHER}},
+    {...pause,message_id:'100'},
+    {...pause,time:undefined},
+  ]) assert.equal(f.availability.observe(invalid,{admittedFriend:true}).accepted, false);
+  assert.equal(f.status(FRIEND).authorized, false); assert.equal(f.status(FRIEND).revision, 0);
+});
+
+test('a friend admission does not turn quoted or ordinary language into pause/resume commands', t => {
+  const f = fixture(t), admitted = {admittedFriend:true};
+  f.availability.observe(message('先别主动找我',{sender:FRIEND}), admitted);
+  for (const [i,body] of ['她说可以主动找我了','“可以主动找我了”','我在忙','忙完了再找我','可以主动找我了吗？'].entries()) {
+    assert.equal(f.availability.observe(message(body,{sender:FRIEND,event:110+i,at:start+1000+i*1000}),admitted).changed,false);
+  }
+  const quoted = message('',{sender:FRIEND,event:120,at:start+20000,segments:[{type:'reply',data:{id:'99'}},text('可以主动找我了')]});
+  assert.equal(f.availability.observe(quoted,admitted).changed,false);
+  assert.equal(f.status(FRIEND).active,true); assert.equal(f.status(FRIEND).revision,1);
+  assert.equal(f.db.prepare('SELECT count(*) n FROM proactive_availability_events').get().n,1);
+});
+
+test('saved admitted-friend controls survive restart without allowing duplicate, older or tied commands to replace them', t => {
+  const root=mkdtempSync(join(tmpdir(),'proactive-friend-')),path=join(root,'availability.sqlite3');
+  let db=new DatabaseSync(path),gate=new ProactiveAvailability(db,{clock:()=>start}),admitted={admittedFriend:true};
+  t.after(()=>{db.close();rmSync(root,{recursive:true,force:true});});
+  const pause=message('先别主动找我',{sender:FRIEND,event:500});
+  gate.observe(pause,admitted);
+  gate.observe(message('可以主动找我了',{sender:FRIEND,event:501,at:start+2000}),admitted);
+  db.close();db=new DatabaseSync(path);gate=new ProactiveAvailability(db,{clock:()=>start+60000});
+  const restored=gate.status({kind:'private',id:FRIEND});
+  assert.equal(restored.authorized,true);assert.equal(restored.active,false);assert.equal(restored.revision,2);
+  assert.equal(restored.authorizesContact,false);assert.equal(restored.sourceEvent,'501');
+  assert.equal(gate.observe(pause,admitted).duplicate,true);
+  for (const [i,at] of [start+1000,start+2000].entries()) {
+    const result=gate.observe(message('先别主动找我',{sender:FRIEND,event:502+i,at}),admitted);
+    assert.equal(result.stale,true);assert.equal(result.changed,false);
+  }
+  assert.equal(gate.status('private:'+FRIEND).active,false);assert.equal(gate.status('private:'+FRIEND).revision,2);
+  assert.equal(gate.status('private:910010009').authorized,false);
+  assert.equal(gate.observe(message('先别主动找我',{sender:FRIEND,event:504,at:start+3000})).accepted,false);
+  const latest=gate.observe(message('今晚别主动发消息给我',{sender:FRIEND,event:504,at:start+3000}),admitted);
+  assert.equal(latest.status.active,true);assert.equal(latest.status.revision,3);
+  assert.equal(latest.status.expires,Date.parse('2036-10-18T00:00:00+08:00'));
 });

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "purpose": "Sanitized engineering archive; not a runnable full backup",
-  "export_policy_sha256": "c7d3b6c8e6a7241c30d8823b5264a3718a3229e0576fd08920073fcda2bdd7eb",
-  "source_files": 282,
+  "export_policy_sha256": "f791319edac8aab3113cb4236aca51df8f0911e9159281c00b1e4a23576af7be",
+  "source_files": 289,
   "identifier_value_count": 9,
   "identifier_mapping_exported": false,
   "credential_scan": {
@@ -31,14 +31,14 @@
     },
     {
       "path": "EXPORT_POLICY.json",
-      "bytes": 102533,
-      "target_sha256": "c7d3b6c8e6a7241c30d8823b5264a3718a3229e0576fd08920073fcda2bdd7eb",
+      "bytes": 105121,
+      "target_sha256": "f791319edac8aab3113cb4236aca51df8f0911e9159281c00b1e4a23576af7be",
       "kind": "generated-document"
     },
     {
       "path": "README.md",
       "bytes": 2887,
-      "target_sha256": "7e793d77dd3238e85af577b58a1ecfe65197e86c0e345872bfc4683a5d870f98",
+      "target_sha256": "b62af642b8da8c3cb81f595b1210e9e96b3e68ad2dc6d12cd25e9d1f0476b599",
       "kind": "generated-document"
     },
     {
@@ -257,8 +257,8 @@
       "source_root": "project",
       "source": "companion/conversation-service.mjs",
       "path": "companion/conversation-service.mjs",
-      "target_sha256": "075f12f65a65eebe0598a98656670fcc621329866c3cad0ea157aca4c1d4783f",
-      "bytes": 34667,
+      "target_sha256": "aa387592474a2d2eebd28202d4e4874c9902a4c60ef7bb6749875689bd78712e",
+      "bytes": 34997,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -290,8 +290,8 @@
       "source_root": "project",
       "source": "companion/curiosity-life.mjs",
       "path": "companion/curiosity-life.mjs",
-      "target_sha256": "f823e83e8ba78d01c75cd85ba9c21bcdde1e7ffb89f997beed658e422880bc1b",
-      "bytes": 32001,
+      "target_sha256": "1888a799e0ca4e27713db38baa76ab68fe6a0b3f4123d1aae3030e8e8d39b1ad",
+      "bytes": 34315,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -577,8 +577,8 @@
       "source_root": "project",
       "source": "companion/home/app.js",
       "path": "companion/home/app.js",
-      "target_sha256": "cfce5702f40757dcca311bdcafa159ff6dfa30177588dba57f926c6cec8c17bb",
-      "bytes": 24814,
+      "target_sha256": "5195a83995a67cf428b56ff02c93abaecaee1bb8ea3408926712e9ed675a03a7",
+      "bytes": 24941,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -600,8 +600,8 @@
       "source_root": "project",
       "source": "companion/home/capability_view.py",
       "path": "companion/home/capability_view.py",
-      "target_sha256": "18f336452a97ac8c9d8a479a099bb1b578589e8784bb40557326a73f68616260",
-      "bytes": 15450,
+      "target_sha256": "ccd4c93f8c074717b45a62f5706a4421c0491f75a711fde868e27fff721e293c",
+      "bytes": 15462,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -634,8 +634,8 @@
       "source_root": "project",
       "source": "companion/home/inner_life_view.py",
       "path": "companion/home/inner_life_view.py",
-      "target_sha256": "7af1574447baedc29b590a8734dc3e7fea8ba037dfd7eae744d5bfeb9ba06e0d",
-      "bytes": 8895,
+      "target_sha256": "e7668ae2259af8156196fbb42b1cd007dd57ad8df26cf3921e3e004055de8d9d",
+      "bytes": 11408,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -786,8 +786,8 @@
       "source_root": "project",
       "source": "companion/identity/SCOPED_OPERATIONS.md",
       "path": "companion/identity/SCOPED_OPERATIONS.md.example",
-      "target_sha256": "5202197150f6214fbf08e3d84200948a686a0e77e3870690c45fbe2fbdc9a78b",
-      "bytes": 15096,
+      "target_sha256": "32688feec87cee80cb16c30308633ae64bb29376d37cc5b114980b234ed88e80",
+      "bytes": 15282,
       "kind": "identity-template",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -883,8 +883,8 @@
       "source_root": "project",
       "source": "companion/isolated-qq-route.mjs",
       "path": "companion/isolated-qq-route.mjs",
-      "target_sha256": "4db9b537756973d10bfc9a4e7886815dc74d3f1158b328154988002feb9156b9",
-      "bytes": 12137,
+      "target_sha256": "5c9da31edfd201441a87e2b045dfb62ffb543af74f1f5a0eb0cb655d0660d800",
+      "bytes": 12349,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -905,8 +905,8 @@
       "source_root": "project",
       "source": "companion/life-contact.mjs",
       "path": "companion/life-contact.mjs",
-      "target_sha256": "e704810de7e205c7b2ab6d9e08b3cb517627b4f2dfbe1b5aad8bcc9d0b382bba",
-      "bytes": 3798,
+      "target_sha256": "db87f8c28cf21b43ab95705c9844843ea8d0a1a80c84134d7a8ebd4ec66b7d39",
+      "bytes": 3767,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -916,8 +916,8 @@
       "source_root": "project",
       "source": "companion/life-continuity.mjs",
       "path": "companion/life-continuity.mjs",
-      "target_sha256": "ec612054f4f5260937f525aea9a8cdc0b80349cc23c27548109b7eba8f06374f",
-      "bytes": 20318,
+      "target_sha256": "c0f9c4f8d27e67e3b5155306f0520f6c58e09c831900e81bf96578b97795633a",
+      "bytes": 20619,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -938,8 +938,8 @@
       "source_root": "project",
       "source": "companion/life-heartbeat.mjs",
       "path": "companion/life-heartbeat.mjs",
-      "target_sha256": "3403a479b398dfbe7a26549f04df453917ced131f17236e73cbf0e3575cb0880",
-      "bytes": 23681,
+      "target_sha256": "df43cf7f0d69e0e4986cf44be454943cefe803a6efc09ebfbf03441746bd8b5d",
+      "bytes": 23269,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1048,8 +1048,8 @@
       "source_root": "project",
       "source": "companion/life-share-compose.mjs",
       "path": "companion/life-share-compose.mjs",
-      "target_sha256": "b7c8ee583f6a51f6dd6aa4499cb2b2286f2dd921e06711cb072d774b1e4ba24c",
-      "bytes": 12374,
+      "target_sha256": "b4d9140c2eb04e6f49641e006d34dbb8167266a52fe5e0319954aa6ed516f1d3",
+      "bytes": 13971,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1061,6 +1061,28 @@
       "path": "companion/life-share-media.mjs",
       "target_sha256": "0187460a95139234151dae5e10709daa27cea534deef58e50f66425b709e6f9e",
       "bytes": 8356,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-social-context.mjs",
+      "path": "companion/life-social-context.mjs",
+      "target_sha256": "b8954298fe987917acc8a1d83cfd5eac020915372a06e28e0688b0c2b3822b22",
+      "bytes": 8825,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-social-targets.mjs",
+      "path": "companion/life-social-targets.mjs",
+      "target_sha256": "acad5ead13b240426466fa6fe6ae30448204e8163b1117f90cb2abd3a491b4ad",
+      "bytes": 6140,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1150,8 +1172,8 @@
       "source_root": "project",
       "source": "companion/proactive-availability.mjs",
       "path": "companion/proactive-availability.mjs",
-      "target_sha256": "a9a75c7feaa0ae5fee50a31b79e6101fca9c975260ea9a6fedb4bdab497ffed9",
-      "bytes": 8459,
+      "target_sha256": "f712a53f0d393ef1498733bcaf626ebe3c891e6572fe15b5cfa680d429df2ad0",
+      "bytes": 9122,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1227,8 +1249,8 @@
       "source_root": "project",
       "source": "companion/qq-event-policy.mjs",
       "path": "companion/qq-event-policy.mjs",
-      "target_sha256": "bb749f66080dc95fa0b0353b86aa2097fd77b5b6ce965046523caca0c1af0664",
-      "bytes": 11027,
+      "target_sha256": "64da1383159f97885b42c0b91aa681361b51a45a698f947559fd39010b69a59c",
+      "bytes": 11889,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1522,8 +1544,8 @@
       "source_root": "project",
       "source": "companion/scoped-tools.mjs",
       "path": "companion/scoped-tools.mjs",
-      "target_sha256": "d8e4a610bb29c9cd23483b4b9216bf605c46f1e34b4646e1b2474c748c9dc867",
-      "bytes": 9795,
+      "target_sha256": "f7953a9097550f218f11facb7e4b4e04a7eb9740c13e644cce14327ab4b49ea9",
+      "bytes": 8979,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1545,8 +1567,8 @@
       "source_root": "project",
       "source": "companion/social-rhythm.mjs",
       "path": "companion/social-rhythm.mjs",
-      "target_sha256": "a44713cd4e33a94ba6097bb9329051db05163cdf7cba304a6350b24b574196f4",
-      "bytes": 7749,
+      "target_sha256": "1fe484e3bfb74cbfff4604f19cf5ff346d59ba7170379e2f45f098e61d60f586",
+      "bytes": 7956,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1971,8 +1993,8 @@
       "source_root": "project",
       "source": "companion/test-foundation-service.mjs",
       "path": "companion/test-foundation-service.mjs",
-      "target_sha256": "40b07ba0c4cf438b5c63665c1d0c250660d6ccde6b8bc0d441ce43f12bd03998",
-      "bytes": 5050,
+      "target_sha256": "4ddc1a79c13cb995c6c43d269179cd0f75c9afb318b2d6a28322087d544e494f",
+      "bytes": 5127,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -2059,6 +2081,18 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-image-action-boundary.mjs",
+      "path": "companion/test-image-action-boundary.mjs",
+      "target_sha256": "df9ddf65d6b0c666f7342bb02a6df83a2c7f67e637723a92edf8ae2d22e9aa46",
+      "bytes": 11228,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-image-intake-feedback.mjs",
       "path": "companion/test-image-intake-feedback.mjs",
       "target_sha256": "c084bed58fdcc5dcd4eb426b132ed57bcf2a61a6f198cf667a9505d3dc788d58",
@@ -2083,8 +2117,8 @@
       "source_root": "project",
       "source": "companion/test-image-pipeline.mjs",
       "path": "companion/test-image-pipeline.mjs",
-      "target_sha256": "af52f41ef8261fffe5cb29cce3bb7e347e3cb522540e345cb5335fed8977c967",
-      "bytes": 7044,
+      "target_sha256": "6b0307b559129ac7411d877a6d11987593e3169d4fb31a16862163e39de76479",
+      "bytes": 5531,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -2151,8 +2185,8 @@
       "source_root": "project",
       "source": "companion/test-life-continuity.mjs",
       "path": "companion/test-life-continuity.mjs",
-      "target_sha256": "9ab86597635e70ce78d2172e97094ea0ab273636ccc08b2fd17e39025df3af61",
-      "bytes": 20264,
+      "target_sha256": "ae8a7afca2e7cfd6f91c90f4ce733f7161cb34e6415edbb648aaa651ce26b58b",
+      "bytes": 20301,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2176,8 +2210,8 @@
       "source_root": "project",
       "source": "companion/test-life-family-delivery.mjs",
       "path": "companion/test-life-family-delivery.mjs",
-      "target_sha256": "b276e4a25f9c688c636977d4d9ab676918c762e10a7113fd80b10e41fae5ed23",
-      "bytes": 18102,
+      "target_sha256": "49cd7d7e316b795b548132fdefb92ae205d0b063e9a95253990e1b2a90cee733",
+      "bytes": 18106,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2189,8 +2223,8 @@
       "source_root": "project",
       "source": "companion/test-life-heartbeat.mjs",
       "path": "companion/test-life-heartbeat.mjs",
-      "target_sha256": "8255a74eed1214da36be8cc8bedf7a0648eb79d125faf488016e4c87b7339145",
-      "bytes": 29571,
+      "target_sha256": "7a3b24c0d3b44c6138c9f2049adab199699973ae1e331e28460e8c781743fdea",
+      "bytes": 29582,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2358,13 +2392,26 @@
     },
     {
       "source_root": "project",
-      "source": "companion/test-life-share-compose.mjs",
-      "path": "companion/test-life-share-compose.mjs",
-      "target_sha256": "2861a1c3229d2d8a64e19705eb6e8b02512b983992d674b3e106bd94a78cc1e1",
-      "bytes": 29987,
+      "source": "companion/test-life-share-choice.mjs",
+      "path": "companion/test-life-share-choice.mjs",
+      "target_sha256": "65081e4cd4a259e0c9dda4451ddfe7d042894eb4716c53029af07c5230856d5e",
+      "bytes": 10635,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-share-compose.mjs",
+      "path": "companion/test-life-share-compose.mjs",
+      "target_sha256": "d3a5e4402e638691987afaad649be7df71a7b6daf3ad7b65ce66c01fc3ce9ca6",
+      "bytes": 31651,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-negative-path-label": 1,
         "synthetic-test-calendar": 1
       }
     },
@@ -2377,6 +2424,42 @@
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-social-context.mjs",
+      "path": "companion/test-life-social-context.mjs",
+      "target_sha256": "bc0fe6638af1f53c5ae9c74a2e11c4dc700ecef4b4a30b1a7449f95539099740",
+      "bytes": 11208,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-social-delivery.mjs",
+      "path": "companion/test-life-social-delivery.mjs",
+      "target_sha256": "50ed67648c1ed72cafc26ecdf724289646be75ea408295661959c029d9a98e79",
+      "bytes": 15158,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 2
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-social-targets.mjs",
+      "path": "companion/test-life-social-targets.mjs",
+      "target_sha256": "caf24aa12742de8a07c22cef509e992cd88bb67df82312dae4ea5ddcdcc59eee",
+      "bytes": 9014,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1
       }
     },
     {
@@ -2396,8 +2479,8 @@
       "source_root": "project",
       "source": "companion/test-life-workshop-opportunity.mjs",
       "path": "companion/test-life-workshop-opportunity.mjs",
-      "target_sha256": "6236f2aec84b4745683cb8ee66ec1cad5141973dd6a5ed52cfeb479683e82541",
-      "bytes": 8612,
+      "target_sha256": "6760fd96c72d99c9f07968822a7cdf1759f463c916fb1f3ba7043d221e4c779c",
+      "bytes": 8442,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2533,12 +2616,13 @@
       "source_root": "project",
       "source": "companion/test-proactive-availability.mjs",
       "path": "companion/test-proactive-availability.mjs",
-      "target_sha256": "67e27d01d9b19ad019fe3c6b4dcc18101455066d54a99df027cb86555e097501",
-      "bytes": 10581,
+      "target_sha256": "baf6fd534f96b6b9a201fa27059d3d035d136546d5b69346ae33d33e748f3265",
+      "bytes": 15979,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 5
+        "known-qq-identifiers": 5,
+        "synthetic-test-calendar": 6
       }
     },
     {
@@ -3143,11 +3227,12 @@
       "source_root": "project",
       "source": "companion/test_inner_life_view.py",
       "path": "companion/test_inner_life_view.py",
-      "target_sha256": "6525f7e64542e6239dcba284a0581f6308bf26f8db1fe2632be3680ebc511837",
-      "bytes": 8705,
+      "target_sha256": "c22576e0e19ce808700e355a78f15ee1a973b432f8f595ea90b5b5c69edf51ff",
+      "bytes": 10682,
       "kind": "synthetic-test-source",
       "applied_transformations": {
-        "utf8-lf": 1
+        "utf8-lf": 1,
+        "synthetic-test-epoch": 1
       }
     },
     {
@@ -3254,8 +3339,8 @@
     },
     {
       "path": "docs/FEEDBACK_REVIEW.md",
-      "bytes": 22533,
-      "target_sha256": "09f93bc1fdd66a8a891c649e7ac3f54815998e740de0c7519d4f96bf09d1f098",
+      "bytes": 24406,
+      "target_sha256": "6524ba40986dcdc1f492ff52b2828f375dbee6e52205c09bf6ceeb6ba0b6ae4f",
       "kind": "anonymized-feedback-document"
     },
     {

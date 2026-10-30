@@ -1,5 +1,6 @@
 """Read-only operational summary; never returns conversations or evidence bodies."""
 import json
+import hashlib
 import re
 import sqlite3
 from contextlib import closing, contextmanager
@@ -8,6 +9,17 @@ from pathlib import Path
 _NOTICE = 'Last source-linked self-description, not a measurement or a guarantee of the current state.'
 _PRIVATE = re.compile(r'<\s*/?\s*think\b|chain[_ -]?of[_ -]?thought|reasoning_content|sender_id|raw_message|private:|私聊原文|聊天原文', re.I)
 _STATES = {'queued', 'sending', 'sent', 'uncertain', 'discarded'}
+
+
+def _contact_label(address):
+    match = re.fullmatch(r'(group|private):([1-9]\d{4,14})', address) if isinstance(address, str) else None
+    if not match:
+        return None
+    # This view only summarizes past contact; it does not infer live permission
+    # or expose a complete account identifier, reason or message body.
+    kind, identifier = match.groups()
+    return {'key': 'contact-' + hashlib.sha256(address.encode()).hexdigest()[:12],
+            'label': ('群聊' if kind == 'group' else '好友') + ' · 尾号' + identifier[-4:]}
 
 
 class _Unavailable(Exception):
@@ -109,6 +121,17 @@ def _sharing(path, now):
                 row = db.execute('SELECT state,updated FROM life_share_intents WHERE recipient=? ORDER BY updated DESC,id DESC LIMIT 1', (role,)).fetchone()
                 valid = row is None or _stamp(row['updated']) is not None and row['updated'] <= now and row['state'] in _STATES
                 recipients[role] = {'available': valid, 'updated': row['updated'] if valid and row else None, 'state': row['state'] if valid and row else None}
+            rows = db.execute("SELECT recipient,max(updated) latest FROM life_share_intents WHERE recipient NOT IN ('family','father','mother') GROUP BY recipient ORDER BY latest DESC,recipient LIMIT 30")
+            for candidate in rows:
+                contact = _contact_label(candidate['recipient'])
+                if contact is None:
+                    continue
+                row = db.execute('SELECT state,updated FROM life_share_intents WHERE recipient=? ORDER BY updated DESC,id DESC LIMIT 1', (candidate['recipient'],)).fetchone()
+                valid = _stamp(row['updated']) is not None and row['updated'] <= now and row['state'] in _STATES
+                recipients[contact['key']] = {'available': valid, 'updated': row['updated'] if valid else None,
+                                             'state': row['state'] if valid else None, 'label': contact['label']}
+                if len(recipients) >= 15:
+                    break
             return {'available': True, 'status': 'connected', 'counts': counts, 'recipients': recipients}
     except _Unavailable as error:
         return {**result, 'status': error.status}
@@ -116,14 +139,16 @@ def _sharing(path, now):
 
 def _availability(path, policy, now):
     empty = lambda: {'available': False, 'active': None, 'expires': None, 'at': None}
-    result = {'available': False, 'status': 'not-connected', 'father': empty(), 'mother': empty()}
+    result = {'available': False, 'status': 'not-connected', 'father': empty(), 'mother': empty(), 'others': []}
     try:
         with _database(path, 'proactive_availability', {'scope', 'active', 'expires', 'source_time'}) as db:
             result.update(available=True, status='connected')
+            parents = set()
             for role in ('father', 'mother'):
                 person = policy.get(role + '_id') if isinstance(policy, dict) else None
                 if not isinstance(person, (str, int)) or isinstance(person, bool) or not re.fullmatch(r'\d{5,15}', str(person)):
                     continue
+                parents.add('private:' + str(person))
                 row = db.execute('SELECT active,expires,source_time FROM proactive_availability WHERE scope=?', ('private:' + str(person),)).fetchone()
                 if row is None:
                     result[role] = {'available': True, 'active': False, 'expires': None, 'at': None}
@@ -132,9 +157,20 @@ def _availability(path, policy, now):
                 if row['active'] not in (0, 1) or expires is not None and _stamp(expires) is None or at is None or at > now:
                     continue
                 result[role] = {'available': True, 'active': bool(row['active']) and (expires is None or now < expires), 'expires': expires, 'at': at}
+            for row in db.execute('SELECT scope,active,expires,source_time FROM proactive_availability ORDER BY source_time DESC,scope LIMIT 30'):
+                contact = _contact_label(row['scope'])
+                if row['scope'] in parents or contact is None or not row['scope'].startswith('private:'):
+                    continue
+                expires, at = row['expires'], _stamp(row['source_time'])
+                valid = row['active'] in (0, 1) and (expires is None or _stamp(expires) is not None) and at is not None and at <= now
+                result['others'].append({**contact, 'available': valid,
+                    'active': bool(row['active']) and (expires is None or now < expires) if valid else None,
+                    'expires': expires if valid else None, 'at': at if valid else None})
+                if len(result['others']) >= 12:
+                    break
             return result
     except _Unavailable as error:
-        return {**result, 'available': False, 'status': error.status, 'father': empty(), 'mother': empty()}
+        return {**result, 'available': False, 'status': error.status, 'father': empty(), 'mother': empty(), 'others': []}
 
 
 def inner_life_view(experience_path, social_path, life_path, policy, now_ms):

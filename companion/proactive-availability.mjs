@@ -1,4 +1,4 @@
-// Availability for unsolicited parent DMs only. This never blocks a reply to an
+// Availability for unsolicited DMs from trusted current friends. This never blocks a reply to an
 // incoming message, changes a task, starts a timer, or infers rejection from silence.
 const DAY = 86400000, BEIJING = 8 * 3600000;
 const account = value => ['string', 'number'].includes(typeof value) && /^(?:[1-9]\d{4,14})$/.test(String(value)) && (typeof value !== 'number' || Number.isSafeInteger(value)) ? String(value) : null;
@@ -13,10 +13,10 @@ function privateScope(value) {
   if (value.address !== undefined && value.address !== key || value.key !== undefined && value.key !== key.replace(':', '-')) return null;
   return key;
 }
-function currentSource(message, guardians) {
+function currentSource(message, guardians, admittedFriend) {
   if (!object(message) || message.post_type !== 'message' || message.message_type !== 'private' || message.sub_type !== 'friend') return null;
   const who = account(message.user_id);
-  if (!who || !guardians.has(who) || !object(message.sender) || account(message.sender.user_id) !== who || !Number.isSafeInteger(message.message_id) || !Number.isFinite(message.time) || message.time <= 0 || !Array.isArray(message.message) || message.message.length > 64) return null;
+  if (!who || !guardians.has(who) && admittedFriend !== true || !object(message.sender) || account(message.sender.user_id) !== who || !Number.isSafeInteger(message.message_id) || !Number.isFinite(message.time) || message.time <= 0 || !Array.isArray(message.message) || message.message.length > 64) return null;
   const sourceTime = Math.trunc(message.time * 1000), scope = 'private:' + who;
   if (!Number.isSafeInteger(sourceTime)) return null;
   for (const claim of [message.scope, message.peer, message.conversation]) if (claim !== undefined && privateScope(claim) !== scope) return null;
@@ -53,18 +53,25 @@ export class ProactiveAvailability {
       PRIMARY KEY(scope,event));`);
   }
   status(scope) {
-    const key = privateScope(scope), authorized = !!key && this.guardianIds.has(key.slice(8));
-    const row = authorized ? this.db.prepare('SELECT * FROM proactive_availability WHERE scope=?').get(key) : null;
+    const key = privateScope(scope);
+    const row = key ? this.db.prepare('SELECT * FROM proactive_availability WHERE scope=?').get(key) : null;
+    // A saved control keeps its provenance across restart; it is not a current
+    // friend roster or permission to send. Delivery still rechecks membership.
+    const guardian = !!key && this.guardianIds.has(key.slice(8)), authorized = guardian || !!row;
     const expired = !!row?.active && row.expires !== null && this.clock() >= row.expires;
     const active = !!row?.active && !expired;
     return {scope: key, authorized, active, expires: row?.expires ?? null, revision: row?.revision ?? 0,
       sourceEvent: row?.source_event ?? null, sourceTime: row?.source_time ?? null, changedAt: row?.changed_at ?? null,
       state: active ? 'proactive-paused' : 'available',
-      reason: !authorized ? 'not-a-guardian-private-scope' : expired ? 'same-day-pause-expired' : row ? row.active ? 'explicit-proactive-pause' : 'explicit-proactive-resume' : 'no-explicit-proactive-pause',
-      blocksPassiveReplies: false};
+      reason: !authorized ? 'not-an-authorized-private-scope' : expired ? 'same-day-pause-expired' : row ? row.active ? 'explicit-proactive-pause' : 'explicit-proactive-resume' : 'no-explicit-proactive-pause',
+      authorizationBasis: guardian ? 'configured-guardian' : row ? 'saved-admitted-friend-control' : null,
+      authorizesContact: false, blocksPassiveReplies: false};
   }
-  observe(message) {
-    const source = currentSource(message, this.guardianIds);
+  observe(message, {admittedFriend = false} = {}) {
+    // Only the trusted inbound route may supply this flag, after checking the
+    // current friend roster. A flag inside a message/model payload is ignored.
+    // Without it, retain the existing guardian-only call contract.
+    const source = currentSource(message, this.guardianIds, admittedFriend);
     if (!source) return {accepted: false, changed: false, reason: 'not-an-authorized-private-friend-message'};
     const seen = this.db.prepare('SELECT result FROM proactive_availability_events WHERE scope=? AND event=?').get(source.scope, source.sourceEvent);
     if (seen) return {accepted: true, changed: false, duplicate: true, action: null, stale: !!JSON.parse(seen.result).stale, reason: 'duplicate-source-event', status: this.status(source.scope)};

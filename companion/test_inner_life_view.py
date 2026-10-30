@@ -12,7 +12,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).parent / 'home'))
 from inner_life_view import inner_life_view
 
-NOW = 1793325600000
+NOW = 2107821600000
 POLICY = {'father_id': '910010003', 'mother_id': '910010004'}
 
 
@@ -137,6 +137,36 @@ class InnerLifeViewTests(unittest.TestCase):
         unknown = self.view(policy={})['availability']['father']
         self.assertFalse(unknown['available'])
         self.assertIsNone(unknown['active'])
+
+    def test_other_contact_history_and_pauses_are_visible_without_account_ids_or_message_bodies(self):
+        self.schema()
+        friend, group = 'private:910020001', 'group:910030002'
+        with self.database(self.life) as db:
+            for n, recipient in enumerate([friend, group, 'private:bad', 'untrusted arbitrary words']):
+                db.execute('INSERT INTO life_share_intents VALUES(?,?,?,?,?,?,?,?)',
+                           (str(n), 'sent', NOW-100, recipient, 'PRIVATE_BODY', 'PRIVATE_RECEIPT', 'PRIVATE_TARGET', 'PRIVATE_REASON'))
+        with self.database(self.social) as db:
+            db.execute('INSERT INTO proactive_availability VALUES(?,?,?,?,?)', (friend, 1, NOW+1000, NOW-200, 'PRIVATE_EVENT'))
+        value = self.view()
+        others = [v for k,v in value['sharing']['recipients'].items() if k.startswith('contact-')]
+        self.assertEqual(len(others), 2)
+        self.assertEqual({v['label'] for v in others}, {'好友 · 尾号0001', '群聊 · 尾号0002'})
+        self.assertTrue(value['availability']['others'][0]['active'])
+        serialized = json.dumps(value)
+        for secret in [friend, group, '910020001', '910030002', 'PRIVATE_', 'untrusted arbitrary words']:
+            self.assertNotIn(secret, serialized)
+        self.assertFalse(self.view(now=NOW+2000)['availability']['others'][0]['active'])
+
+    def test_other_contact_latest_invalid_time_is_unknown_not_old_success(self):
+        self.schema()
+        with self.database(self.life) as db:
+            for n, at in enumerate([NOW-1000, NOW+1000]):
+                db.execute('INSERT INTO life_share_intents VALUES(?,?,?,?,?,?,?,?)',
+                           (str(n), 'sent', at, 'group:910030002', '', '', '', ''))
+        others = [v for k,v in self.view()['sharing']['recipients'].items() if k.startswith('contact-')]
+        self.assertEqual(len(others), 1)
+        self.assertFalse(others[0]['available'])
+        self.assertIsNone(others[0]['state'])
 
     def test_symlink_and_junction_paths_are_not_followed(self):
         self.schema()

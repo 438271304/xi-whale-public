@@ -51,10 +51,13 @@ const legacyAudience=()=>({recipient:'family',target_kind:null,target_id:null,re
 function audience(value,{prior=null,allowUnbound=false}={}){
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!audienceFields.includes(key)))throw Error('Invalid sharing audience');
   const merged={...(prior??legacyAudience()),...value};
-  if(!Object.hasOwn(targetKinds,merged.recipient))throw Error('Choose family, father or mother');
+  const named=Object.hasOwn(targetKinds,merged.recipient),dynamic=typeof merged.recipient==='string'?/^(group|private):([1-9]\d{4,14})$/.exec(merged.recipient):null;
+  if(!named&&!dynamic)throw Error('Choose a configured family alias or listed social target');
+  const kind=named?targetKinds[merged.recipient]:dynamic[1];
+  if(dynamic&&merged.target_id!==dynamic[2])throw Error('Listed recipient and target ID must agree');
   if(prior&&merged.recipient!==prior.recipient&&(!Object.hasOwn(value,'target_kind')||!Object.hasOwn(value,'target_id')))throw Error('A changed recipient needs an explicit target');
   if(!(allowUnbound&&merged.recipient==='family'&&merged.target_kind===null&&merged.target_id===null)){
-    if(merged.target_kind!==targetKinds[merged.recipient]||typeof merged.target_id!=='string'||!/^\d+$/.test(merged.target_id))throw Error('Recipient and target kind/ID must agree');
+    if(merged.target_kind!==kind||typeof merged.target_id!=='string'||!/^\d+$/.test(merged.target_id))throw Error('Recipient and target kind/ID must agree');
   }
   if(Object.hasOwn(value,'recipient_reason'))merged.recipient_reason=bounded(value.recipient_reason,400);
   return merged;

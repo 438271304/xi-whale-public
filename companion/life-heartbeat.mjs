@@ -4,6 +4,7 @@ import {lifeRecollectionTools} from './life-recollection.mjs';
 import {lifeSelfReflectionTools} from './life-self-reflection.mjs';
 import {PersonImpressions} from './person-impressions.mjs';
 import {DayContinuity,DAY_CONTINUITY_PROMPT} from './life-day-context.mjs';
+import {sampleLifeExperiences} from './life-social-context.mjs';
 
 const text=(value,max=400)=>{
  if(typeof value!=='string'||!value.trim()||value.length>max)throw Error('A bounded thought is required');
@@ -58,11 +59,7 @@ export class LifeHeartbeat{
   this.db.prepare('UPDATE life_heartbeats SET state=?,next_at=?,result=? WHERE id=?').run(['failed','interrupted'].includes(result?.status)?result.status:'finished',next,JSON.stringify(summary),id);
  }
  recentEvidence(){
-  const since=this.clock()-48*3600000,scopes=[this.policy.group_id?'group:'+this.policy.group_id:null,...[this.policy.father_id,this.policy.mother_id].filter(Boolean).map(id=>'private:'+id)].filter(Boolean);
-  const own=this.store.db.prepare("SELECT id FROM experiences WHERE role='self' AND scope='unknown' AND at>=? ORDER BY at DESC LIMIT 4").all(since);
-  const family=scopes.flatMap(scope=>this.store.db.prepare('SELECT id,at FROM experiences WHERE scope=? AND at>=? ORDER BY at DESC LIMIT 2').all(scope,since)).sort((a,b)=>b.at-a.at);
-  return [...own,...family].map(({id})=>this.store.get({id,maxChars:24000})).filter(r=>r.found)
-   .map(r=>this.store.evidenceView(r,{maxChars:600}));
+  return sampleLifeExperiences(this.store,{now:this.clock(),policy:this.policy}).records;
  }
  candidates(){
   return this.journal.publicCandidates({days:7,limit:8}).candidates.filter(c=>!this.db.prepare('SELECT 1 FROM life_corner_dismissals WHERE journal=? AND revision=?').get(c.journal_id,c.revision)).map(c=>({...c,available_channels:['home','qzone'].filter(channel=>
@@ -70,7 +67,8 @@ export class LifeHeartbeat{
  }
  context(){
   const inner=this.store.getState({kind:'mood',key:'inner-life',limit:1})[0]??null;
-  return {day_continuity:this.day.context(),recent_journal:this.journal.recent({days:2,limit:3}),recent_experiences:this.recentEvidence(),corner_candidates:this.candidates(),
+  const recent=sampleLifeExperiences(this.store,{now:this.clock(),policy:this.policy});
+  return {day_continuity:this.day.context(),recent_journal:this.journal.recent({days:2,limit:3}),recent_experiences:recent.records,recent_experience_coverage:recent.coverage,corner_candidates:this.candidates(),
    corner_receipts:this.db.prepare("SELECT id AS post_id,channel,state,created FROM life_corner_posts WHERE channel='qzone' AND state='uncertain' ORDER BY created DESC LIMIT 8").all(),
    inner_state:inner?{...inner,recorded_hours_ago:Math.max(0,(this.clock()-inner.at)/3600000),notice:'Last source-linked self-description, not an automatic claim about how you feel now.'}:null,
    recent_choices:this.db.prepare('SELECT at,choice,reason,state FROM life_heartbeats WHERE choice IS NOT NULL ORDER BY at DESC LIMIT 4').all(),

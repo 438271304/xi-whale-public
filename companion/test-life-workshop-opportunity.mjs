@@ -9,7 +9,6 @@ import {LifeWorkshop} from './life-workshop.mjs';
 import {Workroom} from './workroom.mjs';
 import {Workshop} from './workshop.mjs';
 import {UnifiedCognition} from './cognition-tools.mjs';
-import {imageMutationTools} from './scoped-tools.mjs';
 const BOT='900000004',GROUP='900000002';
 const last=req=>JSON.parse(req.input.filter(x=>x.type==='function_call_output').at(-1).output);
 const act=(name,args={})=>({name,args});
@@ -39,7 +38,6 @@ test('a life opportunity discovers own creative tools, makes a real stored draft
   return act('write_life_journal',{kind:'activity',evidence_ids:[completed.result.evidence_id],interpretation:{feeling:'The saved test output made the little project feel less unfinished.'}});},act('keep_quiet')];
  await life.tick();assert.equal(memory.journal.recent({days:7,limit:3}).entries.length,1);
  assert.equal(workroom.list(bridge.scope).length,1,'The next opportunity did not silently start a duplicate project');
- assert.ok(imageMutationTools.has('own_workroom_write'));assert.ok(imageMutationTools.has('own_workshop_submit'));
  now+=31*60000;steps=[act('open_own_workshop',{reason:'One more saved step.'}),act('own_workroom_write',{project_id:project,expected_version:2,files:[{path:'note.txt',text:'A durable unfinished idea.'}]}),...Array.from({length:10},()=>act('own_workroom_read',{project_id:project}))];
  const bounded=await life.tick();assert.equal(bounded.status,'creative-continuation-saved');assert.equal(bounded.completed_project,false);assert.equal(life.recent()[0].state,'unfinished');
  assert.equal(workroom.read(bridge.scope,project,'note.txt').text,'A durable unfinished idea.');assert.equal(workroom.read(bridge.scope,project).version,3);

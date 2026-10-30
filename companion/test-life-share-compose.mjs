@@ -226,6 +226,19 @@ test('later attributed corrections reach expression generation without rewriting
  assert.equal(JSON.parse(f.cognition.store.get({id:source.id,revision:source.revision}).text).body,'The original human claim.');
 });
 
+test('private feedback and interpretation corrections on public material retain uncertainty without disclosing their words to another audience',t=>{
+ const f=fixture(t),{intent,source}=f.discovery(),privateSource=f.human('private-correction','PRIVATE_CORRECTION_WORDS',{address:'private:'+MOTHER,senderId:MOTHER});
+ f.cognition.store.registerFeedback({targetId:source.id,feedbackId:privateSource.id});
+ f.cognition.store.setState({kind:'self',key:'correction:'+source.id,value:{correction:'PRIVATE_INTERPRETATION_WORDS'},evidence:[{type:'message',id:source.id},{type:'message',id:privateSource.id}],source:'explicit-current-correction'});
+ const input=f.composer.input({intent,scope,audience});assert.equal(input.withheld_source_count,2);assert.equal(input.draft,null);assert.equal(input.evidence[0].corrections.length,2);assert.ok(input.evidence[0].corrections.every(c=>c.disclosure));assert.doesNotMatch(JSON.stringify(input),/PRIVATE_(?:CORRECTION|INTERPRETATION)_WORDS/);
+});
+
+test('an optional journal reaction with a second private source does not become new-audience material through a shared public reference',t=>{
+ const f=fixture(t),{intent,source}=f.discovery();
+ f.composer.journal={recent:()=>({entries:[{id:'synthetic-mixed-journal',revision:1,at:NOW,interpretation:'PRIVATE_JOURNAL_WORDS',facts:{evidence:[{id:source.id,scope:'unknown'},{id:'exp-'+ '7'.repeat(32),scope:'private:'+MOTHER}]}}]})};
+ const input=f.composer.input({intent,scope,audience});assert.equal(input.reactions.length,0);assert.doesNotMatch(JSON.stringify(input),/PRIVATE_JOURNAL_WORDS/);assert.equal(input.evidence[0].summary,'A stored public observation.');
+});
+
 test('sending attempts cannot appear as earlier shares or crowd out actual inbound and sent context',async t=>{
  const f=fixture(t),{intent}=f.discovery();
  f.conversation('proactive:confirmed','An actually acknowledged earlier share.',{role:'assistant',state:'sent',at:NOW-2000});
@@ -342,7 +355,7 @@ test('sending, uncertain and sent intents never exchange attachments or create a
 
 test('media storage rejects malformed metadata and missing bindings before changing the intent',async t=>{
  const f=fixture(t,{withMedia:true}),{intent}=f.discovery();f.plan(mediaFinish({native_face_ids:['0']}));const prepared=await f.run(intent);f.consumed();
- for(const change of [p=>delete p.binding,p=>p.media_plan.metadata.native_faces[0].name='forged',p=>p.media_plan.native_face_ids=[0],p=>p.media_plan.metadata.path='C:/not-a-plan']){
+ for(const change of [p=>delete p.binding,p=>p.media_plan.metadata.native_faces[0].name='forged',p=>p.media_plan.native_face_ids=[0],p=>p.media_plan.metadata.path='synthetic-invalid-plan-path']){
   const invalid=structuredClone(prepared);change(invalid);assert.throws(()=>f.continuity.prepareExpression(intent,invalid));
   assert.deepEqual(f.continuity.get(intent.id),intent);
  }

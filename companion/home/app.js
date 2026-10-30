@@ -2,7 +2,7 @@ const $=id=>document.getElementById(id);
 const text=(id,value)=>$(id).textContent=value;
 function list(id,values,empty){const root=$(id);root.replaceChildren();for(const s of values?.length?values:[empty]){const li=document.createElement('li');li.textContent=s;root.append(li);}}
 const names={'deepseek-bao-jing-shui-jiao.png':'困了，晚安','deepseek-bixin.png':'和你聊得来','deepseek-bu-lai.png':'不赖嘛','deepseek-da-ku.png':'有点委屈','deepseek-jushou-dazhaohu.png':'嗨，来啦','deepseek-touding-wenhao.png':'诶？','deepseek-zhangkai-shuangshou-huanhu.png':'好耶！'};
-const capabilityGroups={public_web:'看世界',ordinary_tieba:'看世界',claw:'看世界',bilibili_subtitles:'读视频',bilibili_frames:'读视频',bilibili_speech:'读视频',qzone_read:'自己的空间',qzone_publish:'自己的空间',own_workshop:'自己动手',proactive_faces:'和家人分享',proactive_images:'和家人分享',own_profile:'自己的模样',qq_voice:'听语音'};
+const capabilityGroups={public_web:'看世界',ordinary_tieba:'看世界',claw:'看世界',bilibili_subtitles:'读视频',bilibili_frames:'读视频',bilibili_speech:'读视频',qzone_read:'自己的空间',qzone_publish:'自己的空间',own_workshop:'自己动手',proactive_faces:'主动交流',proactive_images:'主动交流',own_profile:'自己的模样',qq_voice:'听语音'};
 const capabilityCodes={
  'service-closed':'服务已关闭','service-paused':'服务目前暂停','route-not-ready':'聊天入口还未就绪','adapter-not-connected':'这个入口尚未接通','credential-reader-not-configured':'尚未配置所需平台凭证','reader-not-connected':'读取入口尚未接通','frame-dependencies-unavailable':'画面读取组件未齐','speech-dependencies-unavailable':'本机语音组件未齐','workshop-paused':'工作间暂停中','workshop-runtime-unavailable':'工作间执行器未就绪',
  'access-unavailable':'这次平台访问未成功','rate-limited':'这次访问遇到频率限制','reader-unavailable':'这次读取入口不可用','unsupported-source':'当前入口尚不支持该来源','no-usable-source':'这次没有取得可用内容','identity-mismatch':'当前账号与预期不符','login-error':'平台登录尚未接通','api-error':'这次平台接口未完成','invalid-response':'这次平台结果无法确认','closed':'入口已关闭','not-authorized':'该次操作尚未获授权','context-denied':'该次操作条件不满足','service-restart-after-send-reservation':'服务重启前的发送结果未确认',
@@ -158,9 +158,10 @@ function renderInnerLife(data){
  list('inner-interests',items.map(item=>(item.text||item.interpretation||'一件尚未写清的小事')+(item.at?' · '+lifeTime(item.at):'')),interests?.available?'这里暂时留白。':'兴趣记录暂时读不到。');
  const labels={queued:'先留着',sending:'投递中',sent:'已发送',uncertain:'结果待确认',discarded:'已经放下',deferred:'等待时机'},names={family:'家庭群',father:'老爹',mother:'妈妈'};
  text('inner-share-counts',sharing?.available?Object.entries(sharing.counts??{}).map(([key,value])=>(labels[key]||key)+' '+value).join(' · ')||'还没有留下联系意图。':'联系记录暂时读不到。');
- const targets=Object.entries(sharing?.recipients??{}).filter(([,v])=>v?.state).map(([key,value])=>names[key]+'：'+(labels[value.state]||value.state)+(value.updated?' · '+lifeTime(value.updated):''));
+ const targets=Object.entries(sharing?.recipients??{}).filter(([,v])=>v?.state).map(([key,value])=>(names[key]||value.label||'其他联系对象')+'：'+(labels[value.state]||value.state)+(value.updated?' · '+lifeTime(value.updated):''));
  list('inner-share-targets',targets,sharing?.available?'一个念头可以只说给一个人。':'暂时无法确认上次联系。');
- text('inner-contact',['father','mother'].map(key=>{const value=availability?.[key];return names[key]+'：'+(!value?.available?'暂停状态暂不可读':!value.active?'可以主动联系':value.expires?'暂停至 '+lifeTime(value.expires):'按明确请求暂停主动联系');}).join('；'));
+ const contactRows=[...['father','mother'].map(key=>({label:names[key],...availability?.[key]})),...(availability?.others??[])];
+ text('inner-contact',contactRows.map(value=>(value.label||'好友')+'：'+(!value.available?'暂停状态暂不可读':!value.active?'未记录主动暂停':value.expires?'暂停至 '+lifeTime(value.expires):'按明确请求暂停主动联系')).join('；'));
 }
 async function refreshInnerLife(){
  if(innerLoading)return;innerLoading=true;

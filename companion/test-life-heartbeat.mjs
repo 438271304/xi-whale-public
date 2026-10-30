@@ -134,7 +134,7 @@ function fixture(t) {
       life = new CuriosityLife(config); life.resume();
     },
     seedHuman({event = 'fixture-family-observation', messageId = '70001', body = 'A family member actually encouraged a small effort.'} = {}) {
-      return cognition.store.recordMessage({scope: 'private:' + HUMAN, event, role: 'user',
+      return cognition.store.recordMessage({scope: 'private:' + HUMAN, event: messageId, role: 'user',
         senderId: HUMAN, at: now, source: 'live-transport', text: JSON.stringify({
           transport: {conversation: 'private:' + HUMAN, sender_id: HUMAN, message_id: messageId, time: now / 1000},
           segments: [{type: 'text', text: body}], body,

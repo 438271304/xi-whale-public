@@ -17,12 +17,15 @@ import {sendScopedReply} from './scoped-send.mjs';
 import {QQSelfQZone} from './qq-self-qzone.mjs';
 import {rememberQzonePublication} from './qzone-experiences.mjs';
 import {selectBatchAnchor} from './conversation-focus.mjs';
+import {lifeSocialTargets} from './life-social-targets.mjs';
 export function isolatedQQRoute(world,{root,client,publicProfile,operatingContract,policy,ledger,ownsLedger=false,clock,attachments=async()=>[],imageAnalyzer,extraTools,startPaused=false,wait,batchOptions,socialTopics=()=>[],socialConfig}){
  if(world.host)throw Error('Install before world start');
  let service,generation=0,closed=false,closing=false,stopPromise;
  const context=new QQContext({path:join(root,'qq-context.sqlite3'),world,policy,clock:()=>clock?clock().getTime():Date.now()});
  const start=world.start,stop=world.stop;
+ const lifeTargets=lifeSocialTargets(world,policy);
  service=new ConversationService({root,client,publicProfile,operatingContract,peerBots:policy.peer_bot_ids??[],wait,extraTools,startPaused,botId:policy.bot_id,guardianIds:[policy.father_id,policy.mother_id].filter(Boolean),imageAnalyzer,
+  canInitiateTo:async(scope,{signal})=>{await lifeTargets.authorize(scope,{signal});return true;},
   isAllowed:async scope=>{
    if(scope.kind==='group')return world.getWatched().groups.map(String).includes(scope.id);
    if(!policy.friend_private_enabled)return false;

@@ -1,5 +1,6 @@
 import {heartbeatDelay} from './guardian-persona.mjs';
 import {buildNativeMessage,nativeSummary} from './qq-face-output.mjs';
+import {lifeSocialTargets} from './life-social-targets.mjs';
 const outgoingChecks=new WeakMap();
 // Only a guarded world receives this internal route. No model-supplied purpose
 // string can turn an ordinary private reply into a life initiation.
@@ -35,6 +36,7 @@ export async function sendLifeQQDelivery(world,target,text,options={}){
   const native=faces.length||imageBytes!==null?buildNativeMessage({text,faces,imageBytes}):null;
   if(native&&(!world.host?.pushEvent||!world.driver?.callApi))throw Error('Guardian: life media sender not ready');
   route.check(destination); // Final synchronous clock/target/watch/feature check.
+  route.attempt?.(destination);
   onTransportAttempt?.();
   attempted=true;
   if(native){
@@ -84,6 +86,8 @@ export function guardQQWorld(world, policy, clock = () => new Date(), ledger = n
   const privateLeases = new Map();
   const peerBotTurns = new Map();
   const peerBots = new Set((policy.peer_bot_ids ?? []).map(String));
+  const lifeTargets = lifeSocialTargets(world,policy);
+  const allowance = () => ({left:policy.peer_bot_max_turns??6,until:clock().getTime()+(policy.peer_bot_window_minutes??10)*60000});
   const devices = new Set(['2113929217','2113929218','2113929219']);
   async function isFriend(id) {
     if (!policy.friend_private_enabled || id === policy.bot_id || devices.has(id)) return false;
@@ -98,9 +102,19 @@ export function guardQQWorld(world, policy, clock = () => new Date(), ledger = n
     if (message.post_type === 'message' && message.message_type === 'private') {
       const id = String(message.user_id ?? '');
       if (message.sub_type !== 'friend' || !/^\d+$/.test(id) || !await isFriend(id)) return {skipped:true,reason:'not-verified-friend'};
+      // A peer's first private approach gets one finite window. Its own messages
+      // cannot renew it; a later independently chosen life intent may start one.
+      const peerKey='private:'+id;
+      if(peerBots.has(id)){
+        if(heartbeatDelay(clock(),1)===null)return {skipped:true,reason:'peer-bot-resting'};
+        if(!peerBotTurns.has(peerKey))peerBotTurns.set(peerKey,allowance());
+        const budget=peerBotTurns.get(peerKey);
+        if(budget.left<=0||clock().getTime()>=budget.until)return {skipped:true,reason:'peer-bot-conversation-limit'};
+      }
       if (ledger && !ledger.claim(message, now.getTime())) return {skipped:true,reason:'stale-or-duplicate'};
+      if(peerBots.has(id))peerBotTurns.get(peerKey).left--;
       // Reply permission belongs only to this correspondent, never wakes the group.
-      privateLeases.set(id, now.getTime() + 5 * 60_000);
+      privateLeases.set(id, Math.min(now.getTime()+5*60_000,peerBots.has(id)?peerBotTurns.get(peerKey).until:Infinity));
       this.setWatched(groups().map(Number), [...privateLeases.keys()].map(Number));
       this.guardianInboundVersion = (this.guardianInboundVersion ?? 0) + 1;
       return incoming.call(this, message, ...rest);
@@ -109,7 +123,7 @@ export function guardQQWorld(world, policy, clock = () => new Date(), ledger = n
     // Until peer-bot identities are configured, new groups require a guardian mention.
     if (decision.accept && String(message.group_id)!==String(policy.group_id) && policy.new_groups_guardian_mention_only && (!decision.mentioned || ![policy.father_id,policy.mother_id].includes(String(message.user_id)))) return {skipped:true,reason:'new-group-needs-guardian-mention'};
     if (!decision.accept || !decision.wake) return {skipped:true, reason:decision.reason};
-    const groupKey=String(message.group_id), isPeerBot=peerBots.has(String(message.user_id));
+    const groupKey='group:'+message.group_id, isPeerBot=peerBots.has(String(message.user_id));
     if(isPeerBot){
       const allowance=peerBotTurns.get(groupKey);
       if(!allowance || allowance.left<=0 || now.getTime()>allowance.until)return {skipped:true,reason:'peer-bot-conversation-limit'};
@@ -125,21 +139,18 @@ export function guardQQWorld(world, policy, clock = () => new Date(), ledger = n
   const outgoing = world.sendToTarget;
   const checkLife=target=>{
     if(heartbeatDelay(clock(),1)===null)throw Error('Guardian: life delivery is resting');
-    if(target.kind==='group'){
-      const watched=world.getWatched?.().groups;
-      if(String(policy.group_id)!==target.id||!Array.isArray(watched)||!watched.map(String).includes(target.id))throw Error('Guardian: life group is not the watched family group');
-    }else{
-      const parents=[policy.father_id,policy.mother_id].filter(Boolean).map(String);
-      if(!policy.friend_private_enabled||!parents.includes(target.id)||target.id===String(policy.bot_id)||devices.has(target.id))throw Error('Guardian: life private target must be an enabled parent');
-    }
+    lifeTargets.check(target);
+    const budget=peerBotTurns.get('private:'+target.id);
+    if(target.kind==='private'&&peerBots.has(target.id)&&budget&&clock().getTime()<budget.until&&budget.left<=0)throw Error('Guardian: peer-bot conversation limit');
   };
   const lifeRoute={
     botId:String(policy.bot_id),
     transport:lifeDeliveries.get(world)?.transport??outgoing,
     check:checkLife,
+    attempt:target=>{if(target.kind==='private'&&peerBots.has(target.id)){const key='private:'+target.id,budget=peerBotTurns.get(key);if(!budget||clock().getTime()>=budget.until)peerBotTurns.set(key,allowance());}},
     authorize:async target=>{
-      checkLife(target);
-      if(target.kind==='private'&&!await isFriend(target.id))throw Error('Guardian: life private target must be a current friend');
+      if(heartbeatDelay(clock(),1)===null)throw Error('Guardian: life delivery is resting');
+      await lifeTargets.authorize(target);
       checkLife(target); // The friend lookup may have crossed midnight or a policy change.
     }
   };
