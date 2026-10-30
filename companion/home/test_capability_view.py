@@ -40,15 +40,37 @@ class CapabilityViewTest(unittest.TestCase):
         self.assertNotIn('private.invalid', json.dumps(value))
         return {item['key']: item for item in value['items']}
 
-    def test_missing_store_unknown_runtime_no_creation_and_13_fixed_keys(self):
+    def test_missing_store_unknown_runtime_no_creation_and_14_fixed_keys(self):
         before = list(self.root.iterdir())
         items = self.read({'observed_at': NOW, 'items': {'public_web': {'configured': True, 'available': None, 'autonomous': True}, 'private': CANARY}})
-        self.assertEqual(len(items), 13)
+        self.assertEqual(len(items), 14)
         self.assertEqual(items['public_web']['configuration'], {'configured': True, 'available': None, 'autonomous': True, 'observed_at': NOW})
         self.assertIsNone(items['ordinary_tieba']['configuration']['available'])
         self.assertTrue(all(item['last_success'] is None for item in items.values()))
         self.assertEqual(list(self.root.iterdir()), before)
         self.assertFalse(items['claw']['history_available'])
+
+    def test_comment_reading_keeps_bounded_history_not_current_access_or_video_claim(self):
+        self.db('bilibili.sqlite3', 'CREATE TABLE public_comment_pages(key TEXT,result TEXT,at INTEGER);')
+        self.db('life.sqlite3', 'CREATE TABLE life_progress_attempts(tool TEXT,status TEXT,reason_category TEXT,at INTEGER);', [
+            ('INSERT INTO life_progress_attempts VALUES(?,?,?,?)', ('bilibili_comments', 'failed', 'access-unavailable', NOW-100)),
+        ])
+        with database(self.root / 'bilibili.sqlite3') as db:
+            for key, status, level, count, at in [
+                ('read', 'ok', 'public-comments', 2, NOW-1000),
+                ('empty', 'empty', 'none', 0, NOW-10),
+                ('malformed', 'ok', 'public-comments', '2', NOW-5),
+                ('future', 'ok', 'public-comments', 5, NOW+1),
+            ]:
+                value = {'status': status, 'evidence_level': level, 'read_scope': {'retained_comment_count': count}, 'comments': [CANARY]}
+                db.execute('INSERT INTO public_comment_pages VALUES(?,?,?)', (key, json.dumps(value), at))
+        items = self.read({'observed_at': NOW, 'items': {'bilibili_comments': {'configured': True, 'available': None, 'autonomous': True}}})
+        item = items['bilibili_comments']
+        self.assertEqual(item['last_success'], {'at': NOW-1000, 'kind': 'public-comments'})
+        self.assertEqual(item['last_failure'], {'at': NOW-100, 'code': 'access-unavailable'})
+        self.assertIsNone(item['configuration']['available'])
+        self.assertIsNone(items['bilibili_subtitles']['last_success'])
+        self.assertIsNone(items['bilibili_frames']['last_success'])
 
     def test_runtime_unknown_stale_future_and_untrusted_fields_are_not_echoed(self):
         for at in [NOW + 1, NOW - 60_001, None, str(NOW)]:

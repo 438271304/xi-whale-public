@@ -217,7 +217,7 @@ test('reflection uses an existing family experience; nonexistent evidence cannot
     assert.ok(initial(req).life.recent_experiences.some(e => e.id === actual.id));
     return {name: 'write_life_journal', args: {kind: 'daily-review', evidence_ids: ['exp-' + '0'.repeat(32)], interpretation: {feeling: 'This invented source must be rejected.'}}};
   }, req => {
-    assert.match(String(output(req)), /rejected|failed/i);
+    assert.equal(output(req).ok, false); assert.equal(output(req).error.code, 'TOOL_FAILURE_UNCLASSIFIED');
     return {name: 'read_life_experience', args: {id: actual.id}};
   }, req => {
     const remembered = output(req); assert.equal(remembered.id, actual.id);

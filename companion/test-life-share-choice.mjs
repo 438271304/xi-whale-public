@@ -93,7 +93,7 @@ for(const [reader,level] of [['public_fetch','page-text'],['bilibili_read','meta
 test('a source-store failure after reading does not expose sharing or leak its exception into recovery',async t=>{
  const f=fixture(t),record=f.cognition.store.recordMessage.bind(f.cognition.store),secret='SYNTHETIC-PRIVATE-FAILURE-SENTINEL';
  f.cognition.store.recordMessage=args=>{if(args.source==='public-exploration')throw Error(secret);return record(args);};
- f.plan(choose,{name:'public_fetch',args:{}},save,req=>{ordinaryOptions(req);assert.equal(typeof last(req),'string');assert.match(last(req),/rejected|failed/);assert.ok(!last(req).includes(secret));return quiet;});
+ f.plan(choose,{name:'public_fetch',args:{}},save,req=>{ordinaryOptions(req);assert.equal(last(req).ok,false);assert.equal(last(req).error.code,'TOOL_FAILURE_UNCLASSIFIED');assert.ok(!JSON.stringify(last(req)).includes(secret));return quiet;});
  const result=await f.life.tick();f.done();assert.equal(result.status,'kept-private-or-quiet');assert.equal(f.intents().length,0);assert.equal(f.cognition.store.counts().messages,0);
  assert.equal(f.life.opportunityLog.read(result.activity).tool_failed_count,1);
 });

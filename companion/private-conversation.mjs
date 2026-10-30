@@ -1,3 +1,4 @@
+import {isUncertainToolResult} from './tool-feedback.mjs';
 // Isolated private-text prototype with explicitly bound tools. No QQ connection or shared-memory reads.
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';
@@ -217,7 +218,7 @@ export class PrivateConversation {
   recordTool(peer,event,name,result,ok){
     let v;try{v=typeof result==='string'?JSON.parse(result):result;}catch{v=null;}
     const refs=[],visit=(x,depth=0)=>{if(depth>6||refs.length>=24||!x||typeof x!=='object')return;if(Array.isArray(x)){for(const y of x.slice(0,24))visit(y,depth+1);return;}if((x.id||x.event)&&('scope'in x||'sender_id'in x||'author'in x))refs.push({id:String(x.id??x.event).slice(0,160),scope:x.scope??null,author:x.author?.id??x.sender_id??null});for(const key of ['records','messages','attachments','results'])visit(x[key],depth+1);};visit(v);
-    const status=ok===false?'rejected':v?.ok===false?'not-ok':typeof v?.status==='string'&&/^[a-zA-Z0-9_-]{1,50}$/.test(v.status)?v.status:'returned';
+    const status=isUncertainToolResult(v,ok!==false)?'uncertain':ok===false?'rejected':v?.ok===false?'not-ok':typeof v?.status==='string'&&/^[a-zA-Z0-9_-]{1,50}$/.test(v.status)?v.status:'returned';
     this.db.prepare('INSERT INTO generation_tool_events(peer,event,tool,status,refs,at) VALUES(?,?,?,?,?,?)').run(peer,event,name,status,JSON.stringify(refs),this.clock());
   }
   async pause() {

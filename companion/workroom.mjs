@@ -4,14 +4,15 @@ import {resolve,parse,join,dirname} from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {conversationScope} from './conversation-scope.mjs';
+import {toolFault,rejectedToolResult} from './tool-feedback.mjs';
 
 export const DEFAULT_LIMITS=Object.freeze({projectsPerScope:20,files:20,fileBytes:32768,projectBytes:131072,versions:100,jsFiles:4,checkTimeoutMs:1500});
 const hash=text=>createHash('sha256').update(text).digest('hex');
 const scopeKey=scope=>conversationScope(scope.kind,scope.id).key;
-const uid=id=>{if(typeof id!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(id))throw Error('Invalid project/task ID');return id;};
-const short=(s,max,label)=>{if(typeof s!=='string'||!s.trim()||s.length>max)throw Error('Invalid '+label);return s.trim();};
+const uid=id=>{if(typeof id!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(id))throw toolFault('ARGUMENT_VALUE_INVALID');return id;};
+const short=(s,max,label)=>{if(typeof s!=='string'||!s.trim()||s.length>max)throw toolFault('ARGUMENT_VALUE_INVALID');return s.trim();};
 export function safeWorkroomPath(file){
- if(typeof file!=='string'||file.length>96||file.split('/').length>4||!file.split('/').every(p=>/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(p)&&!/[.]$/.test(p)&&! /^(con|prn|aux|nul|com\d|lpt\d)(?:\.|$)/i.test(p))||! /\.(html|css|svg|js|mjs|cjs|json|md|txt)$/.test(file))throw Error('Use a supported plain relative filename');
+ if(typeof file!=='string'||file.length>96||file.split('/').length>4||!file.split('/').every(p=>/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(p)&&!/[.]$/.test(p)&&! /^(con|prn|aux|nul|com\d|lpt\d)(?:\.|$)/i.test(p))||! /\.(html|css|svg|js|mjs|cjs|json|md|txt)$/.test(file))throw toolFault('ARGUMENT_VALUE_INVALID');
  return file;
 }
 function safeDatabase(path){
@@ -38,38 +39,38 @@ export class Workroom{
  }
  transaction(fn){this.db.exec('BEGIN IMMEDIATE');try{const result=fn();this.db.exec('COMMIT');return result;}catch(e){this.db.exec('ROLLBACK');throw e;}}
  filesValid(files){
-  if(!files||Array.isArray(files)||typeof files!=='object'||Object.keys(files).length>this.limits.files)throw Error('File count limit');
+  if(!files||Array.isArray(files)||typeof files!=='object'||Object.keys(files).length>this.limits.files)throw toolFault('ARGUMENT_VALUE_INVALID');
   let size=0,js=0;
   for(const [file,text] of Object.entries(files)){
-   safeWorkroomPath(file);if(typeof text!=='string'||text.includes('\0')||Buffer.byteLength(text)>this.limits.fileBytes)throw Error('File content/size limit');
+   safeWorkroomPath(file);if(typeof text!=='string'||text.includes('\0')||Buffer.byteLength(text)>this.limits.fileBytes)throw toolFault('ARGUMENT_VALUE_INVALID');
    size+=Buffer.byteLength(text);if(/\.(js|mjs|cjs)$/.test(file))js++;
   }
-  if(size>this.limits.projectBytes||js>this.limits.jsFiles)throw Error('Project size/JS file count limit');
+  if(size>this.limits.projectBytes||js>this.limits.jsFiles)throw toolFault('ARGUMENT_VALUE_INVALID');
   return Object.fromEntries(Object.entries(files).sort(([a],[b])=>a.localeCompare(b)));
  }
  project(scope,id,{deleted=false}={}){
   const row=this.db.prepare('SELECT * FROM wr_projects WHERE id=? AND scope=?').get(uid(id),scopeKey(scope));
-  if(!row||row.deleted&&!deleted)throw Error('Project unavailable in this chat');return row;
+  if(!row||row.deleted&&!deleted)throw toolFault('RESOURCE_UNAVAILABLE');return row;
  }
  version(project,version){
-  if(!Number.isSafeInteger(version)||version<1)throw Error('Invalid version');
+  if(!Number.isSafeInteger(version)||version<1)throw toolFault('ARGUMENT_VALUE_INVALID');
   const row=this.db.prepare('SELECT * FROM wr_versions WHERE project=? AND version=?').get(project,version);
-  if(!row||hash(row.files)!==row.digest)throw Error('Version absent or integrity check failed');return row;
+  if(!row||hash(row.files)!==row.digest)throw toolFault('PRECONDITION_MISSING');return row;
  }
  append(project,files,reason){
-  if(project.head>=this.limits.versions)throw Error('Version limit reached; recovery copies preserved');
+  if(project.head>=this.limits.versions)throw toolFault('LIMIT_REACHED');
   const version=project.head+1,at=new Date().toISOString(),serialized=JSON.stringify(this.filesValid(files));
   this.db.prepare('INSERT INTO wr_versions VALUES(?,?,?,?,?,?)').run(project.id,version,serialized,hash(serialized),short(reason,200,'version reason'),at);
   this.db.prepare('UPDATE wr_projects SET head=?,deleted=0,updated=? WHERE id=?').run(version,at,project.id);
   return {project_id:project.id,version,digest:hash(serialized),displayed:!this.db.prepare('SELECT 1 FROM wr_hidden WHERE project=?').get(project.id),preview_url:'http://127.0.0.1:17790/workroom/'+project.id+'?version='+version};
  }
- expect(project,version){if(project.head!==version)throw Error('Version conflict; current version is '+project.head);}
+ expect(project,version){if(project.head!==version)throw toolFault('VERSION_CONFLICT',{current_version:project.head});}
  create(scope,{title,files={},task_id,origin='chat'}){
-  if(!['chat','sister-local','development-acceptance'].includes(origin))throw Error('Invalid origin');
+  if(!['chat','sister-local','development-acceptance'].includes(origin))throw toolFault('ARGUMENT_VALUE_INVALID');
   title=short(title,100,'title');files=this.filesValid(files);
   return this.transaction(()=>{
-   if(this.db.prepare('SELECT count(*) n FROM wr_projects WHERE scope=?').get(scopeKey(scope)).n>=this.limits.projectsPerScope)throw Error('Project count limit; deleted recovery copies retained');
-   let task;if(task_id){task=this.task(scope,task_id);if(!['pending','in_progress','failed'].includes(task.state)||task.project)throw Error('Task already bound or submitted');if(origin==='chat')origin='sister-local';}
+   if(this.db.prepare('SELECT count(*) n FROM wr_projects WHERE scope=?').get(scopeKey(scope)).n>=this.limits.projectsPerScope)throw toolFault('LIMIT_REACHED');
+   let task;if(task_id){task=this.task(scope,task_id);if(!['pending','in_progress','failed'].includes(task.state)||task.project)throw toolFault('TASK_STATE_CONFLICT');if(origin==='chat')origin='sister-local';}
    const id=randomUUID(),at=new Date().toISOString();this.db.prepare('INSERT INTO wr_projects VALUES(?,?,?,?,0,0,?,?)').run(id,scopeKey(scope),title,origin,at,at);
    const result=this.append({id,head:0},files,'create');
    if(task)this.db.prepare("UPDATE wr_tasks SET project=?,state='in_progress',updated=? WHERE id=?").run(id,at,task.id);
@@ -77,12 +78,12 @@ export class Workroom{
   });
  }
  list(scope,include_deleted=false){return this.db.prepare('SELECT id,title,origin,head AS version,deleted,updated FROM wr_projects WHERE scope=? AND (? OR deleted=0) ORDER BY updated DESC LIMIT 80').all(scopeKey(scope),include_deleted?1:0);}
- read(scope,id,file,version,{offset=0,limit=8000}={}){const project=this.project(scope,id,{deleted:true}),row=this.version(id,version??project.head),files=JSON.parse(row.files);if(file!==undefined){safeWorkroomPath(file);if(!Object.hasOwn(files,file))throw Error('File not found');if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(limit)||limit<1||limit>10000)throw Error('Invalid read range');const text=files[file];return {project_id:id,version:row.version,path:file,text:text.slice(offset,offset+limit),offset,total_characters:text.length,next_offset:offset+limit<text.length?offset+limit:null,digest:row.digest};}return {project_id:id,title:project.title,version:row.version,deleted:!!project.deleted,files:Object.entries(files).map(([path,text])=>({path,bytes:Buffer.byteLength(text)})),digest:row.digest};}
+ read(scope,id,file,version,{offset=0,limit=8000}={}){const project=this.project(scope,id,{deleted:true}),row=this.version(id,version??project.head),files=JSON.parse(row.files);if(file!==undefined){safeWorkroomPath(file);if(!Object.hasOwn(files,file))throw toolFault('RESOURCE_UNAVAILABLE');if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(limit)||limit<1||limit>10000)throw toolFault('ARGUMENT_VALUE_INVALID');const text=files[file];return {project_id:id,version:row.version,path:file,text:text.slice(offset,offset+limit),offset,total_characters:text.length,next_offset:offset+limit<text.length?offset+limit:null,digest:row.digest};}return {project_id:id,title:project.title,version:row.version,deleted:!!project.deleted,files:Object.entries(files).map(([path,text])=>({path,bytes:Buffer.byteLength(text)})),digest:row.digest};}
  write(scope,id,expected_version,changes){
-  if(!Array.isArray(changes)||changes.length<1||changes.length>6)throw Error('Write 1–6 files per change');
+  if(!Array.isArray(changes)||changes.length<1||changes.length>6)throw toolFault('ARGUMENT_VALUE_INVALID');
   return this.transaction(()=>{
    const project=this.project(scope,id);this.expect(project,expected_version);const files=JSON.parse(this.version(id,project.head).files);
-   for(const change of changes){if(!change||Object.keys(change).some(k=>!['path','text','remove'].includes(k)))throw Error('Invalid file change');safeWorkroomPath(change.path);if(change.remove===true){if(change.text!==undefined)throw Error('Remove or write, not both');delete files[change.path];}else{if(change.remove!==undefined&&change.remove!==false)throw Error('Invalid remove flag');files[change.path]=change.text;}}
+   for(const change of changes){if(!change||Object.keys(change).some(k=>!['path','text','remove'].includes(k)))throw toolFault('ARGUMENT_VALUE_INVALID');safeWorkroomPath(change.path);if(change.remove===true){if(change.text!==undefined)throw toolFault('ARGUMENT_VALUE_INVALID');delete files[change.path];}else{if(change.remove!==undefined&&change.remove!==false)throw toolFault('ARGUMENT_VALUE_INVALID');files[change.path]=change.text;}}
    return this.append(project,files,'edit');
   });
  }
@@ -105,19 +106,19 @@ export class Workroom{
   try{const previous=JSON.parse(this.db.prepare('SELECT result FROM wr_checks WHERE project=? AND version=?').get(id,row.version)?.result??'{}');if(previous.digest===row.digest&&previous.browser_preview)result.browser_preview=previous.browser_preview;}catch{}
   this.db.prepare('INSERT OR REPLACE INTO wr_checks VALUES(?,?,?,?)').run(id,row.version,JSON.stringify(result),new Date().toISOString());return result;
  }
- task(scope,id){const row=this.db.prepare('SELECT * FROM wr_tasks WHERE id=? AND scope=?').get(uid(id),scopeKey(scope));if(!row)throw Error('Task unavailable in this chat');return row;}
+ task(scope,id){const row=this.db.prepare('SELECT * FROM wr_tasks WHERE id=? AND scope=?').get(uid(id),scopeKey(scope));if(!row)throw toolFault('RESOURCE_UNAVAILABLE');return row;}
  tasks(scope){return this.db.prepare('SELECT id,title,brief,state,project,result,updated FROM wr_tasks WHERE scope=? ORDER BY updated DESC LIMIT 30').all(scopeKey(scope));}
  taskState(scope,id,state,result=''){
-  if(!['in_progress','failed','completed'].includes(state))throw Error('Unsupported task state');
+  if(!['in_progress','failed','completed'].includes(state))throw toolFault('ARGUMENT_VALUE_INVALID');
   const task=this.task(scope,id);
-  if(typeof result!=='string'||result.length>2000)throw Error('Task result limit');
+  if(typeof result!=='string'||result.length>2000)throw toolFault('ARGUMENT_VALUE_INVALID');
   this.db.prepare('UPDATE wr_tasks SET state=?,result=?,updated=? WHERE id=?').run(state,result,new Date().toISOString(),id);return {task_id:id,state};
  }
  submit(scope,id,expected_version,summary,task_id){
   summary=short(summary,2000,'summary');const checks=this.check(scope,id,expected_version);
   return this.transaction(()=>{
    const project=this.project(scope,id);this.expect(project,expected_version);let task;
-   if(task_id){task=this.task(scope,task_id);if(task.project!==id)throw Error('Task/project mismatch');}
+   if(task_id){task=this.task(scope,task_id);if(task.project!==id)throw toolFault('TASK_STATE_CONFLICT');}
    const at=new Date().toISOString(),receipt=randomUUID();
    this.db.prepare("INSERT INTO wr_submissions VALUES(?,?,?,?,?,?,'recorded',?)").run(receipt,id,expected_version,task_id??null,summary,JSON.stringify(checks),at);
    if(task)this.db.prepare('UPDATE wr_tasks SET state=?,result=?,updated=? WHERE id=?').run(checks.ok?'completed':'in_progress',summary,at,task.id);
@@ -134,21 +135,21 @@ export class Workroom{
  unpublish(scope,id){this.project(scope,id,{deleted:true});return this.transaction(()=>{this.db.prepare('DELETE FROM wr_releases WHERE project=?').run(id);this.db.prepare('INSERT OR REPLACE INTO wr_hidden VALUES(?,?)').run(id,new Date().toISOString());return {published:false,displayed:false,project_id:id,recovery_versions_preserved:true};});}
  // Trusted local CLI only. These operations are deliberately absent from chat tools.
  dispatch(scope,{title,brief}){const id=randomUUID();this.db.prepare("INSERT INTO wr_tasks VALUES(?,?,?,?,'pending',NULL,'',?)").run(id,scopeKey(scope),short(title,100,'task title'),short(brief,4000,'task brief'),new Date().toISOString());return {task_id:id,state:'pending',source:'sister-local'};}
- review(scope,id,accept,feedback){const task=this.task(scope,id);if(task.state!=='awaiting_review')throw Error('No submitted task to review');feedback=short(feedback,2000,'review feedback');return this.transaction(()=>{const state=accept?'completed':'failed';this.db.prepare('UPDATE wr_tasks SET state=?,result=?,updated=? WHERE id=?').run(state,feedback,new Date().toISOString(),id);this.db.prepare("UPDATE wr_submissions SET state=? WHERE task=? AND state='awaiting_review'").run(accept?'reviewed':'changes_requested',id);return {task_id:id,state,production_merged:false};});}
+ review(scope,id,accept,feedback){const task=this.task(scope,id);if(task.state!=='awaiting_review')throw toolFault('TASK_STATE_CONFLICT');feedback=short(feedback,2000,'review feedback');return this.transaction(()=>{const state=accept?'completed':'failed';this.db.prepare('UPDATE wr_tasks SET state=?,result=?,updated=? WHERE id=?').run(state,feedback,new Date().toISOString(),id);this.db.prepare("UPDATE wr_submissions SET state=? WHERE task=? AND state='awaiting_review'").run(accept?'reviewed':'changes_requested',id);return {task_id:id,state,production_merged:false};});}
  close(){this.db.close();}
 }
 
 const props={project_id:{type:'string'},expected_version:{type:'integer',minimum:1},version:{type:'integer',minimum:1},task_id:{type:'string'}};
 const files={type:'array',maxItems:6,items:{type:'object',properties:{path:{type:'string'},text:{type:'string',maxLength:32768},remove:{type:'boolean'}},required:['path'],additionalProperties:false}};
 export function workroomTools(store,scope,{message,authorize=async()=>true}={},policy={}){
- const page=(rows,offset=0,size=20)=>{if(!Number.isSafeInteger(offset)||offset<0)throw Error('Invalid page offset');return {records:rows.slice(offset,offset+size),next_offset:offset+size<rows.length?offset+size:null};};
+ const page=(rows,offset=0,size=20)=>{if(!Number.isSafeInteger(offset)||offset<0)throw toolFault('ARGUMENT_VALUE_INVALID');return {records:rows.slice(offset,offset+size),next_offset:offset+size<rows.length?offset+size:null};};
  const define=(name,description,properties,required,handler)=>({name:'workroom_'+name,description,parameters:{type:'object',properties,required,additionalProperties:false},handler:async args=>{
-  try{if(!await authorize())throw Error('Conversation paused or permission changed');return JSON.stringify({ok:true,result:await handler(args)});}catch(error){return JSON.stringify({ok:false,error:String(error.message).slice(0,1800)});}
+  try{if(!await authorize())throw toolFault('ACTION_PAUSED_OR_CONTEXT_ENDED');return JSON.stringify({ok:true,result:await handler(args)});}catch(error){return JSON.stringify(rejectedToolResult(error));}
  }});
  const checked=result=>({...result,checks:store.check(scope,result.project_id,result.version)});
  return [
   define('list','List projects belonging only to this chat, including recoverable deleted projects when requested.',{include_deleted:{type:'boolean'},offset:{type:'integer',minimum:0}},[],a=>page(store.list(scope,a.include_deleted),a.offset)),
-  define('create','Create an HTML/CSS/SVG/JS mini project, immediately available on the home even unfinished. Display is not host execution. Optional task_id binds a genuine local sister task. Initial files are checked immediately.',{title:{type:'string',maxLength:100},files,task_id:props.task_id},['title'],a=>{if(a.files!==undefined&&(!Array.isArray(a.files)||a.files.length>6))throw Error('Use at most 6 initial files');const initial={};for(const file of a.files??[]){if(file.remove)throw Error('Initial files cannot remove');safeWorkroomPath(file.path);initial[file.path]=file.text;}return checked(store.create(scope,{title:a.title,files:initial,task_id:a.task_id}));}),
+  define('create','Create an HTML/CSS/SVG/JS mini project, immediately available on the home even unfinished. Display is not host execution. Optional task_id binds a genuine local sister task. Initial files are checked immediately.',{title:{type:'string',maxLength:100},files,task_id:props.task_id},['title'],a=>{if(a.files!==undefined&&(!Array.isArray(a.files)||a.files.length>6))throw toolFault('ARGUMENT_VALUE_INVALID');const initial={};for(const file of a.files??[]){if(file.remove)throw toolFault('ARGUMENT_VALUE_INVALID');safeWorkroomPath(file.path);initial[file.path]=file.text;}return checked(store.create(scope,{title:a.title,files:initial,task_id:a.task_id}));}),
   define('read','Read one file in character chunks, following next_offset, or list file metadata. Older/deleted versions remain readable only in this chat.',{project_id:props.project_id,path:{type:'string'},version:props.version,offset:{type:'integer',minimum:0},limit:{type:'integer',minimum:1,maximum:10000}},['project_id'],a=>store.read(scope,a.project_id,a.path,a.version,{offset:a.offset,limit:a.limit})),
   define('write','Write/remove 1–6 logical files; saves an immutable recovery version and returns real check errors. expected_version prevents lost updates.',{project_id:props.project_id,expected_version:props.expected_version,files},['project_id','expected_version','files'],a=>checked(store.write(scope,a.project_id,a.expected_version,a.files))),
   define('history','Page persistent version numbers and hashes.',{project_id:props.project_id,offset:{type:'integer',minimum:0}},['project_id'],a=>page(store.history(scope,a.project_id),a.offset)),

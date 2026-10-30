@@ -122,6 +122,7 @@ export class LifeContinuity {
     let level = 'unknown';
     if (tool.endsWith('_search') || result.evidence_level === 'search-lead') level = 'search-lead';
     else if (tool === 'public_fetch') level = 'page-text';
+    else if (tool === 'bilibili_comments' && result.status === 'ok' && result.evidence_level === 'public-comments' && result.comments?.some(item => item.text?.trim())) level = 'public-comments';
     else if (['bilibili_read','bilibili_listen'].includes(tool)) level = result.content?.subtitle_read ? 'subtitles' :
       result.content?.speech_transcript?.segments?.some(segment => segment.state === 'transcribed' && segment.text?.trim()) ? 'speech-transcript' :
       result.content?.sampled_frames?.some(frame => frame.status === 'vision-ok') ? 'sampled-frames' : 'metadata-only';

@@ -2,7 +2,7 @@ const $=id=>document.getElementById(id);
 const text=(id,value)=>$(id).textContent=value;
 function list(id,values,empty){const root=$(id);root.replaceChildren();for(const s of values?.length?values:[empty]){const li=document.createElement('li');li.textContent=s;root.append(li);}}
 const names={'deepseek-bao-jing-shui-jiao.png':'困了，晚安','deepseek-bixin.png':'和你聊得来','deepseek-bu-lai.png':'不赖嘛','deepseek-da-ku.png':'有点委屈','deepseek-jushou-dazhaohu.png':'嗨，来啦','deepseek-touding-wenhao.png':'诶？','deepseek-zhangkai-shuangshou-huanhu.png':'好耶！'};
-const capabilityGroups={public_web:'看世界',ordinary_tieba:'看世界',claw:'看世界',bilibili_subtitles:'读视频',bilibili_frames:'读视频',bilibili_speech:'读视频',qzone_read:'自己的空间',qzone_publish:'自己的空间',own_workshop:'自己动手',proactive_faces:'主动交流',proactive_images:'主动交流',own_profile:'自己的模样',qq_voice:'听语音'};
+const capabilityGroups={public_web:'看世界',ordinary_tieba:'看世界',claw:'看世界',bilibili_subtitles:'读视频',bilibili_frames:'读视频',bilibili_speech:'读视频',bilibili_comments:'读视频',qzone_read:'自己的空间',qzone_publish:'自己的空间',own_workshop:'自己动手',proactive_faces:'主动交流',proactive_images:'主动交流',own_profile:'自己的模样',qq_voice:'听语音'};
 const capabilityCodes={
  'service-closed':'服务已关闭','service-paused':'服务目前暂停','route-not-ready':'聊天入口还未就绪','adapter-not-connected':'这个入口尚未接通','credential-reader-not-configured':'尚未配置所需平台凭证','reader-not-connected':'读取入口尚未接通','frame-dependencies-unavailable':'画面读取组件未齐','speech-dependencies-unavailable':'本机语音组件未齐','workshop-paused':'工作间暂停中','workshop-runtime-unavailable':'工作间执行器未就绪',
  'access-unavailable':'这次平台访问未成功','rate-limited':'这次访问遇到频率限制','reader-unavailable':'这次读取入口不可用','unsupported-source':'当前入口尚不支持该来源','no-usable-source':'这次没有取得可用内容','identity-mismatch':'当前账号与预期不符','login-error':'平台登录尚未接通','api-error':'这次平台接口未完成','invalid-response':'这次平台结果无法确认','closed':'入口已关闭','not-authorized':'该次操作尚未获授权','context-denied':'该次操作条件不满足','service-restart-after-send-reservation':'服务重启前的发送结果未确认',
@@ -87,7 +87,7 @@ function lifeTime(value){
  return new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
 }
 function lifeFacts(row){
- const levels={'search-lead':'搜索线索','page-text':'网页正文','thread-posts':'帖子正文',subtitles:'字幕','speech-transcript':'机器语音转写','sampled-frames':'抽样画面','metadata-only':'简介',unknown:'范围未记录'};
+ const levels={'search-lead':'搜索线索','page-text':'网页正文','thread-posts':'帖子正文','public-comments':'公开评论',subtitles:'字幕','speech-transcript':'机器语音转写','sampled-frames':'抽样画面','metadata-only':'简介',unknown:'范围未记录'};
  const parts=[];
  if(Number.isSafeInteger(row.saved_source_count))parts.push('已保存 '+row.saved_source_count+' 条来源记录');
  if(row.reading_levels)parts.push(...Object.entries(row.reading_levels).filter(([,count])=>Number.isSafeInteger(count)&&count>0).map(([level,count])=>(levels[level]||'范围未知')+' '+count));

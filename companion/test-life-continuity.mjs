@@ -135,7 +135,7 @@ test('search summaries cannot complete a discovery or create a share intent',asy
  const f=fixture(t);let saveRejected=false,shareRejected=false;
  f.plan(choose(),{name:'public_search',args:{query:'Tides'}},save,
   req=>{const result=lastOutput(req);saveRejected=result.status==='rejected'&&result.saved===false;return share;},
-  req=>{shareRejected=/rejected|failed/i.test(lastOutput(req));return quiet;});
+  req=>{shareRejected=lastOutput(req).error?.code==='TOOL_UNAVAILABLE';return quiet;});
  await f.life.tick();f.assertConsumed();assert.ok(saveRejected);assert.ok(shareRejected);
  assert.equal(f.life.db.prepare('SELECT count(*) n FROM discoveries').get().n,1,'A search lead is retained without being promoted to reading');
  assert.equal(f.life.db.prepare('SELECT level FROM life_reading_evidence').get().level,'search-lead');
@@ -146,8 +146,8 @@ test('search summaries cannot complete a discovery or create a share intent',asy
 test('retired interests are not offered and an old revision cannot be selected',async t=>{
  const f=fixture(t),old=f.addState(),current=f.addState({value:'A revised current question'}),retired=f.addState({key:'reflection:retired',active:false});let rejected=0;
  f.plan(req=>{const offered=initial(req).active_interests;assert.ok(offered.some(x=>x.key===current.key&&x.revision===current.revision));assert.ok(!offered.some(x=>x.key===retired.key));return choose(stateRef(old));},
-  req=>{if(/rejected|failed/i.test(lastOutput(req)))rejected++;return choose(stateRef(retired));},
-  req=>{if(/rejected|failed/i.test(lastOutput(req)))rejected++;return quiet;});
+  req=>{if(lastOutput(req).error?.code==='TOOL_FAILURE_UNCLASSIFIED')rejected++;return choose(stateRef(retired));},
+  req=>{if(lastOutput(req).error?.code==='TOOL_FAILURE_UNCLASSIFIED')rejected++;return quiet;});
  await f.life.tick();f.assertConsumed();assert.equal(rejected,2);
  assert.equal(f.life.db.prepare('SELECT count(*) n FROM life_intentions').get().n,0);assert.equal(f.sent.length,0);
 });
@@ -155,7 +155,7 @@ test('retired interests are not offered and an old revision cannot be selected',
 test('an interest retired while the provider is choosing cannot be selected from its stale snapshot',async t=>{
  const f=fixture(t),old=f.addState();let rejected=false;
  f.plan(req=>{assert.ok(initial(req).active_interests.some(x=>x.key===old.key));f.addState({active:false,value:'I put this question aside while the opportunity was being considered'});return choose(stateRef(old));},
-  req=>{rejected=/rejected|failed/i.test(lastOutput(req));return quiet;});
+  req=>{rejected=lastOutput(req).error?.code==='TOOL_FAILURE_UNCLASSIFIED';return quiet;});
  await f.life.tick();f.assertConsumed();assert.ok(rejected,'The offered snapshot must be revalidated against the current state at selection');
  assert.equal(f.life.db.prepare('SELECT count(*) n FROM life_intentions').get().n,0);
 });

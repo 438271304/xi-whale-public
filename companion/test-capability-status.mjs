@@ -12,7 +12,7 @@ import {NativeWorkshopBackend} from './workshop-native.mjs';
 import {BilibiliPublic} from './bilibili-public.mjs';
 
 const NOW=Date.parse('2036-10-17T23:00:00+08:00');
-const keys=['public_web','ordinary_tieba','claw','bilibili_subtitles','bilibili_frames','bilibili_speech','qq_voice','qzone_read','qzone_publish','own_workshop','proactive_faces','proactive_images','own_profile'];
+const keys=['public_web','ordinary_tieba','claw','bilibili_subtitles','bilibili_frames','bilibili_speech','bilibili_comments','qq_voice','qzone_read','qzone_publish','own_workshop','proactive_faces','proactive_images','own_profile'];
 
 test('runtime capabilities follow actual adapters and lifecycle without calling tools',async t=>{
  const noHeavyCheck=()=>{throw Error('UI status must not hash execution binaries');};
@@ -43,6 +43,7 @@ test('runtime capabilities follow actual adapters and lifecycle without calling 
   assert.deepEqual(Object.keys(items).sort(),keys.sort());
   for(const key of ['qzone_read','qzone_publish','proactive_faces','proactive_images','own_profile'])assert.deepEqual(items[key],{configured:true,available:true,autonomous:true,blocker:null});
   assert.equal(items.public_web.available,null);assert.equal(items.ordinary_tieba.available,null);
+  assert.deepEqual(items.bilibili_comments,{configured:true,available:null,autonomous:true,blocker:null});
   assert.equal(items.claw.configured,true);assert.equal(items.claw.available,null);assert.equal(items.claw.autonomous,true);
   assert.equal(items.own_workshop.configured,true);assert.equal(items.own_workshop.autonomous,true);
   assert.ok(!JSON.stringify(result).includes(policy.bot_id));assert.ok(!JSON.stringify(result).includes(root));
@@ -61,7 +62,7 @@ test('absent optional services are not enabled by installed source files',async(
   const status=extras.capabilityStatus();
   assert.equal(status.claw.configured,false);assert.equal(status.claw.available,false);
   assert.equal(status.claw.blocker,'credential-reader-not-configured');
-  for(const key of ['bilibili_subtitles','bilibili_frames','bilibili_speech','own_workshop']){
+  for(const key of ['bilibili_subtitles','bilibili_frames','bilibili_speech','bilibili_comments','own_workshop']){
    assert.equal(status[key].configured,false);assert.equal(status[key].available,false);assert.equal(status[key].autonomous,false);
   }
   await extras.close();assert.equal(extras.capabilityStatus().public_web.blocker,'service-closed');

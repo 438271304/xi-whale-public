@@ -1,6 +1,7 @@
 import {ConversationWorkspace,conversationScope,scopedHistoryArgs} from './conversation-scope.mjs';
 import {buildConversationTime} from './conversation-time.mjs';
 import {generationOptions} from './generation-options.mjs';
+import {toolFault,toolFeedback,rejectedToolResult,resultWithWarning,localToolWarning} from './tool-feedback.mjs';
 // Tools are built for a transport-verified scope. No shared legacy workspace is passed in.
 export function scopedTools({base,scope,history,memory}){
  const bound=conversationScope(scope.kind,scope.id), workspace=new ConversationWorkspace(base,bound);
@@ -27,13 +28,14 @@ const recoveryNote='\n上一条生成未形成可发送的完整结果。请减�
 function replyText(output){return output.filter(i=>i.type==='message'&&i.role==='assistant').flatMap(i=>i.content??[]).map(c=>c.type==='output_text'?c.text:c.type==='refusal'?c.refusal:'').filter(Boolean).join('\n').trim();}
 function responseSummary(result,recovery){const output=result.response.output??[],reason=result.response.incomplete_details?.reason;return {recovery,response_status:['completed','incomplete','failed','cancelled'].includes(result.response.status)?result.response.status:'unknown',incomplete_reason:['max_output_tokens','content_filter'].includes(reason)?reason:null,output_tokens:result.attempts?.at(-1)?.meters?.output??null,text_chars:replyText(output).length,reasoning_chars:output.filter(x=>x.type==='reasoning').flatMap(x=>x.content??x.summary??[]).reduce((n,p)=>n+(typeof p.text==='string'?p.text.length:0),0),tool_count:output.filter(x=>x.type==='function_call').length};}
 function truncated(result,limit){const reason=result.response.incomplete_details?.reason;return result.response.status==='incomplete'&&(reason==='max_output_tokens'||!reason&&(result.attempts?.at(-1)?.meters?.output??0)>=limit);}
-export async function runScopedTurn({client,profile,input,tools,signal,maxRounds=32,streamResponses=false,onStep=()=>{},onTool=()=>{},generationContext=()=>'\n【本次生成当前时间】\n'+JSON.stringify(buildConversationTime({now:Date.now()}).computed_at)}){
+export async function runScopedTurn({client,profile,input,tools,signal,maxRounds=32,streamResponses=false,onStep=()=>{},onTool=()=>{},onWarning=localToolWarning,generationContext=()=>'\n【本次生成当前时间】\n'+JSON.stringify(buildConversationTime({now:Date.now()}).computed_at)}){
  const transcript=structuredClone(input).map(item=>item.type?item:{...item,type:'message'}),seen=new Set();
  const context=transcript.map(item=>({version:2,item,context:{}}));
- const available=[...tools];let recoveryUsed=false;
+ const available=[...tools];let recoveryUsed=false,warningCount=0;
+ const warn=async(tool,code)=>{const detail={tool,code,phase:'postprocessing',count:++warningCount};try{await onWarning(detail);}catch{localToolWarning(detail);}return toolFeedback(toolFault(code));};
  for(let round=0;round<maxRounds;round++){
   signal?.throwIfAborted();
-  const definitions=available.map(({name,description,parameters})=>({type:'function',name,description,parameters}));
+  const definitions=available.map(({name,description,parameters,endsTurn})=>({type:'function',name,description:(description??'')+(endsTurn===true?' This action immediately ends the turn. Do any other needed actions first; later calls in the same batch will not execute.':''),parameters}));
   let effective,configured;
   const generate=async()=>{const live=await generationContext({round:round+1,maxRounds,recovery:recoveryUsed});signal?.throwIfAborted();const spec=await client.generationSettings?.()??{};configured={model:spec.model??'deepseek-flash',thinking:spec.thinking??true,reasoningEffort:spec.reasoningEffort??'high',maxTokens:spec.maxTokens??8192};effective=generationOptions(spec);return client.respond({...effective,instructions:profile+sourceAuthorityNote+(recoveryUsed?recoveryNote:'')+(typeof live==='string'?live:''),input:transcript,tools:definitions},{signal,context,...(streamResponses?{onEvent:()=>{}}:{})});};
   let result=await generate();
@@ -64,18 +66,24 @@ export async function runScopedTurn({client,profile,input,tools,signal,maxRounds
   for(const call of calls){
    signal?.throwIfAborted();
    if(!call.call_id||seen.has(call.call_id))throw Error('Repeated tool call');seen.add(call.call_id);
-   let answer;
+   let answer,tool,args,returned=false;const warnings=[];
    try{
-    const tool=available.find(t=>t.name===call.name);if(!tool)throw Error('Unavailable tool');
-    const args=JSON.parse(call.arguments);if(!args||Array.isArray(args)||typeof args!=='object')throw Error('Invalid arguments');
+    tool=available.find(t=>t.name===call.name);if(!tool)throw toolFault('TOOL_UNAVAILABLE');
+    try{args=JSON.parse(call.arguments);}catch{throw toolFault('ARGUMENT_JSON_INVALID');}
+    if(!args||Array.isArray(args)||typeof args!=='object')throw toolFault('ARGUMENT_JSON_INVALID');
     const allowed=Object.keys(tool.parameters.properties);
-    if(Object.keys(args).some(k=>!allowed.includes(k))||(tool.parameters.required??[]).some(k=>!(k in args)))throw Error('Invalid fields');
-    answer=String(await tool.handler(args));
-    await onTool({name:call.name,args,result:answer,ok:true});
-    if(tool.expandsTools){for(const t of tool.expandsTools(args))if(!available.some(x=>x.name===t.name))available.push(t);}
-    if(tool.endsTurn===true){signal?.throwIfAborted();return tool.terminalResult??null;}
-    if(answer.length>64000)answer=answer.slice(0,64000)+'\n[truncated; read the remaining content in another page]';
-   }catch{answer='Tool request rejected or failed; do not claim success.';try{await onTool({name:call.name,args:{},result:null,ok:false});}catch{}}
+    if(Object.keys(args).some(k=>!allowed.includes(k))||(tool.parameters.required??[]).some(k=>!(k in args)))throw toolFault('ARGUMENT_FIELDS_INVALID');
+    answer=String(await tool.handler(args));returned=true;
+   }catch(error){answer=JSON.stringify(rejectedToolResult(error));}
+   // A recorder failure is not evidence that the handler failed. Never invoke
+   // the handler or onTool a second time to compensate for a recording error.
+   try{await onTool({name:call.name,args:returned?args:{},result:answer,ok:returned});}
+   catch{warnings.push(await warn(tool?.name,'TOOL_RESULT_RECORDING_FAILED'));}
+   if(returned&&tool.expandsTools){try{for(const t of tool.expandsTools(args))if(!available.some(x=>x.name===t.name))available.push(t);}
+    catch{warnings.push(await warn(tool.name,'TOOL_EXPANSION_FAILED'));}}
+   if(returned&&tool.endsTurn===true){signal?.throwIfAborted();return tool.terminalResult??null;}
+   if(warnings.length)answer=resultWithWarning(answer,warnings);
+   if(answer.length>64000)answer=answer.slice(0,64000)+'\n[truncated; read the remaining content in another page]';
    signal?.throwIfAborted();
    const item={type:'function_call_output',call_id:call.call_id,output:answer};
    transcript.push(item);context.push({version:2,item,context:{}});

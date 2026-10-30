@@ -1,4 +1,4 @@
-import {DatabaseSync} from 'node:sqlite';import {randomUUID} from 'node:crypto';import {conversationScope} from './conversation-scope.mjs';import {safeWorkroomPath} from './workroom.mjs';
+import {DatabaseSync} from 'node:sqlite';import {randomUUID} from 'node:crypto';import {toolFault,toolFeedback} from './tool-feedback.mjs';import {conversationScope} from './conversation-scope.mjs';import {safeWorkroomPath} from './workroom.mjs';
 const key=scope=>conversationScope(scope.kind,scope.id).key;
 const unavailable={capabilities:()=>({ready:false,backend:'DSH 0.2.1-rc.2',reason:'Windows project-external credential/core read isolation is not verified; execution remains disabled',independent_daily_cap_cny:1}),run:async()=>{throw Error('DSH execution boundary not approved');}};
 export class Workshop{
@@ -8,7 +8,7 @@ export class Workshop{
  }
  capabilities(engine='offline'){return this.backend.capabilities(engine);}
  row(scope,id){const row=this.db.prepare('SELECT * FROM workshop_jobs WHERE id=? AND scope=?').get(String(id),key(scope));if(!row)throw Error('Workshop job not found in this conversation');return row;}
- view(row){return {...row,expected_outputs:JSON.parse(row.expected_outputs),checkpoint:JSON.parse(row.checkpoint),result:row.result?JSON.parse(row.result):null};}
+ view(row){const diagnostic=row.error?{...toolFeedback(toolFault('WORKSHOP_JOB_DIAGNOSTIC',{state:row.state})),local_receipt:{kind:'workshop-job',id:row.id}}:null;return {...row,error:diagnostic?.message??null,...(diagnostic?{error_feedback:diagnostic}:{}),expected_outputs:JSON.parse(row.expected_outputs),checkpoint:JSON.parse(row.checkpoint),result:row.result?JSON.parse(row.result):null};}
  list(scope){return this.db.prepare('SELECT * FROM workshop_jobs WHERE scope=? ORDER BY created DESC LIMIT 20').all(key(scope)).map(r=>this.view(r));}
  state(id,state,detail={}){this.db.prepare('UPDATE workshop_jobs SET state=?,updated=? WHERE id=?').run(state,this.clock(),id);this.db.prepare('INSERT INTO workshop_events(job,state,detail,at) VALUES(?,?,?,?)').run(id,state,JSON.stringify(detail),this.clock());}
  submit(scope,{project_id,expected_version,instruction,expected_outputs,source_event,requester,parent=null,entrypoint,engine='offline',public_urls=[]}){

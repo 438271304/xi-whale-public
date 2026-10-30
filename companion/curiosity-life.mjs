@@ -123,7 +123,7 @@ export class CuriosityLife{
    define('save_discovery','Save what you actually learned, with sources already read in this activity. Optionally add your own reaction (feeling, association, sharing wish) and deliberately written public_text for your corner; factual summary remains separate. For a queued question, followup_outcome distinguishes answered from partial (default). No invented browsing/actions; subtitles and sampled frames retain their evidence limits.',{summary:{type:'string',maxLength:2400},reflection:DISCOVERY_REFLECTION_SCHEMA,reaction:LIFE_REACTION_SCHEMA,public_text:{type:'string',maxLength:1000},followup_outcome:{type:'string',enum:['answered','partial']}},['summary'],a=>{
     const sources=this.continuity.sources(id);
     if(typeof a.summary!=='string'||!a.summary.trim()||a.summary.length>2400)throw Error('A bounded discovery summary is required');
-    if(!sources.some(s=>['page-text','thread-posts','subtitles','speech-transcript','sampled-frames','metadata-only'].includes(s.level))){
+    if(!sources.some(s=>['page-text','thread-posts','public-comments','subtitles','speech-transcript','sampled-frames','metadata-only'].includes(s.level))){
      const state=this.db.prepare('SELECT state FROM activities WHERE id=?').get(id)?.state;
      return JSON.stringify({saved:false,status:'rejected',reason:'actual-reading-required',shared:false,
       next_options:state==='reading'?[...readers.map(t=>t.name).slice(0,12),'keep_quiet','take_a_break']:['choose_activity','read_life_experience','reach_out_from_life','keep_quiet','take_a_break'],

@@ -76,6 +76,7 @@ export function conversationExtras({workspace,notesRoot,familyGroup,fetcher=fetc
    bilibili_subtitles:item(!!bili,bili&&!bili.closed?null:false,!!bili,bili?null:'reader-not-connected'),
    bilibili_frames:item(frames,!frames||bili.closed?false:null,!!bili,!frames?'reader-not-connected':null),
    bilibili_speech:item(speech,!speech||bili.closed?false:null,!!bili,!speech?'reader-not-connected':null),
+   bilibili_comments:item(!!bili?.comments,!bili?.comments||bili.closed||bili.comments.closed?false:null,!!bili?.comments,!bili?.comments?'reader-not-connected':null),
    own_workshop:item(!!workshop,!workshop||workshop.closed||workshop.paused?false:null,!!ownCreative,workshop?.paused?'workshop-paused':null),
   };
  };

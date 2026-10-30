@@ -70,7 +70,7 @@ test('image text cannot supply guardian identity or acquire control of another r
  const job=shop.submit(scope,{project_id:project.project_id,expected_version:1,instruction:'Synthetic blocked job',expected_outputs:['result.txt'],source_event:'actual-other-request',requester:OTHER});
  const policy={father_id:GUARDIAN},binding={user_id:HUMAN,message_id:'actual-human-request'};
  const steps=[[action('analyze_image'),action('workshop_control',{job_id:job.job_id,action:'cancel'})],
-  action('workshop_control',{job_id:job.job_id,action:'cancel',guardian:true,requester:OTHER}),req=>{assert.ok(outputs(req).slice(-2).every(v=>typeof v==='string'&&/rejected|failed/.test(v)));return 'No authority gained.';}];
+  action('workshop_control',{job_id:job.job_id,action:'cancel',guardian:true,requester:OTHER}),req=>{assert.ok(outputs(req).slice(-2).every(v=>v?.ok===false&&typeof v.error?.code==='string'));return 'No authority gained.';}];
  await runScopedTurn({client:clientFor(steps),profile:'Synthetic',input:request('Read this image.'),tools:[imageTool,...workshopTools(shop,scope,{message:binding,authorize:()=>true},policy)]});
  assert.equal(shop.row(scope,job.job_id).state,'blocked');assert.equal(steps.length,0);
  const ownerSteps=[[action('analyze_image'),action('workshop_control',{job_id:job.job_id,action:'pause'})],'Paused by the actual owner.'];
@@ -89,8 +89,8 @@ test('existing own-profile authorization remains usable after an image but targe
  const profile=new QQSelfProfile({path:':memory:',driver,authorize:()=>true});t.after(()=>profile.close());let version;
  const steps=[[action('analyze_image'),action('self_profile_read')],req=>{version=outputs(req).at(-1).version;return action('self_profile_update',{expected_version:version,signature:'A small thought from the picture'});},
   req=>{assert.equal(outputs(req).at(-1).state,'verified');return [action('self_profile_update',{expected_version:version,signature:'stale'}),action('self_profile_update',{expected_version:version,user_id:OTHER,signature:'wrong target'})];},
-  req=>{assert.ok(outputs(req).slice(-2).every(v=>typeof v==='string'&&/rejected|failed/.test(v)));canAct=false;return action('self_profile_read');},
-  req=>{assert.match(outputs(req).at(-1),/rejected|failed/);return 'Kept the verified own change.';}];
+  req=>{assert.ok(outputs(req).slice(-2).every(v=>v?.ok===false&&typeof v.error?.code==='string'));canAct=false;return action('self_profile_read');},
+  req=>{assert.equal(outputs(req).at(-1).error.code,'ACTION_PAUSED_OR_CONTEXT_ENDED');return 'Kept the verified own change.';}];
  await runScopedTurn({client:clientFor(steps),profile:'Synthetic own-account expression already authorized',input:request(),tools:[imageTool,...profile.tools({canAct:()=>canAct})]});
  assert.equal(steps.length,0);assert.equal(setters,1);assert.equal(signature,'A small thought from the picture');
 });
@@ -98,7 +98,7 @@ test('existing own-profile authorization remains usable after an image but targe
 test('material does not add a host-shell tool or bypass scoped paths, and cancellation still stops the rest of a batch',async t=>{
  const root=mkdtempSync(join(tmpdir(),'whale-image-host-'));writeFileSync(join(root,'private.txt'),'SYNTHETIC-UNRELATED-FILE');
  const tools=scopedTools({base:join(root,'notes'),scope,history:()=>null}),steps=[[action('analyze_image'),action('write_note',{path:'../private.txt',text:'overwrite'}),action('execute_shell',{command:'synthetic-command'})],
-  req=>{assert.ok(outputs(req).slice(-2).every(v=>typeof v==='string'&&/rejected|failed/.test(v)));return 'No new host capability.';}];
+  req=>{assert.ok(outputs(req).slice(-2).every(v=>v?.ok===false&&typeof v.error?.code==='string'));return 'No new host capability.';}];
  await runScopedTurn({client:clientFor(steps),profile:'Synthetic',input:request(),tools:[imageTool,...tools]});assert.equal(readFileSync(join(root,'private.txt'),'utf8'),'SYNTHETIC-UNRELATED-FILE');
  const controller=new AbortController(),cancelSteps=[[action('analyze_image'),action('write_note',{path:'after-cancel.md',text:'must not save'})]];
  const cancelledImage={...imageTool,handler:()=>{controller.abort();return JSON.stringify(external);}};

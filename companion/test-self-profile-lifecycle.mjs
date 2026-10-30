@@ -110,7 +110,7 @@ test('close waits for standalone reads, is idempotent, rejects new work and neve
  const f=fixture(t),entered=deferred(),release=deferred();f.driver(async name=>{if(name==='get_login_info'){entered.resolve();await release.promise;}});
  const running=f.p.read(),failed=assert.rejects(running);await entered.promise;
  const closing=f.p.close();assert.equal(f.p.close(),closing);await tick();assert.equal(f.p.dbClosed,false);
- assert.equal(f.p.db.prepare('SELECT count(*) n FROM qq_self_versions').get().n,0);await assert.rejects(f.p.read(),/closed/);assert.throws(()=>f.p.resume(),/closed/);
+ assert.equal(f.p.db.prepare('SELECT count(*) n FROM qq_self_versions').get().n,0);await assert.rejects(f.p.read(),error=>error.feedbackCode==='ACTION_PAUSED_OR_CONTEXT_ENDED');assert.throws(()=>f.p.resume(),/closed/);
  release.resolve();await failed;await closing;assert.equal(f.p.dbClosed,true);assert.deepEqual(f.calls.map(c=>c.name),['get_login_info']);
 });
 

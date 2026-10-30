@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "purpose": "Sanitized engineering archive; not a runnable full backup",
-  "export_policy_sha256": "f791319edac8aab3113cb4236aca51df8f0911e9159281c00b1e4a23576af7be",
-  "source_files": 289,
+  "export_policy_sha256": "d4d7fe4b2603d447afbe443c50ba160e7548d5857633036f9c413f35d526c291",
+  "source_files": 294,
   "identifier_value_count": 9,
   "identifier_mapping_exported": false,
   "credential_scan": {
@@ -31,14 +31,14 @@
     },
     {
       "path": "EXPORT_POLICY.json",
-      "bytes": 105121,
-      "target_sha256": "f791319edac8aab3113cb4236aca51df8f0911e9159281c00b1e4a23576af7be",
+      "bytes": 106948,
+      "target_sha256": "d4d7fe4b2603d447afbe443c50ba160e7548d5857633036f9c413f35d526c291",
       "kind": "generated-document"
     },
     {
       "path": "README.md",
       "bytes": 2887,
-      "target_sha256": "b62af642b8da8c3cb81f595b1210e9e96b3e68ad2dc6d12cd25e9d1f0476b599",
+      "target_sha256": "551de68a40e291901337d1fe0cb448ff8f1ac73557aa7171c139c4de9f0710c0",
       "kind": "generated-document"
     },
     {
@@ -101,6 +101,17 @@
     },
     {
       "source_root": "project",
+      "source": "companion/bilibili-comments.mjs",
+      "path": "companion/bilibili-comments.mjs",
+      "target_sha256": "7d1d240a11924c4784d8e1bc73b1d1b715fb056c2495496105f4c8681ffeb77d",
+      "bytes": 9903,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/bilibili-links.mjs",
       "path": "companion/bilibili-links.mjs",
       "target_sha256": "4235daf1d9589ca04d5d26c43eeae76d44956489a54879c81d4d961bd6c213f1",
@@ -114,8 +125,8 @@
       "source_root": "project",
       "source": "companion/bilibili-public.mjs",
       "path": "companion/bilibili-public.mjs",
-      "target_sha256": "acd56cbf493190cf25df502d3312812512d224763571043427c131259981131c",
-      "bytes": 10869,
+      "target_sha256": "1b0dbde081c8f0cae190d441a7744a4b02846c83c913429966f18d1e28e3a040",
+      "bytes": 11080,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -180,8 +191,8 @@
       "source_root": "project",
       "source": "companion/conversation-extras.mjs",
       "path": "companion/conversation-extras.mjs",
-      "target_sha256": "4ab1b7488ec4b3d4d01534e0e3051eba727487b49e22b28f6da332bce9bdf090",
-      "bytes": 8428,
+      "target_sha256": "7391f7284373e340e8f1eff00381585711cd31c82680172f75da13772ef8848c",
+      "bytes": 8596,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -290,8 +301,8 @@
       "source_root": "project",
       "source": "companion/curiosity-life.mjs",
       "path": "companion/curiosity-life.mjs",
-      "target_sha256": "1888a799e0ca4e27713db38baa76ab68fe6a0b3f4123d1aae3030e8e8d39b1ad",
-      "bytes": 34315,
+      "target_sha256": "1995608c82c08db76d00175f008f8e9b7f6398eaff4ac081495c102740eb8386",
+      "bytes": 34333,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -577,8 +588,8 @@
       "source_root": "project",
       "source": "companion/home/app.js",
       "path": "companion/home/app.js",
-      "target_sha256": "5195a83995a67cf428b56ff02c93abaecaee1bb8ea3408926712e9ed675a03a7",
-      "bytes": 24941,
+      "target_sha256": "c3d6d098d3f48d30f88b0704e20503310d752bc9efbd11e9b88a15b6bdd6344a",
+      "bytes": 25004,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -600,8 +611,8 @@
       "source_root": "project",
       "source": "companion/home/capability_view.py",
       "path": "companion/home/capability_view.py",
-      "target_sha256": "ccd4c93f8c074717b45a62f5706a4421c0491f75a711fde868e27fff721e293c",
-      "bytes": 15462,
+      "target_sha256": "fd06175a5d31ef95baa373316975beeee453cc3cfa2a196e806806c251934842",
+      "bytes": 16502,
       "kind": "home-source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -714,8 +725,8 @@
       "source_root": "project",
       "source": "companion/home/test_capability_view.py",
       "path": "companion/home/test_capability_view.py",
-      "target_sha256": "81b8af77028d9320f5c63eb999fd75bb2a971e91c4f2d2ec81f6405ea24ccf4e",
-      "bytes": 12819,
+      "target_sha256": "c49a3e58784455908a7c2818817c495646be6963c3988ca9b1d56474304e7111",
+      "bytes": 14484,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -916,8 +927,8 @@
       "source_root": "project",
       "source": "companion/life-continuity.mjs",
       "path": "companion/life-continuity.mjs",
-      "target_sha256": "c0f9c4f8d27e67e3b5155306f0520f6c58e09c831900e81bf96578b97795633a",
-      "bytes": 20619,
+      "target_sha256": "e85957f1465e00771cd9c76528f0f9739426dca4d997c05fba9ae5d3bcda2350",
+      "bytes": 20814,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -960,8 +971,8 @@
       "source_root": "project",
       "source": "companion/life-opportunity-log.mjs",
       "path": "companion/life-opportunity-log.mjs",
-      "target_sha256": "5423102ce856137f81e2ef56716a6fa1aefab13a2525db8eb18f5cff7953fb57",
-      "bytes": 13259,
+      "target_sha256": "54bb3f5bd0205931a28edb8866377321aa713a32fa6b841a89dc414c07d1949d",
+      "bytes": 13287,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -993,8 +1004,8 @@
       "source_root": "project",
       "source": "companion/life-progress.mjs",
       "path": "companion/life-progress.mjs",
-      "target_sha256": "16452f6dc20ebb87517efbcf598520f29e05dabc1357157b1dcafd427b57aead",
-      "bytes": 15201,
+      "target_sha256": "7bb8d3d2ae4c8a606a2d7a5dd565d753adade4c137fc50a8c9af1428b08d8ffe",
+      "bytes": 16729,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1161,8 +1172,8 @@
       "source_root": "project",
       "source": "companion/private-conversation.mjs",
       "path": "companion/private-conversation.mjs",
-      "target_sha256": "fd65c033a9267a033a60205ec25dcef2e0057b74a09d9df301929f7896a810a7",
-      "bytes": 23540,
+      "target_sha256": "a6cecd9dfb6c1e8816d2ef0ca8f473cf909adf0e6ec2e203b0f4cdb5c459c908",
+      "bytes": 23647,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1385,8 +1396,8 @@
       "source_root": "project",
       "source": "companion/qq-self-profile.mjs",
       "path": "companion/qq-self-profile.mjs",
-      "target_sha256": "fd66a7a36c2e797dfce70e088f6603236d23d3d9d9ac7afc67c4f293e18e233a",
-      "bytes": 21012,
+      "target_sha256": "54db771f87e7f7f3ce45ee3e21006aed59929ef29b7660d533780fd020bbee23",
+      "bytes": 20838,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -1544,8 +1555,8 @@
       "source_root": "project",
       "source": "companion/scoped-tools.mjs",
       "path": "companion/scoped-tools.mjs",
-      "target_sha256": "f7953a9097550f218f11facb7e4b4e04a7eb9740c13e644cce14327ab4b49ea9",
-      "bytes": 8979,
+      "target_sha256": "810df71354941a0703b78b7197ea4cb26ec83502640095138a4e82b27e636582",
+      "bytes": 9980,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1612,6 +1623,30 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-bilibili-comments-integration.mjs",
+      "path": "companion/test-bilibili-comments-integration.mjs",
+      "target_sha256": "0868080600b1cfe353209f7bb573f5cf4fa2fa606415a5968dfabbe56b370f50",
+      "bytes": 9356,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-bilibili-comments.mjs",
+      "path": "companion/test-bilibili-comments.mjs",
+      "target_sha256": "b77994b7f2af84b140911c130769d8ea13284f95bb89fc7587fe1ddaeef89b54",
+      "bytes": 9371,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-bilibili-links.mjs",
       "path": "companion/test-bilibili-links.mjs",
       "target_sha256": "b98f157e3e5cf278f2decdec658d3a60ad83adff5207b8997fff1ce0e421f6f0",
@@ -1647,8 +1682,8 @@
       "source_root": "project",
       "source": "companion/test-capability-status.mjs",
       "path": "companion/test-capability-status.mjs",
-      "target_sha256": "dcc0adfade9864b457c6d6fb56c4f7380985d0b8b3bc43113dcb0be217e951df",
-      "bytes": 5698,
+      "target_sha256": "df987ce0b056b8a8841d978fb2ead856a11a62f9bcdce2869d388a674ea24399",
+      "bytes": 5845,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2083,8 +2118,8 @@
       "source_root": "project",
       "source": "companion/test-image-action-boundary.mjs",
       "path": "companion/test-image-action-boundary.mjs",
-      "target_sha256": "df9ddf65d6b0c666f7342bb02a6df83a2c7f67e637723a92edf8ae2d22e9aa46",
-      "bytes": 11228,
+      "target_sha256": "c2bddd6ed369f58f0e9bf02eee2a24e178945fdb76a4be5dfc1a3159a1a50030",
+      "bytes": 11254,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2185,8 +2220,8 @@
       "source_root": "project",
       "source": "companion/test-life-continuity.mjs",
       "path": "companion/test-life-continuity.mjs",
-      "target_sha256": "ae8a7afca2e7cfd6f91c90f4ce733f7161cb34e6415edbb648aaa651ce26b58b",
-      "bytes": 20301,
+      "target_sha256": "7e8fd2fe472bbbadfc6e949df6d23b9eedec5d09b566fe45db359c8f76fd36ed",
+      "bytes": 20360,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2223,8 +2258,8 @@
       "source_root": "project",
       "source": "companion/test-life-heartbeat.mjs",
       "path": "companion/test-life-heartbeat.mjs",
-      "target_sha256": "7a3b24c0d3b44c6138c9f2049adab199699973ae1e331e28460e8c781743fdea",
-      "bytes": 29582,
+      "target_sha256": "901cd662c5abaf47e29bd44398a509e25c437102a0ea7e68e5a876f931f5d4f6",
+      "bytes": 29631,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2394,8 +2429,8 @@
       "source_root": "project",
       "source": "companion/test-life-share-choice.mjs",
       "path": "companion/test-life-share-choice.mjs",
-      "target_sha256": "65081e4cd4a259e0c9dda4451ddfe7d042894eb4716c53029af07c5230856d5e",
-      "bytes": 10635,
+      "target_sha256": "5c1338a8ad60e071872a2aaaccc4e0be3a7beb6a38fa825841f1ce5283b641ba",
+      "bytes": 10665,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -2846,12 +2881,13 @@
       "source_root": "project",
       "source": "companion/test-qq-self-profile.mjs",
       "path": "companion/test-qq-self-profile.mjs",
-      "target_sha256": "a2a0fdef206f243ff0a231574426e876702d8dbc1b53e43be1f602a7e47e7f30",
-      "bytes": 8329,
+      "target_sha256": "0bcdaeb61565d1fecb4fb7e285ac7a10628fdf995d164ac2a4ebbe1890ea67ae",
+      "bytes": 8447,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 5
+        "known-qq-identifiers": 5,
+        "synthetic-test-calendar": 4
       }
     },
     {
@@ -3021,8 +3057,8 @@
       "source_root": "project",
       "source": "companion/test-self-profile-lifecycle.mjs",
       "path": "companion/test-self-profile-lifecycle.mjs",
-      "target_sha256": "1d59b2f4e32e9db45f61754b4f610dd1d636e02664ad82c3d27dd5c2e01f7135",
-      "bytes": 10189,
+      "target_sha256": "41a085a134f380aa9463d5908ab98ea3ce1767484d89224b98af367fb35ff05b",
+      "bytes": 10241,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -3099,6 +3135,19 @@
     },
     {
       "source_root": "project",
+      "source": "companion/test-tool-feedback.mjs",
+      "path": "companion/test-tool-feedback.mjs",
+      "target_sha256": "3ad7112832de11bcf1d2cab69387a546b606b84f8db369cdf605f8c6f73b0a8c",
+      "bytes": 15501,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "known-qq-identifiers": 1,
+        "synthetic-negative-path-label": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/test-video-audio.mjs",
       "path": "companion/test-video-audio.mjs",
       "target_sha256": "4dc0eee39380e0f8b71589acc4fee5b587afe8e3521837a50704337fbf6bce77",
@@ -3147,11 +3196,12 @@
       "source_root": "project",
       "source": "companion/test-workroom.mjs",
       "path": "companion/test-workroom.mjs",
-      "target_sha256": "c854de75fe35fdf57ef6285d0cee50896ecc3154805fd8686d0a3b37e5d6fc2d",
-      "bytes": 8499,
+      "target_sha256": "3239f20bfec0cb4b103cf13727cd1f0d39d840b41ae7c435334171618890e99f",
+      "bytes": 8546,
       "kind": "synthetic-test-source",
       "applied_transformations": {
-        "utf8-lf": 1
+        "utf8-lf": 1,
+        "synthetic-negative-path-label": 1
       }
     },
     {
@@ -3248,6 +3298,17 @@
     },
     {
       "source_root": "project",
+      "source": "companion/tool-feedback.mjs",
+      "path": "companion/tool-feedback.mjs",
+      "target_sha256": "a52b6bd3576d3dce1f3982ff262c9c6f5eb1eab15d15bdb3b8cc35f1a2cff041",
+      "bytes": 6505,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
       "source": "companion/video-audio.mjs",
       "path": "companion/video-audio.mjs",
       "target_sha256": "7cd7607b03337c282666764d4ea87d40b952837c978b50bd35d7ef46e1cdbb24",
@@ -3297,8 +3358,8 @@
       "source_root": "project",
       "source": "companion/workroom.mjs",
       "path": "companion/workroom.mjs",
-      "target_sha256": "52d9ac7d68d6bb4310db22f5da0312062a2c446861ac0fe881a92efc90f2ddc1",
-      "bytes": 21393,
+      "target_sha256": "1040acca9c1d245400498d26755e85db67d04de89fdaf2bbbbe99e192d3ce894",
+      "bytes": 21401,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -3330,8 +3391,8 @@
       "source_root": "project",
       "source": "companion/workshop.mjs",
       "path": "companion/workshop.mjs",
-      "target_sha256": "319602fe8906c5688cb7f38c0d4dfb61314ef4a0c5a9aea703407cb5dbf68a25",
-      "bytes": 15205,
+      "target_sha256": "7a834ac77c1a554425527dd5dbcfb6f998e29a67cc371f61e125d8c344cdcef1",
+      "bytes": 15495,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -3339,8 +3400,8 @@
     },
     {
       "path": "docs/FEEDBACK_REVIEW.md",
-      "bytes": 24406,
-      "target_sha256": "6524ba40986dcdc1f492ff52b2828f375dbee6e52205c09bf6ceeb6ba0b6ae4f",
+      "bytes": 25913,
+      "target_sha256": "1e145f3c22e59be2b5155474f7fcbd310c7a7532b21289ff541a74fee22c095b",
       "kind": "anonymized-feedback-document"
     },
     {

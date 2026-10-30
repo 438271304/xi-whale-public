@@ -82,6 +82,19 @@
     },
     {
       "root": "project",
+      "source": "companion/bilibili-comments.mjs",
+      "output": "companion/bilibili-comments.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/bilibili-links.mjs",
       "output": "companion/bilibili-links.mjs",
       "kind": "source",
@@ -1824,6 +1837,32 @@
     },
     {
       "root": "project",
+      "source": "companion/test-bilibili-comments-integration.mjs",
+      "output": "companion/test-bilibili-comments-integration.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/test-bilibili-comments.mjs",
+      "output": "companion/test-bilibili-comments.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-bilibili-links.mjs",
       "output": "companion/test-bilibili-links.mjs",
       "kind": "synthetic-test-source",
@@ -3488,6 +3527,19 @@
     },
     {
       "root": "project",
+      "source": "companion/test-tool-feedback.mjs",
+      "output": "companion/test-tool-feedback.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-video-audio.mjs",
       "output": "companion/test-video-audio.mjs",
       "kind": "synthetic-test-source",
@@ -3657,6 +3709,19 @@
     },
     {
       "root": "project",
+      "source": "companion/tool-feedback.mjs",
+      "output": "companion/tool-feedback.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/video-audio.mjs",
       "output": "companion/video-audio.mjs",
       "kind": "source",
@@ -3791,6 +3856,6 @@
     "git_history_included": false,
     "private_source_fingerprints_included": false,
     "historical_test_details": "Reviewed baseline preserved; added/updated synthetic calendar fixtures shifted together; installed-provider root is environment-supplied.",
-    "feedback": "docs/FEEDBACK_REVIEW.md: 17 anonymous paraphrases; no private chats/audio, raw reports, local execution proof or paid probes"
+    "feedback": "docs/FEEDBACK_REVIEW.md: 18 anonymous engineering paraphrases; no raw comments, chats/audio, reports, local execution proof or paid probes"
   }
 }

@@ -1,7 +1,7 @@
 import {createHash, randomUUID} from 'node:crypto';
 
 const WINDOW = 12, SOURCES = 40, ATTEMPTS = 24;
-const materialLevels = new Set(['page-text', 'thread-posts', 'subtitles', 'speech-transcript', 'sampled-frames']);
+const materialLevels = new Set(['page-text', 'thread-posts', 'public-comments', 'subtitles', 'speech-transcript', 'sampled-frames']);
 const normalize = value => String(value ?? '').normalize('NFKC').replace(/\s+/gu, ' ').trim();
 const hash = value => createHash('sha256').update(value).digest('hex');
 const parse = value => {try {return JSON.parse(value);} catch {return null;}};
@@ -20,7 +20,18 @@ function sourceKey(raw) {
   } catch {return String(raw ?? '');}
 }
 
+function commentAtoms(row) {
+  if (row.tool !== 'bilibili_comments' || row.level !== 'public-comments') return null;
+  const data = parse(row.excerpt);
+  if (!data?.bvid || !Array.isArray(data.comments)) return null;
+  const atoms = data.comments.filter(item => item?.id && item.author?.id && typeof item.text === 'string' && item.text.trim()).map(item => ({
+    key: JSON.stringify([data.bvid, item.id, item.author.id, item.at, item.root_id, item.parent_id]), text: normalize(item.text), truncated:item.text_truncated===true
+  }));
+  return atoms.length ? atoms.sort((a,b) => a.key.localeCompare(b.key)) : null;
+}
+
 function contentOf(row) {
+  if (row.tool === 'bilibili_comments') {const atoms=commentAtoms(row); return atoms ? JSON.stringify(atoms) : null;}
   let text = row.excerpt ?? '';
   if (['bilibili_read','bilibili_listen'].includes(row.tool)) {
     const data = parse(text);
@@ -40,6 +51,18 @@ function contentOf(row) {
 
 function classify(row, previous) {
   if (!row.content || row.level === 'unknown') return {kind: 'unverified-material', match: null};
+  if (row.level === 'public-comments') {
+    // The same comment can appear in a root preview, a reply page and its root
+    // context. Compare actual seen atoms across page boundaries in this window.
+    // Counts, likes, observation time, order and positions do not create material.
+    const atoms=commentAtoms(row), candidates=previous.filter(p=>p.level==='public-comments'&&p.content);
+    let match=null;
+    const seen=atoms?.every(atom=>candidates.some(prior=>(commentAtoms(prior)??[]).some(old=>{
+      const same=old.key===atom.key&&(old.text===atom.text||atom.truncated&&old.text.startsWith(atom.text));
+      if(same&&!match)match=reference(prior);return same;
+    })));
+    return {kind:seen?'same-material':'new-material',match:seen?match:null};
+  }
   const comparable = previous.filter(p => p.level === row.level && p.content);
   const exact = comparable.find(p => p.fingerprint === row.fingerprint);
   if (exact) return {kind: 'same-material', match: reference(exact)};
@@ -105,7 +128,7 @@ export class LifeProgress {
     const status = ['ok','empty','partial','failed','unavailable','unconfigured','interrupted'].includes(rawStatus) ? rawStatus : 'unknown';
     // Retain no raw request, URL credentials, error message, response envelope,
     // or provider secret. The hash identifies unchanged attempts locally only.
-    const publicArgs = Object.fromEntries(['url','query','topic','video','page','offset','start_seconds','seconds','thread_id','post_id','forum_id'].filter(k => Object.hasOwn(args, k)).map(k => [k, args[k]]));
+    const publicArgs = Object.fromEntries(['url','query','topic','video','page','root_id','offset','start_seconds','seconds','thread_id','post_id','forum_id'].filter(k => Object.hasOwn(args, k)).map(k => [k, args[k]]));
     const request = hash(tool + '\0' + JSON.stringify(publicArgs));
     const next = continuation(result), id = randomUUID();
     this.db.prepare('INSERT INTO life_progress_attempts VALUES(?,?,?,?,?,?,?,?)').run(id, activity, tool, request, status, status === 'ok' ? null : failureCategory(result), JSON.stringify(next), this.clock());

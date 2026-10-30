@@ -1,5 +1,6 @@
 // Execution metadata only. Content and durable receipts remain in their own stores.
 // Registered tool names come from application definitions, never model arguments.
+import {isUncertainToolResult} from './tool-feedback.mjs';
 const statuses = new Set(['completed','incomplete','failed','cancelled','unknown','ok','saved','recorded','published','uncertain','failed-before-send','conflict','rejected','invalid','skipped','duplicate','unchanged','changed-elsewhere','requires-revision','not-found','unavailable','unconfigured','interrupted','queued','running','blocked','not-applicable','not-completed','unverified-result','recording-failed','reaction-not-saved']);
 const finishStatuses = new Set(['finished','completed','failed','interrupted','cancelled','partial','unknown','resting','kept-private-or-quiet','kept-private-after-expression','creative-space-checked','creative-workspace-updated','creative-continuation-saved','partial-progress-saved','life-progress-saved','life-reflection-saved','person-understanding-saved','inner-state-saved','saved-share-deferred','saved','sent','published','uncertain-no-retry','deferred','discarded','not-timely','not-pending-no-send','own-corner-opened','own-corner-read','public-sticker-catalog-read','public-sticker-collected','public-sticker-viewed','corner-published','corner-uncertain','corner-publishing','corner-preparing','corner-failed-before-send']);
 const failureCategories = new Set(['generation-failed','delivery-uncertain','local-code-error','budget-blocked','generation-timeout','cancelled','generation-output-limit','provider-rate-limit','provider-request-rejected','provider-unavailable','tool-round-limit','invalid-model-reply','incomplete-model-response','tool-setup-failed','receipt-storage-failed','unknown-failure']);
@@ -27,9 +28,9 @@ function safeFailure(value) {
 function toolMetadata(name, raw, invocationOk) {
  const value = parse(raw), returnedStatus = member(statuses,value?.status) ?? member(statuses,value?.state);
  let outcome = invocationOk ? 'returned' : 'failed';
- if (invocationOk && value) {
-  if (value.may_have_published === true || returnedStatus === 'uncertain') outcome = 'uncertain';
-  else if (rejected.has(returnedStatus)) outcome = 'rejected';
+ if(isUncertainToolResult(value,invocationOk))outcome='uncertain';
+ else if (invocationOk && value) {
+  if (rejected.has(returnedStatus)) outcome = 'rejected';
   else if (value.ok === false || value.saved === false || failed.has(returnedStatus)) outcome = 'failed';
   else if (value.duplicate === true || noChange.has(returnedStatus)) outcome = 'no-change';
   else if (value.ok === true || successful.has(returnedStatus)) outcome = 'reported-success';

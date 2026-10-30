@@ -8,7 +8,7 @@ import {ConversationService} from './conversation-service.mjs';
 import {conversationExtras} from './conversation-extras.mjs';
 const root=mkdtempSync(join(tmpdir(),'whale-workroom-')),path=join(root,'workroom.sqlite3'),A=conversationScope('group',12345),B=conversationScope('private',12345);
 let store=new Workroom(path);
-for(const file of ['../core.js','a/../x.js','C:/key.txt','a\\key.txt','a%2fkey.js','CON.txt','.hidden.js','x/COM1.html','a/../../runtime.json'])assert.throws(()=>safeWorkroomPath(file));
+for(const file of ['../core.js','a/../x.js','synthetic:rejected-path.txt','a\\key.txt','a%2fkey.js','CON.txt','.hidden.js','x/COM1.html','a/../../runtime.json'])assert.throws(()=>safeWorkroomPath(file));
 const privateProject=store.create(B,{title:'PRIVATE_CANARY',files:{'index.html':'<h1>PRIVATE_FILE_CANARY</h1>'}});
 assert.throws(()=>store.read(A,privateProject.project_id));assert.equal(store.list(A).length,0);
 store.write(B,privateProject.project_id,1,[{path:'long.txt',text:'x'.repeat(18000)}]);
@@ -42,7 +42,7 @@ assert.equal((await invoke(msg(45678,command),'workroom_publish',{project_id:p.p
 assert.equal(store.db.prepare('SELECT count(*) n FROM wr_releases').get().n,1);
 const frozen=p.version;p=store.write(A,p.project_id,p.version,[{path:'index.html',text:'<h1>PRIVATE_NEW_DRAFT</h1>'}]);
 assert.equal(store.db.prepare('SELECT version FROM wr_releases WHERE project=?').get(p.project_id).version,frozen);
-assert.throws(()=>store.review(A,task.task_id,false,'optional legacy review only'),/No submitted task/);store.taskState(A,task.task_id,'in_progress');
+assert.throws(()=>store.review(A,task.task_id,false,'optional legacy review only'),error=>error.feedbackCode==='TASK_STATE_CONFLICT');store.taskState(A,task.task_id,'in_progress');
 store.submit(A,p.project_id,p.version,'修订保存',task.task_id);assert.equal(store.tasks(A)[0].state,'completed');assert.equal(store.receipts(A,p.project_id)[0].state,'recorded');
 assert.equal(store.unpublish(A,p.project_id).displayed,false);assert.equal(store.db.prepare('SELECT count(*) n FROM wr_hidden').get().n,1);store.publish(A,p.project_id,p.version,'self');assert.equal(store.db.prepare('SELECT count(*) n FROM wr_hidden').get().n,0);
 store.close();store=new Workroom(path);assert.equal(store.read(A,p.project_id,undefined,goodVersion).digest,goodHash);assert.equal(store.history(A,p.project_id).length,p.version);

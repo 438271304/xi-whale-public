@@ -12,6 +12,7 @@ _CATALOG = {
     'bilibili_subtitles': ('B站字幕', '仅平台实际提供的公开字幕；标题和简介不算已读字幕。'),
     'bilibili_frames': ('B站抽帧', '至多两张实际抽帧的识图；不代表看完整视频。'),
     'bilibili_speech': ('B站语音转写', '实际选定时间窗的机器语音文字；不理解音乐、鲸鸣或整段音效。'),
+    'bilibili_comments': ('B站评论', '公开评论的有限页与楼中楼，保留作者、原时间和回复关系；不代表读完评论区或看过视频。'),
     'qzone_read': ('自己的空间', '固定自己账号的帖子和评论读取；未下载图片不算看过图片。'),
     'qzone_publish': ('空间发表', '自己的纯文字草稿及内容读回确认；可见范围未独立验证。'),
     'own_workshop': ('自己的作品', '可保存自己的作品草稿；运行另需执行器就绪，排队和检查不算完成。'),
@@ -29,7 +30,8 @@ _QZONE_CODES = {'identity-mismatch', 'login-error', 'api-error', 'invalid-respon
                 'paused', 'closed', 'not-authorized', 'context-denied', 'service-restart-after-send-reservation'}
 _TOOLS = {'public_fetch': ('public_web',), 'public_search': ('public_web',),
           'tieba_list': ('claw',), 'tieba_thread': ('claw',), 'tieba_floor': ('claw',),
-          'bilibili_read': ('bilibili_subtitles', 'bilibili_frames'), 'bilibili_listen': ('bilibili_speech',)}
+          'bilibili_read': ('bilibili_subtitles', 'bilibili_frames'), 'bilibili_listen': ('bilibili_speech',),
+          'bilibili_comments': ('bilibili_comments',)}
 
 
 def _time(value):
@@ -106,7 +108,8 @@ def capability_view(root, runtime=None, now_ms=None):
             for key, tool, level in [('public_web', 'public_fetch', 'page-text'), ('public_web', 'public_search', 'search-lead'),
                                      ('claw', 'tieba_thread', 'thread-posts'), ('claw', 'tieba_floor', 'thread-posts'),
                                      ('claw', 'tieba_list', 'search-lead'), ('bilibili_subtitles', 'bilibili_read', 'subtitles'),
-                                     ('bilibili_frames', 'bilibili_read', 'sampled-frames'), ('bilibili_speech', 'bilibili_listen', 'speech-transcript')]:
+                                     ('bilibili_frames', 'bilibili_read', 'sampled-frames'), ('bilibili_speech', 'bilibili_listen', 'speech-transcript'),
+                                     ('bilibili_comments', 'bilibili_comments', 'public-comments')]:
                 history([key])
                 row = db.execute('SELECT d.at FROM discoveries d JOIN life_reading_evidence r ON r.discovery=d.id AND r.activity=d.activity WHERE r.tool=? AND r.level=? AND ' + _observed('d.at') + ' ORDER BY d.at DESC LIMIT 1', (tool, level, now)).fetchone()
                 if row:
@@ -126,6 +129,16 @@ def capability_view(root, runtime=None, now_ms=None):
                     record(key, row[0], 'delivery-uncertain', True)
 
     def bilibili(db):
+        if _has(db, 'public_comment_pages', ['result', 'at']):
+            history(['bilibili_comments'])
+            # Only fixed metadata leaves the store. Empty pages do not establish
+            # comment reading, and a cached result is not a current access probe.
+            count = _json('result', '$.read_scope.retained_comment_count')
+            row = _latest(db, 'public_comment_pages', 'at',
+                          _json('result', '$.status') + "='ok' AND " +
+                          _json('result', '$.evidence_level') + "='public-comments' AND typeof(" + count + ")='integer' AND " + count + '>0', (), now)
+            if row:
+                record('bilibili_comments', row[0], 'public-comments')
         if _has(db, 'public_videos', ['result', 'at']):
             history(['bilibili_subtitles', 'bilibili_frames'])
             safe = "CASE WHEN json_valid(result) THEN result ELSE '{}' END"
