@@ -1044,6 +1044,32 @@
     },
     {
       "root": "project",
+      "source": "companion/life-share-audience.mjs",
+      "output": "companion/life-share-audience.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
+      "source": "companion/life-share-compose.mjs",
+      "output": "companion/life-share-compose.mjs",
+      "kind": "source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/life-workshop.mjs",
       "output": "companion/life-workshop.mjs",
       "kind": "source",
@@ -2292,6 +2318,19 @@
     },
     {
       "root": "project",
+      "source": "companion/test-life-share-compose.mjs",
+      "output": "companion/test-life-share-compose.mjs",
+      "kind": "synthetic-test-source",
+      "transform_rules": [
+        "known-qq-identifiers",
+        "windows-user-directory",
+        "synthetic-test-credential",
+        "template-label",
+        "utf8-lf"
+      ]
+    },
+    {
+      "root": "project",
       "source": "companion/test-life-workshop-opportunity.mjs",
       "output": "companion/test-life-workshop-opportunity.mjs",
       "kind": "synthetic-test-source",
@@ -3192,7 +3231,7 @@
     "published": false,
     "git_history_included": false,
     "private_source_fingerprints_included": false,
-    "historical_test_details": "Replaced by synthetic values in two conversation tests.",
-    "feedback": "docs/FEEDBACK_REVIEW.md: anonymized paraphrases approved by owner; no raw conversation export"
+    "historical_test_details": "Existing anonymized fixtures retained; refreshed tests use synthetic calendar values.",
+    "feedback": "docs/FEEDBACK_REVIEW.md: 13 anonymized paraphrases; no raw conversation or generation records"
   }
 }

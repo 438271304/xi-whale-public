@@ -3,6 +3,7 @@ import test from 'node:test';
 import {mkdtempSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
 import {CuriosityLife} from './curiosity-life.mjs';
 import {UnifiedCognition} from './cognition-tools.mjs';
 
@@ -53,11 +54,13 @@ const leave = (entry, channel) => ({name: 'leave_in_my_corner', args: {
 
 function fixture(t) {
   const root = mkdtempSync(join(tmpdir(), 'whale-life-heartbeat-'));
-  let now = Date.parse('2026-10-30T10:00:00+08:00'), steps = [], sequence = 0;
+  let now = Date.parse('2036-10-17T10:00:00+08:00'), steps = [], sequence = 0;
   let cognition = new UnifiedCognition(root,{clock:()=>now}), qzoneMode = 'verified', draftHook = null, reconcileMode = 'verified';
   const requests = [], reads = [], qq = [], drafts = [], publications = [], reconciliations = [];
+  const conversationDb = new DatabaseSync(':memory:');
+  conversationDb.exec('CREATE TABLE turns(peer TEXT,event TEXT,role TEXT,text TEXT,at INTEGER,state TEXT,PRIMARY KEY(peer,event,role))');
   const service = {paused: false, closed: false, cognition,
-    engine: {queues: new Map(), revisions: new Map(), profile: 'Synthetic identity, no private conversation.'},
+    engine: {db: conversationDb, queues: new Map(), revisions: new Map(), profile: 'Synthetic identity, no private conversation.'},
     listening: {status: () => ({active: false})},
     initiate: async (scope, event, text, {signal, send}) => {
       signal?.throwIfAborted();
@@ -92,6 +95,10 @@ function fixture(t) {
     qq.push({target, ...value}); return {message_id: 1000 + qq.length};
   }};
   const client = {canInitiate: () => true, respond: async req => {
+    if (req.tools.some(tool => tool.name === 'finish_life_share')) return {response: {id: 'heartbeat-share-' + (++sequence), status: 'completed', output: [{
+      type: 'function_call', name: 'finish_life_share', call_id: 'share-' + sequence,
+      arguments: JSON.stringify({decision: 'share', text: initial(req).draft, reason: 'Preserve the fixture draft for transport assertions.'}),
+    }]}, attempts: []};
     requests.push(structuredClone(req));
     assert.ok(steps.length, 'The provider must not make an unplanned decision or wake by itself');
     const step = steps.shift(), action = typeof step === 'function' ? await step(req) : step;
@@ -106,10 +113,10 @@ function fixture(t) {
       return JSON.stringify({status: 'ok', sources: [{url, title: 'Tides fixture', excerpt: 'An actually returned fixture explanation of tidal timing.'}], retrieved_at: new Date(now).toISOString()});
     },
   }];
-  const config = {path: join(root, 'life.sqlite3'), service, world, policy: {group_id: GROUP, father_id: HUMAN},
+  const config = {path: join(root, 'life.sqlite3'), service, world, policy: {bot_id: '910710001', group_id: GROUP, father_id: HUMAN},
     social: {inbound: () => 0}, client, tools, topics: () => [], clock: () => now};
   let life = new CuriosityLife(config); life.resume();
-  t.after(async () => {await life.close(); cognition.close();});
+  t.after(async () => {await life.close(); cognition.close(); conversationDb.close();});
   return {service, requests, reads, qq, drafts, publications, reconciliations,
     get life() {return life;}, get cognition() {return cognition;}, get now() {return now;},
     plan(...items) {steps = [...items];},
@@ -329,7 +336,7 @@ test('paused or nighttime opportunities start neither decisions nor outbound pub
   const f = fixture(t), journal = await savedPublicJournal(f); f.advance(); await f.life.pause();
   const requests = f.requests.length; f.plan(leave(journal, 'qzone'));
   assert.equal((await f.life.tick()).status, 'ineligible-or-not-due'); assert.equal(f.requests.length, requests);
-  f.life.resume(); f.at('2026-10-31T02:00:00+08:00');
+  f.life.resume(); f.at('2036-10-18T02:00:00+08:00');
   assert.equal((await f.life.tick()).status, 'ineligible-or-not-due'); assert.equal(f.requests.length, requests);
   assert.equal(f.remaining(), 1); assert.equal(f.posts().length, 0);
   assert.equal(f.drafts.length, 0); assert.equal(f.publications.length, 0); assert.equal(f.qq.length, 0);
@@ -337,7 +344,7 @@ test('paused or nighttime opportunities start neither decisions nor outbound pub
 
 for (const transition of ['pause', 'night']) test(transition + ' arising while QZone draft is prepared prevents a new publication attempt', async t => {
   const f = fixture(t), journal = await savedPublicJournal(f); f.advance();
-  f.onDraft(() => {if (transition === 'pause') f.service.paused = true; else f.at('2026-10-31T02:00:00+08:00');});
+  f.onDraft(() => {if (transition === 'pause') f.service.paused = true; else f.at('2036-10-18T02:00:00+08:00');});
   f.plan(leave(journal, 'qzone')); const result = await f.life.tick(); f.consumed();
   assert.equal(result.status, 'corner-failed-before-send');
   assert.equal(f.drafts.length, 1); assert.equal(f.publications.length, 0);

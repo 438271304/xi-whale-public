@@ -3,6 +3,7 @@ import test from 'node:test';
 import {mkdtempSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
 import {CuriosityLife} from './curiosity-life.mjs';
 import {UnifiedCognition} from './cognition-tools.mjs';
 import {guardQQWorld} from './qq-event-policy.mjs';
@@ -24,9 +25,10 @@ const lastOutput=req=>{
 
 function fixture(t,{busy=false,failSend=false}={}){
  const root=mkdtempSync(join(tmpdir(),'whale-life-continuity-'));
- let now=Date.parse('2026-10-29T12:00:00+08:00'),steps=[],callId=0,readingHook=null;
+ let now=Date.parse('2036-10-16T12:00:00+08:00'),steps=[],callId=0,readingHook=null;
  const cognition=new UnifiedCognition(root),requests=[],attempts=[],sent=[];
- const engine={queues:new Map(),revisions:new Map(),profile:'Synthetic identity; no real conversation'};
+ const conversationDb=new DatabaseSync(':memory:');conversationDb.exec('CREATE TABLE turns(peer TEXT,event TEXT,role TEXT,text TEXT,at INTEGER,state TEXT,PRIMARY KEY(peer,event,role))');
+ const engine={db:conversationDb,queues:new Map(),revisions:new Map(),profile:'Synthetic identity; no real conversation'};
  const service={paused:false,closed:false,cognition,engine,listening:{status:()=>({active:false})},
   initiate:async(scope,event,text,{send,signal})=>{signal?.throwIfAborted();return send({target:{kind:scope.kind,id:scope.id},text});}};
  let watched={groups:[GROUP],users:[]};
@@ -36,6 +38,7 @@ function fixture(t,{busy=false,failSend=false}={}){
  }};
  guardQQWorld(world,{bot_id:'910710001',group_id:GROUP,follow_configured_groups:true},()=>new Date(now));
  const client={canInitiate:()=>true,generationSettings:()=>({model:'deepseek-flash',reasoningEffort:'high',maxTokens:8192}),respond:async req=>{
+  if(req.tools.some(tool=>tool.name==='finish_life_share'))return {response:{id:'fixture-share-'+(++callId),status:'completed',output:[{type:'function_call',name:'finish_life_share',call_id:'share-'+callId,arguments:JSON.stringify({decision:'share',text:initial(req).draft,reason:'Preserve the fixture draft for transport assertions.'})}]},attempts:[]};
   requests.push(structuredClone(req));assert.ok(steps.length,'Scripted provider ran out of expected decisions');
   const next=steps.shift(),action=typeof next==='function'?await next(req):next;
   return {response:{id:'fixture-'+(++callId),status:'completed',output:[{type:'function_call',name:action.name,call_id:'call-'+callId,arguments:JSON.stringify(action.args)}]},attempts:[]};
@@ -44,9 +47,9 @@ function fixture(t,{busy=false,failSend=false}={}){
  const source={url:'https://example.org/tides',title:'Tides',excerpt:'A bounded, actually returned explanation of tidal patterns.'};
  const tools=[tool('public_fetch',async()=>{if(readingHook)await readingHook();return JSON.stringify({status:'ok',sources:[source],retrieved_at:new Date(now).toISOString()});}),
   tool('public_search',()=>JSON.stringify({status:'ok',sources:[source],notice:'Search leads only, no page was read.'}))];
- const config={path:join(root,'life.sqlite3'),service,social:{inbound:()=>busy?now:0},world,policy:{group_id:GROUP},client,topics:()=>[],clock:()=>now,tools};
+ const config={path:join(root,'life.sqlite3'),service,social:{inbound:()=>busy?now:0},world,policy:{bot_id:'910710001',group_id:GROUP},client,topics:()=>[],clock:()=>now,tools};
  let life=new CuriosityLife(config);life.resume();
- const lives=[life];t.after(async()=>{for(const item of lives)await item.close();cognition.close();});
+ const lives=[life];t.after(async()=>{for(const item of lives)await item.close();cognition.close();conversationDb.close();});
  return {root,cognition,service,requests,attempts,sent,
   get life(){return life;},setBusy(value){busy=value;},setFailSend(value){failSend=value;},
   onRead(handler){readingHook=handler;},advance(){now+=31*60000;},

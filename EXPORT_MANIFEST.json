@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "purpose": "Sanitized engineering archive; not a runnable full backup",
-  "export_policy_sha256": "f6f10e4837402dd0e65cb2ecd6d2ccf28648157195151b5d4f7be1f26f0c0298",
-  "source_files": 243,
+  "export_policy_sha256": "a3d9dd44b33f209a4e9f0a11e84742ba8f01dd3d957afe8ddfa73723ea61974c",
+  "source_files": 246,
   "identifier_value_count": 9,
   "identifier_mapping_exported": false,
   "credential_scan": {
@@ -31,14 +31,14 @@
     },
     {
       "path": "EXPORT_POLICY.json",
-      "bytes": 91445,
-      "target_sha256": "f6f10e4837402dd0e65cb2ecd6d2ccf28648157195151b5d4f7be1f26f0c0298",
+      "bytes": 89348,
+      "target_sha256": "a3d9dd44b33f209a4e9f0a11e84742ba8f01dd3d957afe8ddfa73723ea61974c",
       "kind": "generated-document"
     },
     {
       "path": "README.md",
       "bytes": 2887,
-      "target_sha256": "1003bf2eee838aba951f0e4b4f3c39d473af22b5ddab9a583705bb48dcbebd04",
+      "target_sha256": "d49d57a3f40ee0cfe086f552999519b52c34e55247cb12cdabdecda97c32d1fa",
       "kind": "generated-document"
     },
     {
@@ -290,8 +290,8 @@
       "source_root": "project",
       "source": "companion/curiosity-life.mjs",
       "path": "companion/curiosity-life.mjs",
-      "target_sha256": "3368d6b790c35a4e397594060ebb73ff6c7ea0df2143a1df840c4dd93de57860",
-      "bytes": 26565,
+      "target_sha256": "4dcef7171650c629ff1e5d8fc52dc2d03b25d48467324b1c5dd9a9f1f9952a5f",
+      "bytes": 28092,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -748,8 +748,8 @@
       "source_root": "project",
       "source": "companion/identity/SCOPED_OPERATIONS.md",
       "path": "companion/identity/SCOPED_OPERATIONS.md.example",
-      "target_sha256": "b9f3410ee805f87e11ab752706944fcc90197aff352d6b890a6feed93e46e1bf",
-      "bytes": 14371,
+      "target_sha256": "5202197150f6214fbf08e3d84200948a686a0e77e3870690c45fbe2fbdc9a78b",
+      "bytes": 15096,
       "kind": "identity-template",
       "applied_transformations": {
         "utf8-lf": 1,
@@ -878,8 +878,8 @@
       "source_root": "project",
       "source": "companion/life-continuity.mjs",
       "path": "companion/life-continuity.mjs",
-      "target_sha256": "6dfa26a9763e17aa02124280da764fe9d80e60388de7577626d19610eb2c3f6c",
-      "bytes": 13259,
+      "target_sha256": "6b6785fbb82629eab8f8665acd1c6fcd0a9a4a8d766d636443702f06cfdad391",
+      "bytes": 15025,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -924,6 +924,28 @@
       "path": "companion/life-self-reflection.mjs",
       "target_sha256": "1243e965f77f91962bec82999b6e865633ab9a54af22f52e2359b27817af538d",
       "bytes": 12487,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-share-audience.mjs",
+      "path": "companion/life-share-audience.mjs",
+      "target_sha256": "117373473061979f00085e22c9d06e5646b610a5d72f5918f3b822e385261436",
+      "bytes": 14417,
+      "kind": "source",
+      "applied_transformations": {
+        "utf8-lf": 1
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/life-share-compose.mjs",
+      "path": "companion/life-share-compose.mjs",
+      "target_sha256": "2113ca8694fa8d625566ea4ffa4d58d375e1318dbee20bd1668f839c25186919",
+      "bytes": 8954,
       "kind": "source",
       "applied_transformations": {
         "utf8-lf": 1
@@ -1605,12 +1627,13 @@
       "source_root": "project",
       "source": "companion/test-curiosity-life.mjs",
       "path": "companion/test-curiosity-life.mjs",
-      "target_sha256": "f4e9678aafa9168c36236163944aede15f83ed780bb0860ad436cfe225023d3e",
-      "bytes": 3679,
+      "target_sha256": "9ffc97256a1559eb980026c5626f01e7d313ae50e227c1edbd22672e14f8f631",
+      "bytes": 4620,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 3
+        "known-qq-identifiers": 3,
+        "synthetic-test-calendar": 3
       }
     },
     {
@@ -1717,12 +1740,13 @@
       "source_root": "project",
       "source": "companion/test-exploration-followups.mjs",
       "path": "companion/test-exploration-followups.mjs",
-      "target_sha256": "718e2b2fa78aa9cd0e4880a92367fa5238997e36113e1ba3561cc8c5ddacfa4f",
-      "bytes": 7292,
+      "target_sha256": "cb8bc9595068e879af3a43386046b30013ce7785e11d7f51662df68770f77a6b",
+      "bytes": 7581,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 6
+        "known-qq-identifiers": 8,
+        "synthetic-test-calendar": 3
       }
     },
     {
@@ -1931,36 +1955,39 @@
       "source_root": "project",
       "source": "companion/test-life-continuity.mjs",
       "path": "companion/test-life-continuity.mjs",
-      "target_sha256": "6fd1bca0c6daa44bd169ec3412fc68e45c2b391ae68b1965dff81c61cacd3654",
-      "bytes": 19621,
+      "target_sha256": "9ab86597635e70ce78d2172e97094ea0ab273636ccc08b2fd17e39025df3af61",
+      "bytes": 20264,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 2
+        "known-qq-identifiers": 2,
+        "synthetic-test-calendar": 1
       }
     },
     {
       "source_root": "project",
       "source": "companion/test-life-family-delivery.mjs",
       "path": "companion/test-life-family-delivery.mjs",
-      "target_sha256": "3eb04e8073efeb501cb602fbfc52369628208a57248deecdf2bb00bfdca6900c",
-      "bytes": 13596,
+      "target_sha256": "b276e4a25f9c688c636977d4d9ab676918c762e10a7113fd80b10e41fae5ed23",
+      "bytes": 18102,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 3
+        "known-qq-identifiers": 3,
+        "synthetic-test-calendar": 2
       }
     },
     {
       "source_root": "project",
       "source": "companion/test-life-heartbeat.mjs",
       "path": "companion/test-life-heartbeat.mjs",
-      "target_sha256": "ec194638d9a94432e87c1e96b43ae51cfa871ae0857786835b9ce72cf060b520",
-      "bytes": 28860,
+      "target_sha256": "8255a74eed1214da36be8cc8bedf7a0648eb79d125faf488016e4c87b7339145",
+      "bytes": 29571,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 2
+        "known-qq-identifiers": 2,
+        "synthetic-test-calendar": 3
       }
     },
     {
@@ -2014,23 +2041,37 @@
       "source_root": "project",
       "source": "companion/test-life-share-audience.mjs",
       "path": "companion/test-life-share-audience.mjs",
-      "target_sha256": "ff9497ac6af60a4924822b7bfd2cb7ae7d0bfadca9281eeb7612b40edfa64f8d",
-      "bytes": 9233,
+      "target_sha256": "618d02749190eda12e900bf57b228767200381d0dd22da41167d94099bc7dae8",
+      "bytes": 29485,
       "kind": "synthetic-test-source",
       "applied_transformations": {
-        "utf8-lf": 1
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 5
+      }
+    },
+    {
+      "source_root": "project",
+      "source": "companion/test-life-share-compose.mjs",
+      "path": "companion/test-life-share-compose.mjs",
+      "target_sha256": "a6e17f2884f457552e2eff0088e747ea24c20c1e02264be634ec54d593d9cf22",
+      "bytes": 18450,
+      "kind": "synthetic-test-source",
+      "applied_transformations": {
+        "utf8-lf": 1,
+        "synthetic-test-calendar": 1
       }
     },
     {
       "source_root": "project",
       "source": "companion/test-life-workshop-opportunity.mjs",
       "path": "companion/test-life-workshop-opportunity.mjs",
-      "target_sha256": "d126605af96e891ff8a1ce184423c17f51375a1eafd5df18a5f669761ce17613",
-      "bytes": 8165,
+      "target_sha256": "6236f2aec84b4745683cb8ee66ec1cad5141973dd6a5ed52cfeb479683e82541",
+      "bytes": 8612,
       "kind": "synthetic-test-source",
       "applied_transformations": {
         "utf8-lf": 1,
-        "known-qq-identifiers": 2
+        "known-qq-identifiers": 2,
+        "synthetic-test-calendar": 2
       }
     },
     {
@@ -2786,9 +2827,9 @@
     },
     {
       "path": "docs/FEEDBACK_REVIEW.md",
-      "kind": "anonymized-feedback-document",
-      "bytes": 15059,
-      "target_sha256": "d2c02fe85f2ccce2ca71c6c2482b14663ede16ef9ecea8bc48e63b509a02c3bf"
+      "bytes": 16911,
+      "target_sha256": "b0cd373102683feb3686cc5b7299acb430e2b21bb6708b89d4cdb913ed5c9194",
+      "kind": "anonymized-feedback-document"
     },
     {
       "source_root": "project",

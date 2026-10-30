@@ -47,10 +47,10 @@ export class LifeContinuity {
     db.exec('BEGIN IMMEDIATE');
     try{
       const columns=new Set(db.prepare('PRAGMA table_info(life_share_intents)').all().map(column=>column.name));
-      for(const [name,type] of [['recipient',"TEXT NOT NULL DEFAULT 'family'"],['target_kind','TEXT'],['target_id','TEXT'],['recipient_reason','TEXT']]){
+      for(const [name,type] of [['recipient',"TEXT NOT NULL DEFAULT 'family'"],['target_kind','TEXT'],['target_id','TEXT'],['recipient_reason','TEXT'],['revision','INTEGER NOT NULL DEFAULT 1']]){
         if(!columns.has(name))db.exec('ALTER TABLE life_share_intents ADD COLUMN '+name+' '+type);
       }
-      db.exec("UPDATE life_share_intents SET state='uncertain', reason='restart-during-delivery-no-automatic-retry' WHERE state='sending'; COMMIT");
+      db.exec("UPDATE life_share_intents SET state='uncertain',revision=revision+1, reason='restart-during-delivery-no-automatic-retry' WHERE state='sending'; COMMIT");
     }catch(error){db.exec('ROLLBACK');throw error;}
   }
 
@@ -169,9 +169,9 @@ export class LifeContinuity {
     const target=audience(patch,{prior:Object.fromEntries(audienceFields.map(field=>[field,current[field]])),
       allowUnbound:current.recipient==='family'&&current.target_kind===null&&current.target_id===null});
     text=text===undefined?current.text:bounded(text,500);
-    const changed=this.db.prepare("UPDATE life_share_intents SET text=?,digest=?,state=?,reason=?,updated=?,next_review=?,recipient=?,target_kind=?,target_id=?,recipient_reason=? WHERE id=? AND state='queued' AND recipient=? AND target_kind IS ? AND target_id IS ?")
+    const changed=this.db.prepare("UPDATE life_share_intents SET revision=revision+1,text=?,digest=?,state=?,reason=?,updated=?,next_review=?,recipient=?,target_kind=?,target_id=?,recipient_reason=? WHERE id=? AND state='queued' AND recipient=? AND target_kind IS ? AND target_id IS ? AND revision=?")
       .run(text,digest(text),decision === 'discard' ? 'discarded' : 'queued', reason, this.clock(), this.clock() + 1800000,
-        target.recipient,target.target_kind,target.target_id,target.recipient_reason,id,current.recipient,current.target_kind,current.target_id);
+        target.recipient,target.target_kind,target.target_id,target.recipient_reason,id,current.recipient,current.target_kind,current.target_id,current.revision);
     if(!changed.changes)throw Error('Sharing intention changed; reconsider the current record');
     return this.get(id);
   }
@@ -180,25 +180,46 @@ export class LifeContinuity {
     const current=this.get(id);
     if(current?.state!=='queued'||current.target_kind!==null||current.target_id!==null)throw Error('Only an unresolved queued target can be bound');
     const target=audience({target_kind,target_id},{prior:Object.fromEntries(audienceFields.map(field=>[field,current[field]]))});
-    const changed=this.db.prepare("UPDATE life_share_intents SET target_kind=?,target_id=?,updated=? WHERE id=? AND state='queued' AND target_kind IS NULL AND target_id IS NULL AND recipient=?")
+    const changed=this.db.prepare("UPDATE life_share_intents SET revision=revision+1,target_kind=?,target_id=?,updated=? WHERE id=? AND state='queued' AND target_kind IS NULL AND target_id IS NULL AND recipient=?")
       .run(target.target_kind,target.target_id,this.clock(),id,current.recipient);
     if(!changed.changes)throw Error('Sharing target changed; no redirect performed');
     return this.get(id);
   }
 
   defer(id, reason) {
-    this.db.prepare("UPDATE life_share_intents SET state='queued',reason=?,updated=?,next_review=? WHERE id=? AND state IN ('queued','sending')")
+    this.db.prepare("UPDATE life_share_intents SET revision=revision+1,state='queued',reason=?,updated=?,next_review=? WHERE id=? AND state IN ('queued','sending')")
       .run(reason, this.clock(), this.clock() + 1800000, id);
   }
 
-  begin(id, attempt) {
-    if (!this.db.prepare("UPDATE life_share_intents SET state='sending',attempt=?,updated=? WHERE id=? AND state='queued'")
-      .run(attempt, this.clock(), id).changes) throw Error('Share is no longer pending');
+  prepareExpression(prior, {decision, text, reason}) {
+    if (!['share','later','keep_private'].includes(decision)) throw Error('Invalid expression decision');
+    reason = bounded(reason, 240);
+    text = decision === 'share' ? bounded(text, 360) : prior.text;
+    const changed = this.db.prepare("UPDATE life_share_intents SET revision=revision+1,text=?,digest=?,state=?,reason=?,updated=?,next_review=? WHERE id=? AND state='queued' AND digest=? AND recipient=? AND target_kind IS ? AND target_id IS ? AND recipient_reason IS ? AND revision=?")
+      .run(text,digest(text),decision==='keep_private'?'discarded':'queued',reason,this.clock(),this.clock()+1800000,
+        prior.id,prior.digest,prior.recipient,prior.target_kind,prior.target_id,prior.recipient_reason,prior.revision);
+    if (changed.changes !== 1) throw Error('Sharing intention changed during expression preparation');
+    return this.get(prior.id);
+  }
+
+  deferSnapshot(prior, reason) {
+    return this.db.prepare("UPDATE life_share_intents SET revision=revision+1,reason=?,updated=?,next_review=? WHERE id=? AND state='queued' AND revision=?")
+      .run(reason,this.clock(),this.clock()+1800000,prior.id,prior.revision).changes===1;
+  }
+
+  deferAttempt(id, attempt, reason) {
+    return this.db.prepare("UPDATE life_share_intents SET revision=revision+1,state='queued',reason=?,updated=?,next_review=? WHERE id=? AND state='sending' AND attempt=?")
+      .run(reason,this.clock(),this.clock()+1800000,id,attempt).changes===1;
+  }
+
+  begin(id, attempt, revision = null) {
+    if (!this.db.prepare("UPDATE life_share_intents SET revision=revision+1,state='sending',attempt=?,updated=? WHERE id=? AND state='queued' AND (? IS NULL OR revision=?)")
+      .run(attempt, this.clock(), id, revision, revision).changes) throw Error('Share is no longer pending');
   }
 
   settle(id, state, receipt = null) {
     if (!['sent', 'uncertain'].includes(state)) throw Error('Invalid delivery settlement');
-    this.db.prepare("UPDATE life_share_intents SET state=?,receipt=?,updated=? WHERE id=? AND state='sending'")
+    this.db.prepare("UPDATE life_share_intents SET revision=revision+1,state=?,receipt=?,updated=? WHERE id=? AND state='sending'")
       .run(state, receipt ? JSON.stringify(receipt) : null, this.clock(), id);
   }
 }

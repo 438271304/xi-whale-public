@@ -6,6 +6,8 @@ import {LifeContinuity} from './life-continuity.mjs';
 import {LifeHeartbeat,LIFE_REACTION_SCHEMA,LIFE_HEARTBEAT_PROMPT} from './life-heartbeat.mjs';
 import {sendLifeQQDelivery} from './qq-event-policy.mjs';
 import {queueLifeContact} from './life-contact.mjs';
+import {LifeShareAudience} from './life-share-audience.mjs';
+import {LifeShareComposer} from './life-share-compose.mjs';
 const localHour=at=>new Date(at+8*3600000).getUTCHours();
 export class CuriosityLife{
  constructor({path,service,social,world,policy,client,tools,creative=null,topics=()=>[],clock=()=>Date.now()}){
@@ -14,6 +16,9 @@ export class CuriosityLife{
   this.followups=new ExplorationFollowups(this.db,{clock});
   this.continuity=new LifeContinuity(this.db,{clock});
   this.heartbeat=new LifeHeartbeat({db:this.db,store:service.cognition.store,clock,policy});
+  this.shareAudience=new LifeShareAudience({db:this.db,conversationDb:service.engine.db,policy,clock});
+  this.shareComposer=new LifeShareComposer({db:this.db,store:service.cognition.store,journal:this.heartbeat.journal,
+   conversationDb:service.engine.db,client,profile:()=>service.engine.profile,clock});
  }
  recent(){return this.db.prepare('SELECT id,topic,state,summary,updated FROM activities ORDER BY updated DESC LIMIT 8').all();}
  conversationTools(scope,context){
@@ -38,9 +43,9 @@ export class CuriosityLife{
  }
  shareEligible(scope=conversationScope('group',this.policy.group_id)){
   const target=scope.kind==='group'?String(this.policy.group_id)===scope.id&&this.world.getWatched().groups.map(String).includes(scope.id):this.policy.friend_private_enabled&&[this.policy.father_id,this.policy.mother_id].map(String).includes(scope.id);
-  return !!target&&this.eligible()&&!this.service.listening?.status(scope).active&&!this.social.availability?.status(scope).active&&!this.service.engine.queues.has(scope.address)&&this.clock()-this.social.inbound(scope.address)>=600000;
+  return !!target&&this.eligible()&&!this.service.listening?.status(scope).active&&!this.social.availability?.status(scope).active&&!this.service.engine.queues.has(scope.address)&&this.clock()-this.social.inbound(scope.address)>=600000&&this.shareAudience.inspect(scope).can_send;
  }
- audiences(){return ['family','father','mother'].flatMap(recipient=>{try{const target=this.audience(recipient);const scope=conversationScope(target.target_kind,target.target_id);return [{recipient,sharing_timely_now:this.shareEligible(scope),contact_pause:this.social.availability?.status(scope)??null,notice:'Current friend membership is rechecked at actual delivery.'}];}catch{return [];}});}
+ audiences(){return ['family','father','mother'].flatMap(recipient=>{try{const target=this.audience(recipient);const scope=conversationScope(target.target_kind,target.target_id);return [{recipient,sharing_timely_now:this.shareEligible(scope),recipient_feedback:this.shareAudience.inspect(scope),contact_pause:this.social.availability?.status(scope)??null,notice:'Silence changes interruption pacing only, not mood, affection or private exploration. Feedback belongs to its actual speaker. Current friend membership is rechecked at delivery.'}];}catch{return [];}});}
  tick(){if(this.job)return this.job;this.job=this.run().finally(()=>this.job=null);return this.job;}
  async run(){
   const now=this.clock(),due=Number(this.db.prepare("SELECT value FROM life_settings WHERE key='next'").get()?.value??0);
@@ -131,13 +136,24 @@ export class CuriosityLife{
   finally{this.db.prepare("UPDATE activities SET state=CASE WHEN state='planning' THEN 'quiet' ELSE 'unfinished' END,updated=? WHERE id=? AND state IN ('planning','reading')").run(this.clock(),id);if(this.activeFollowup&&this.followups.get(this.activeFollowup)?.state==='running')this.followups.interrupt(this.activeFollowup,signal.aborted?'interrupted':'no-evidence-backed-completion');this.heartbeat.finish(id,outcome);this.controller=null;this.activeFollowup=null;}
  }
  async deliver(intent,scope,signal){
-  const deferred=reason=>{this.continuity.defer(intent.id,reason);return {status:'saved-share-deferred',activity:intent.activity,share_intent:intent.id};};
-  try{scope=this.intentScope(intent);}catch{return deferred('saved-target-no-longer-configured');}
+  intent=this.continuity.get(intent.id);
+  if(intent?.state!=='queued')return {status:'not-pending-no-send',activity:intent?.activity};
+  const deferred=reason=>{this.continuity.deferSnapshot(intent,reason);return {status:'saved-share-deferred',activity:intent.activity,share_intent:intent.id};};
+  try{scope=this.intentScope(intent);intent=this.continuity.get(intent.id);}catch{return deferred('saved-target-no-longer-configured');}
   if(!this.shareEligible(scope))return deferred('not-timely-for-recipient');
+  let prepared;
+  try{
+   prepared=await this.shareComposer.compose({intent,scope,audience:this.shareAudience.inspect(scope),signal});
+   signal.throwIfAborted();
+   intent=this.continuity.prepareExpression(intent,prepared);
+  }catch{return deferred('expression-not-ready');}
+  if(prepared.decision==='keep_private')return {status:'kept-private-after-expression',activity:intent.activity,share_intent:intent.id};
+  if(prepared.decision==='later')return deferred('expression-chose-later');
+  if(!this.shareEligible(scope))return deferred('changed-during-expression');
   const last=this.db.prepare("SELECT * FROM activity_shares WHERE state IN ('sending','sent','uncertain') ORDER BY at DESC LIMIT 1").get();
   if(last&&this.clock()-last.at<300000||this.db.prepare("SELECT 1 FROM activity_shares WHERE digest=? AND at>? AND state IN ('sending','sent','uncertain')").get(intent.digest,this.clock()-86400000))return deferred('recent-or-duplicate-share');
   const share=randomUUID();let attempted=false,receipt=null;
-  this.continuity.begin(intent.id,share);
+  this.continuity.begin(intent.id,share,intent.revision);
   this.db.prepare("INSERT INTO activity_shares VALUES(?,?,?,'sending',?)").run(share,intent.activity,intent.digest,this.clock());
   try{
    await this.service.initiate(scope,'proactive:'+share,intent.text,{signal,version:this.service.engine.revisions.get(scope.address),purpose:'life-share',trackedTransport:true,send:async args=>{
@@ -148,7 +164,8 @@ export class CuriosityLife{
   }catch{
    this.db.prepare('UPDATE activity_shares SET state=? WHERE id=?').run(attempted?'uncertain':'deferred',share);
    if(attempted){this.continuity.settle(intent.id,'uncertain');return {status:'uncertain-no-retry',activity:intent.activity};}
-   return deferred('changed-before-send');
+   this.continuity.deferAttempt(intent.id,share,'changed-before-send');
+   return {status:'saved-share-deferred',activity:intent.activity,share_intent:intent.id};
   }
   this.db.prepare("UPDATE activity_shares SET state='sent' WHERE id=?").run(share);
   this.continuity.settle(intent.id,'sent',receipt);
